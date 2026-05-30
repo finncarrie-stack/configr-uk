@@ -209,26 +209,20 @@ import Layout from '../layouts/Layout.astro';
     btnIcon.classList.add('hidden');
     btnSpinner.classList.remove('hidden');
 
-    // Build JSON payload from form fields
-    const payload: Record<string, string> = {};
-    new FormData(form).forEach((val, key) => { payload[key] = val.toString(); });
-
     try {
       const res = await fetch('https://formspree.io/f/xnjrreew', {
         method: 'POST',
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form),
       });
-
-      const json = await res.json();
 
       if (res.ok) {
         form.classList.add('hidden');
         successMsg.classList.remove('hidden');
       } else {
-        // Show Formspree's actual error if available
-        const msg = json?.errors?.[0]?.message || json?.error || 'Submission failed';
-        errorMsg.textContent = `Something went wrong: ${msg}. Please email us at hello@configr.uk instead.`;
+        const json = await res.json().catch(() => ({}));
+        const msg = json?.errors?.[0]?.message || json?.error || 'please try again';
+        errorMsg.textContent = `Something went wrong (${msg}) — or email us at hello@configr.uk`;
         errorMsg.classList.remove('hidden');
         submitBtn.disabled = false;
         btnText.textContent = 'Send request';
