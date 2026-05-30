@@ -4,3 +4,7 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Private business material — never publish to the public repo
+brand_identity/
+prospects/
