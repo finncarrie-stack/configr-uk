@@ -204,26 +204,39 @@ import Layout from '../layouts/Layout.astro';
     e.preventDefault();
     errorMsg.classList.add('hidden');
 
-    // Loading state
     submitBtn.disabled = true;
     btnText.textContent = 'Sending…';
     btnIcon.classList.add('hidden');
     btnSpinner.classList.remove('hidden');
 
+    // Build JSON payload from form fields
+    const payload: Record<string, string> = {};
+    new FormData(form).forEach((val, key) => { payload[key] = val.toString(); });
+
     try {
       const res = await fetch('https://formspree.io/f/xnjrreew', {
         method: 'POST',
-        body: new FormData(form),
-        headers: { Accept: 'application/json' },
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       });
+
+      const json = await res.json();
 
       if (res.ok) {
         form.classList.add('hidden');
         successMsg.classList.remove('hidden');
       } else {
-        throw new Error('Form error');
+        // Show Formspree's actual error if available
+        const msg = json?.errors?.[0]?.message || json?.error || 'Submission failed';
+        errorMsg.textContent = `Something went wrong: ${msg}. Please email us at hello@configr.uk instead.`;
+        errorMsg.classList.remove('hidden');
+        submitBtn.disabled = false;
+        btnText.textContent = 'Send request';
+        btnIcon.classList.remove('hidden');
+        btnSpinner.classList.add('hidden');
       }
     } catch {
+      errorMsg.textContent = 'Something went wrong — please email us at hello@configr.uk instead.';
       errorMsg.classList.remove('hidden');
       submitBtn.disabled = false;
       btnText.textContent = 'Send request';
