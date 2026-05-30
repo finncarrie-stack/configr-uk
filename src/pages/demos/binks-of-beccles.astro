@@ -1,0 +1,561 @@
+---
+import '../../styles/global.css';
+// Demo website for Binks of Beccles — built by Configr as a sales demo
+const vehicles = [
+  { make: "Land Rover", model: "Discovery Sport", year: "2020", reg: "20 reg", miles: "35,000", price: "£21,799", fuel: "Diesel", transmission: "Automatic", body: "SUV", doors: "5 door", badge: "Great Price", img: "https://placehold.co/600x380/1B2B4B/FFFFFF?text=Land+Rover+Discovery+Sport" },
+  { make: "Toyota", model: "C-HR", year: "2022", reg: "22 reg", miles: "35,000", price: "£19,000", fuel: "Petrol Hybrid", transmission: "Automatic", body: "SUV", doors: "5 door", badge: "Great Price", img: "https://placehold.co/600x380/1B2B4B/FFFFFF?text=Toyota+C-HR" },
+  { make: "Mercedes-Benz", model: "E Class", year: "2018", reg: "67 reg", miles: "50,000", price: "£18,000", fuel: "Diesel", transmission: "Automatic", body: "Saloon", doors: "4 door", badge: "Good Price", img: "https://placehold.co/600x380/1B2B4B/FFFFFF?text=Mercedes-Benz+E+Class" },
+  { make: "Land Rover", model: "Range Rover Evoque", year: "2020", reg: "69 reg", miles: "50,000", price: "£17,000", fuel: "Diesel", transmission: "Automatic", body: "SUV", doors: "5 door", badge: "Good Price", img: "https://placehold.co/600x380/1B2B4B/FFFFFF?text=Range+Rover+Evoque" },
+  { make: "Mercedes-Benz", model: "A Class", year: "2019", reg: "19 reg", miles: "49,000", price: "£16,499", fuel: "Diesel", transmission: "Automatic", body: "Hatchback", doors: "5 door", badge: "Good Price", img: "https://placehold.co/600x380/1B2B4B/FFFFFF?text=Mercedes-Benz+A+Class" },
+  { make: "BMW", model: "3 Series", year: "2021", reg: "21 reg", miles: "28,000", price: "£22,500", fuel: "Diesel", transmission: "Automatic", body: "Saloon", doors: "4 door", badge: "Hot Deal", img: "https://placehold.co/600x380/1B2B4B/FFFFFF?text=BMW+3+Series" },
+];
+
+const reviews = [
+  { name: "David J.", rating: 5, date: "January 2024", text: "The third car I've bought from Binks of Beccles. I will not chance my luck with another dealer while I have them to buy a car from. Outstanding service throughout." },
+  { name: "Mrs J.", rating: 5, date: "February 2024", text: "The staff were very kind and helpful. The sales manager advised me really well. I am very happy to recommend Binks of Beccles as a professional and reliable garage." },
+  { name: "Wesley M.", rating: 5, date: "March 2024", text: "Very knowledgeable and helpful. The car was in great condition at a really good price and the whole experience was smooth and stress free. Highly recommend." },
+  { name: "L & P, Suffolk", rating: 5, date: "December 2023", text: "Both myself and my husband have bought various cars through Binks over the years. Always found the staff friendly, helpful, and competitively priced. Strongly recommend." },
+];
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Binks of Beccles — Quality Used Cars in Suffolk</title>
+  <meta name="description" content="Binks of Beccles — quality used cars in Beccles, Suffolk. Established 1992. 4.9★ rated. No admin fees. Part exchange welcome. Online booking available." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <style>
+    * { font-family: 'Source Sans 3', system-ui, sans-serif; }
+    h1,h2,h3,h4,h5 { font-family: 'Lexend', system-ui, sans-serif; }
+
+    html { scroll-behavior: smooth; }
+
+    .hero-bg {
+      background: linear-gradient(160deg, rgba(10,16,24,0.92) 0%, rgba(27,43,75,0.85) 60%, rgba(27,43,75,0.7) 100%),
+        url('https://placehold.co/1440x700/1B2B4B/2A4FA8?text=') center/cover no-repeat;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #E8B040, #C8891A);
+      transition: transform 150ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 150ms ease;
+      cursor: pointer;
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,137,26,0.45); }
+    .btn-gold:active { transform: translateY(0); }
+
+    .btn-outline {
+      transition: all 150ms ease;
+      cursor: pointer;
+    }
+    .btn-outline:hover { background: white; color: #1B2B4B; }
+
+    .vehicle-card {
+      transition: transform 220ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 220ms ease;
+    }
+    .vehicle-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(27,43,75,0.18), 0 4px 12px rgba(27,43,75,0.08);
+    }
+
+    .nav-link { position: relative; transition: color 150ms ease; }
+    .nav-link::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px; background:#C8891A; transition:width 200ms ease; border-radius:1px; }
+    .nav-link:hover { color: #C8891A; }
+    .nav-link:hover::after { width:100%; }
+
+    .service-card { transition: transform 200ms ease, box-shadow 200ms ease; }
+    .service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(27,43,75,0.12); }
+
+    .review-card { transition: transform 200ms ease; }
+    .review-card:hover { transform: translateY(-3px); }
+
+    .input-field {
+      transition: box-shadow 150ms ease, border-color 150ms ease;
+    }
+    .input-field:focus {
+      outline: none;
+      border-color: #C8891A;
+      box-shadow: 0 0 0 3px rgba(200,137,26,0.15);
+    }
+
+    @keyframes fade-up {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .fade-up { animation: fade-up 0.6s ease-out forwards; }
+
+    /* Configr demo banner */
+    .demo-banner {
+      background: linear-gradient(135deg, #1565C0, #0D47A1);
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
+      padding: 10px 24px;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased overflow-x-hidden">
+
+  <!-- ─── TOP BAR ──────────────────────────────────────────────────────── -->
+  <div class="bg-navy-600 text-white py-2 px-6">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs font-medium">
+      <div class="flex items-center gap-5">
+        <a href="tel:015023920770" class="flex items-center gap-1.5 hover:text-gold-400 transition-colors duration-150">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          01502 392077
+        </a>
+        <a href="mailto:info@binksofbeccles.co.uk" class="flex items-center gap-1.5 hover:text-gold-400 transition-colors duration-150">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          info@binksofbeccles.co.uk
+        </a>
+      </div>
+      <div class="flex items-center gap-5 text-slate-300">
+        <span>Mon–Fri: 08:30–17:30</span>
+        <span>Sat: 09:00–17:00</span>
+        <span class="text-gold-400 font-semibold">Appointment only</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── NAVBAR ────────────────────────────────────────────────────────── -->
+  <header class="sticky top-0 z-50 bg-white border-b border-slate-100" style="box-shadow:0 2px 8px rgba(27,43,75,0.08);">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3 flex-shrink-0">
+        <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background:linear-gradient(140deg,#2A4FA8,#1B2B4B);">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+          </svg>
+        </div>
+        <div>
+          <p class="font-heading text-base font-bold text-navy-600 leading-none">Binks of Beccles</p>
+          <p class="text-[10px] text-slate-400 font-medium tracking-wide">Est. 1992 · Beccles, Suffolk</p>
+        </div>
+      </a>
+
+      <!-- Nav -->
+      <nav class="hidden lg:flex items-center gap-7">
+        <a href="#stock" class="nav-link text-sm font-semibold text-slate-600">Used Cars</a>
+        <a href="#services" class="nav-link text-sm font-semibold text-slate-600">Services</a>
+        <a href="#finance" class="nav-link text-sm font-semibold text-slate-600">Finance</a>
+        <a href="#part-exchange" class="nav-link text-sm font-semibold text-slate-600">Part Exchange</a>
+        <a href="#contact" class="nav-link text-sm font-semibold text-slate-600">Contact</a>
+      </nav>
+
+      <!-- CTA -->
+      <a href="#book" class="btn-gold text-white text-sm font-bold px-5 py-2.5 rounded-lg flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Book a Viewing
+      </a>
+    </div>
+  </header>
+
+  <!-- ─── HERO ──────────────────────────────────────────────────────────── -->
+  <section class="hero-bg relative py-28 lg:py-36 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
+      <div class="max-w-2xl">
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 bg-gold-500/20 border border-gold-400/40 rounded-full px-4 py-1.5 mb-6">
+          <svg class="w-4 h-4 text-gold-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <span class="text-xs font-bold text-gold-300 tracking-wide uppercase">AutoTrader Highly Rated 2018 – 2023</span>
+        </div>
+
+        <h1 class="font-heading text-4xl lg:text-6xl font-bold text-white leading-[1.1] mb-5" style="letter-spacing:-0.02em;">
+          Quality Cars.<br>
+          <span style="color:#E8B040;">Trusted Service.</span><br>
+          Since 1992.
+        </h1>
+
+        <p class="text-lg text-slate-300 leading-relaxed mb-8 max-w-lg">
+          Independently owned and run in Beccles, Suffolk for over 33 years. Every car individually selected, prepared to showroom standard, and sold with complete peace of mind.
+        </p>
+
+        <div class="flex flex-wrap gap-3 mb-10">
+          <a href="#stock" class="btn-gold inline-flex items-center gap-2 text-white font-bold px-7 py-3.5 rounded-xl text-sm">
+            View our stock
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          </a>
+          <a href="#book" class="btn-outline inline-flex items-center gap-2 text-white font-bold px-7 py-3.5 rounded-xl text-sm border-2 border-white/50">
+            Book a viewing
+          </a>
+        </div>
+
+        <!-- Stats row -->
+        <div class="flex flex-wrap gap-8">
+          {[["4.9★","AutoTrader Rating"],["33yrs","Est. 1992"],["47+","Cars in Stock"],["No","Admin Fees"]].map(([val,label]) => (
+            <div>
+              <p class="font-heading text-2xl font-bold text-white leading-none mb-0.5">{val}</p>
+              <p class="text-xs text-slate-400 font-medium">{label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── AWARDS BAR ────────────────────────────────────────────────────── -->
+  <section class="bg-navy-600 py-5">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 flex flex-wrap items-center justify-between gap-4">
+      <p class="text-sm font-semibold text-slate-300">AutoTrader Highly Rated</p>
+      <div class="flex flex-wrap gap-3">
+        {["2018","2019","2020","2021","2022","2023"].map(year => (
+          <div class="flex items-center gap-1.5 bg-white/10 rounded-lg px-3 py-1.5">
+            <svg class="w-3.5 h-3.5 text-gold-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <span class="text-xs font-bold text-white">{year}</span>
+          </div>
+        ))}
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="flex">
+          {[1,2,3,4,5].map(() => <svg class="w-4 h-4 text-gold-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
+        </div>
+        <span class="text-sm font-bold text-white">4.9 / 5</span>
+        <span class="text-xs text-slate-400">AutoTrader</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── WHY BINKS ─────────────────────────────────────────────────────── -->
+  <section class="py-16 bg-white border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {[
+        { icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z", title: "No Admin Fees", desc: "The price you see is the price you pay. No hidden charges, no surprises." },
+        { icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2", title: "12-Month MOT", desc: "Every eligible vehicle comes with a fresh 12-month MOT before collection." },
+        { icon: "M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4", title: "Part Exchange", desc: "We'll give you a fair price for your current car — no hassle, no drama." },
+        { icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z", title: "Finance Available", desc: "Competitive finance packages to suit all budgets. Subject to status." },
+      ].map(item => (
+        <div class="flex items-start gap-4 p-5 rounded-2xl bg-slate-50">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(140deg,#2A4FA8,#1B2B4B);">
+            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d={item.icon}/></svg>
+          </div>
+          <div>
+            <h3 class="font-heading text-sm font-bold text-navy-600 mb-1">{item.title}</h3>
+            <p class="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ─── STOCK ──────────────────────────────────────────────────────────── -->
+  <section id="stock" class="py-24 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="flex items-end justify-between mb-10 gap-4">
+        <div>
+          <span class="text-xs font-bold text-gold-600 uppercase tracking-widest">Available now</span>
+          <h2 class="font-heading mt-1 text-3xl lg:text-4xl font-bold text-navy-600" style="letter-spacing:-0.02em;">Latest Stock</h2>
+          <p class="mt-2 text-slate-500">Hand-picked vehicles, prepared to showroom standard.</p>
+        </div>
+        <a href="#" class="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-navy-600 border-2 border-navy-200 rounded-xl px-5 py-2.5 hover:bg-navy-50 transition-colors duration-150 flex-shrink-0">
+          View all 47 cars
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {vehicles.map(v => (
+          <div class="vehicle-card bg-white rounded-2xl overflow-hidden border border-slate-100" style="box-shadow:0 2px 12px rgba(27,43,75,0.07);">
+            <!-- Image -->
+            <div class="relative overflow-hidden h-48">
+              <img src={v.img} alt={`${v.make} ${v.model}`} class="w-full h-full object-cover" width="600" height="380" loading="lazy">
+              <div class="absolute inset-0 bg-gradient-to-t from-navy-900/40 to-transparent"></div>
+              <div class="absolute top-3 left-3">
+                <span class="text-xs font-bold text-white px-2.5 py-1 rounded-full" style="background:linear-gradient(135deg,#E8B040,#C8891A);">{v.badge}</span>
+              </div>
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1">
+                <p class="font-heading text-sm font-bold text-navy-600">{v.price}</p>
+              </div>
+            </div>
+
+            <!-- Details -->
+            <div class="p-5">
+              <p class="text-xs font-semibold text-gold-600 uppercase tracking-wider mb-0.5">{v.make}</p>
+              <h3 class="font-heading text-lg font-bold text-navy-700 mb-1">{v.model}</h3>
+              <p class="text-xs text-slate-400 mb-4">{v.year} ({v.reg}) · {v.doors} · {v.body}</p>
+
+              <div class="grid grid-cols-3 gap-2 mb-5">
+                {[[v.miles + " mi","Mileage"],[v.fuel,"Fuel"],[v.transmission,"Gearbox"]].map(([val,label]) => (
+                  <div class="text-center bg-slate-50 rounded-lg py-2 px-1">
+                    <p class="text-xs font-bold text-navy-600 leading-tight">{val}</p>
+                    <p class="text-[10px] text-slate-400 mt-0.5">{label}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div class="flex gap-2">
+                <a href="#book" class="btn-gold flex-1 text-center text-xs font-bold text-white py-2.5 rounded-lg">Book viewing</a>
+                <a href="#" class="flex-1 text-center text-xs font-semibold text-navy-600 border border-navy-200 py-2.5 rounded-lg hover:bg-navy-50 transition-colors duration-150">Enquire</a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SERVICES ──────────────────────────────────────────────────────── -->
+  <section id="services" class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="text-center mb-14">
+        <span class="text-xs font-bold text-gold-600 uppercase tracking-widest">Everything under one roof</span>
+        <h2 class="font-heading mt-2 text-3xl lg:text-4xl font-bold text-navy-600" style="letter-spacing:-0.02em;">Our Services</h2>
+        <p class="mt-3 text-slate-500 max-w-lg mx-auto">We offer far more than just car sales. Our on-site facilities mean your car is in safe hands long after you drive away.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {[
+          { icon: "M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4", title: "Used Car Sales", desc: "47 quality vehicles in stock, individually selected and prepared to the highest standards." },
+          { icon: "M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4", title: "Part Exchange", desc: "Get a fair, no-nonsense valuation for your current vehicle and put it towards your next car." },
+          { icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z", title: "Finance", desc: "Flexible finance options to suit your budget. HP, PCP and personal loans available." },
+          { icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z", title: "Servicing", desc: "Full manufacturer-approved servicing carried out at our on-site facility." },
+          { icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z", title: "MOT Testing", desc: "DVSA-approved MOT testing station on site. Competitive rates and quick turnaround." },
+          { icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z", title: "Extended Warranties", desc: "Extended warranty packages available for added peace of mind after your purchase." },
+        ].map(s => (
+          <div class="service-card p-6 rounded-2xl border border-slate-100 bg-white" style="box-shadow:0 2px 8px rgba(27,43,75,0.05);">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4 flex-shrink-0" style="background:linear-gradient(140deg,#EFF3FA,#D6E0F5);">
+              <svg class="w-5 h-5 text-navy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d={s.icon}/></svg>
+            </div>
+            <h3 class="font-heading text-base font-bold text-navy-700 mb-1.5">{s.title}</h3>
+            <p class="text-sm text-slate-500 leading-relaxed">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── BOOK A VIEWING ────────────────────────────────────────────────── -->
+  <section id="book" class="py-24 bg-slate-50">
+    <div class="max-w-6xl mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-14 items-start">
+      <div>
+        <span class="text-xs font-bold text-gold-600 uppercase tracking-widest">Skip the phone queue</span>
+        <h2 class="font-heading mt-2 text-3xl lg:text-4xl font-bold text-navy-600 mb-5" style="letter-spacing:-0.02em;">Book a Viewing Online</h2>
+        <p class="text-slate-500 leading-relaxed mb-8">Choose your preferred date and time and we'll have everything ready for you. No waiting around, no hard sell — just a relaxed, no-pressure viewing.</p>
+
+        <div class="space-y-4 mb-8">
+          {[
+            { icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z", text: "Confirm in under 2 minutes" },
+            { icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z", text: "Instant email confirmation" },
+            { icon: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z", text: "Flexible dates and times available" },
+            { icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z", text: "No obligation — no pressure" },
+          ].map(item => (
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:linear-gradient(140deg,#E8B040,#C8891A);">
+                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d={item.icon}/></svg>
+              </div>
+              <p class="text-sm font-semibold text-slate-700">{item.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="rounded-2xl p-6 border border-slate-200 bg-white" style="box-shadow:0 2px 8px rgba(27,43,75,0.06);">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Or call us directly</p>
+          <a href="tel:01502392077" class="flex items-center gap-3 group">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:linear-gradient(140deg,#2A4FA8,#1B2B4B);">
+              <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            </div>
+            <div>
+              <p class="font-heading text-xl font-bold text-navy-600 group-hover:text-gold-600 transition-colors duration-150">01502 392077</p>
+              <p class="text-xs text-slate-400">Mon–Fri 08:30–17:30 · Sat 09:00–17:00</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Booking form -->
+      <div class="bg-white rounded-2xl p-8 border border-slate-100" style="box-shadow:0 4px 20px rgba(27,43,75,0.10);">
+        <h3 class="font-heading text-xl font-bold text-navy-600 mb-6">Request a viewing</h3>
+        <form class="space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">First name</label>
+              <input type="text" placeholder="Jane" class="input-field w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder-slate-400 bg-white">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Last name</label>
+              <input type="text" placeholder="Smith" class="input-field w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder-slate-400 bg-white">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Phone number</label>
+            <input type="tel" placeholder="07700 900000" class="input-field w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder-slate-400 bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Email address</label>
+            <input type="email" placeholder="jane@example.com" class="input-field w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder-slate-400 bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Vehicle interested in</label>
+            <select class="input-field w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white appearance-none" style="background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 1rem center;background-size:1rem;">
+              <option>Select a vehicle…</option>
+              <option>Land Rover Discovery Sport — £21,799</option>
+              <option>Toyota C-HR — £19,000</option>
+              <option>Mercedes-Benz E Class — £18,000</option>
+              <option>Range Rover Evoque — £17,000</option>
+              <option>Mercedes-Benz A Class — £16,499</option>
+              <option>BMW 3 Series — £22,500</option>
+              <option>Not sure yet — show me everything</option>
+            </select>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Preferred date</label>
+              <input type="date" class="input-field w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Preferred time</label>
+              <select class="input-field w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white appearance-none" style="background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 1rem center;background-size:1rem;">
+                <option>Morning (08:30–12:00)</option>
+                <option>Afternoon (12:00–17:30)</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn-gold w-full text-white font-bold py-3.5 rounded-xl text-sm flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            Confirm my viewing
+          </button>
+          <p class="text-xs text-slate-400 text-center">We'll confirm your booking by email within 2 hours.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── REVIEWS ───────────────────────────────────────────────────────── -->
+  <section class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="text-center mb-14">
+        <span class="text-xs font-bold text-gold-600 uppercase tracking-widest">What our customers say</span>
+        <h2 class="font-heading mt-2 text-3xl lg:text-4xl font-bold text-navy-600" style="letter-spacing:-0.02em;">Trusted by Customers Across Suffolk</h2>
+        <div class="flex items-center justify-center gap-2 mt-4">
+          <div class="flex">
+            {[1,2,3,4,5].map(() => <svg class="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
+          </div>
+          <span class="font-heading text-lg font-bold text-navy-600">4.9 / 5</span>
+          <span class="text-sm text-slate-400">— AutoTrader Verified</span>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+        {reviews.map(r => (
+          <div class="review-card bg-slate-50 rounded-2xl p-6 border border-slate-100">
+            <div class="flex gap-0.5 mb-4">
+              {Array(r.rating).fill(0).map(() => <svg class="w-4 h-4 text-gold-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
+            </div>
+            <blockquote class="text-sm text-slate-600 leading-relaxed mb-5 italic">"{r.text}"</blockquote>
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style="background:linear-gradient(140deg,#2A4FA8,#1B2B4B);">{r.name[0]}</div>
+              <div>
+                <p class="text-xs font-bold text-navy-700">{r.name}</p>
+                <p class="text-[10px] text-slate-400">{r.date}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CONTACT ───────────────────────────────────────────────────────── -->
+  <section id="contact" class="py-24" style="background:linear-gradient(180deg,#F8FAFC 0%,#EFF3FA 100%);">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-12 items-start">
+      <div>
+        <span class="text-xs font-bold text-gold-600 uppercase tracking-widest">Find us</span>
+        <h2 class="font-heading mt-2 text-3xl font-bold text-navy-600 mb-6" style="letter-spacing:-0.02em;">Visit Us in Beccles</h2>
+
+        <div class="space-y-5 mb-8">
+          {[
+            { icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z", title: "Address", lines: ["Gosford Road","Beccles, Suffolk","NR34 9QP"] },
+            { icon: "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z", title: "Phone", lines: ["01502 392077"] },
+            { icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z", title: "Opening Hours", lines: ["Mon–Fri: 08:30 – 17:30","Saturday: 09:00 – 17:00","Sunday: Closed","By appointment only"] },
+          ].map(item => (
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style="background:linear-gradient(140deg,#2A4FA8,#1B2B4B);">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d={item.icon}/></svg>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{item.title}</p>
+                {item.lines.map(line => <p class="text-sm font-medium text-slate-700">{line}</p>)}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <a href="#book" class="btn-gold inline-flex items-center gap-2 text-white font-bold px-6 py-3 rounded-xl text-sm">
+          Book a viewing
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+      </div>
+
+      <!-- Map placeholder -->
+      <div class="rounded-2xl overflow-hidden border border-slate-200" style="box-shadow:0 4px 16px rgba(27,43,75,0.10);">
+        <img src="https://placehold.co/700x420/1B2B4B/FFFFFF?text=Beccles+Suffolk+Map" alt="Map — Gosford Road, Beccles, NR34 9QP" class="w-full h-full object-cover" width="700" height="420" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ────────────────────────────────────────────────────────── -->
+  <footer class="bg-navy-600 py-12">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="grid md:grid-cols-3 gap-8 pb-8 border-b border-white/10 mb-8">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-white/10">
+              <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            </div>
+            <div>
+              <p class="font-heading text-sm font-bold text-white">Binks of Beccles</p>
+              <p class="text-[10px] text-slate-400">Est. 1992</p>
+            </div>
+          </div>
+          <p class="text-sm text-slate-400 leading-relaxed">Independently owned used car dealer serving Beccles and Suffolk for over 33 years.</p>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Quick links</p>
+          <ul class="space-y-2">
+            {["Used Cars","Part Exchange","Finance","Servicing & MOT","Contact Us"].map(l => (
+              <li><a href="#" class="text-sm text-slate-400 hover:text-gold-400 transition-colors duration-150">{l}</a></li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Contact</p>
+          <div class="space-y-2 text-sm text-slate-400">
+            <p>Gosford Road, Beccles, NR34 9QP</p>
+            <p><a href="tel:01502392077" class="hover:text-gold-400 transition-colors duration-150">01502 392077</a></p>
+            <p><a href="mailto:info@binksofbeccles.co.uk" class="hover:text-gold-400 transition-colors duration-150">info@binksofbeccles.co.uk</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+        <p class="text-xs text-slate-500">© {new Date().getFullYear()} Binks of Beccles. All rights reserved. FCA Authorised.</p>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-green-400"></span>
+          <p class="text-xs text-slate-500">All systems operational</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── CONFIGR DEMO BANNER ───────────────────────────────────────────── -->
+  <div class="demo-banner">
+    <div class="flex items-center gap-2">
+      <div class="w-6 h-6 rounded-md flex items-center justify-center" style="background:linear-gradient(140deg,#2176D2,#1565C0);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="3" fill="white"/>
+          <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="5" stroke="white" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;color:white;">Demo built by <strong>Configr</strong> — this is a free preview of what your website could look like</span>
+    </div>
+    <a href="https://finncarrie-stack.github.io/configr-uk/contact" target="_blank" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;color:#1B2B4B;background:white;padding:6px 14px;border-radius:8px;white-space:nowrap;">Get this website →</a>
+  </div>
+
+  <!-- Bottom padding for demo banner -->
+  <div style="height:52px;"></div>
+
+</body>
+</html>
