@@ -1,0 +1,330 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Configr — Workflow Automation for Growing Businesses">
+
+  <!-- HERO -->
+  <section class="hero-bg relative pt-32 pb-20 lg:pt-44 lg:pb-32 overflow-hidden">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+      <div class="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full" style="background:radial-gradient(circle,rgba(21,101,192,0.18) 0%,transparent 68%);filter:blur(72px);"></div>
+      <div class="absolute bottom-0 -left-40 w-[400px] h-[400px] rounded-full" style="background:radial-gradient(circle,rgba(33,118,210,0.12) 0%,transparent 60%);filter:blur(90px);"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-14 lg:gap-20 items-center relative z-10">
+      <div>
+        <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-3.5 py-1.5 mb-7">
+          <span class="pulse-dot w-2 h-2 rounded-full bg-blue-500"></span>
+          <span class="text-xs font-bold text-blue-700 tracking-wide uppercase">New: AI-powered workflow builder</span>
+        </div>
+
+        <h1 class="text-[2.75rem] lg:text-[3.4rem] xl:text-[3.8rem] font-extrabold text-slate-900 leading-[1.08] mb-6" style="letter-spacing:-0.03em;">
+          Automate your<br>
+          <span style="background:linear-gradient(130deg,#1565C0 20%,#2E8FE8 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">business workflows.</span><br>
+          Without the code.
+        </h1>
+
+        <p class="text-lg text-slate-500 leading-[1.75] mb-9 max-w-lg">
+          Configr helps small and medium businesses connect their tools, automate repetitive tasks, and stay focused on growth — all through a simple visual builder.
+        </p>
+
+        <div class="flex flex-wrap gap-3 mb-10">
+          <a href="/signup" class="btn-primary inline-flex items-center gap-2 text-white font-bold px-7 py-3.5 rounded-xl text-sm">
+            Start for free
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          </a>
+          <a href="#demo" class="btn-ghost inline-flex items-center gap-2 text-slate-700 font-semibold px-6 py-3.5 rounded-xl text-sm border border-slate-200 bg-white">
+            <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Watch demo
+          </a>
+        </div>
+
+        <div class="flex flex-wrap gap-x-6 gap-y-2">
+          {["No credit card","14-day free trial","Cancel anytime"].map(t => (
+            <span class="inline-flex items-center gap-1.5 text-sm text-slate-400">
+              <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <!-- Dashboard mockup -->
+      <div class="relative lg:pl-8 float">
+        <div class="relative bg-white rounded-2xl overflow-hidden shadow-brand-xl" style="border:1px solid rgba(21,101,192,0.09);">
+          <div class="flex items-center gap-2 px-4 py-3 border-b border-slate-100" style="background:linear-gradient(to right,#F8FAFC,#EFF6FF);">
+            <span class="w-3 h-3 rounded-full bg-red-400 opacity-80"></span>
+            <span class="w-3 h-3 rounded-full bg-amber-400 opacity-80"></span>
+            <span class="w-3 h-3 rounded-full bg-green-400 opacity-80"></span>
+            <div class="flex-1 mx-2 h-6 bg-white/80 border border-slate-100 rounded-md flex items-center px-3">
+              <span class="text-[11px] text-slate-400 font-medium">app.configr.uk/workflows</span>
+            </div>
+          </div>
+          <div class="p-5 bg-slate-50">
+            <div class="flex items-start justify-between mb-5">
+              <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Active Workflows</p>
+                <div class="flex items-baseline gap-2">
+                  <span class="text-2xl font-extrabold text-slate-900">24</span>
+                  <span class="text-xs font-semibold text-green-500">↑ 3 this week</span>
+                </div>
+              </div>
+              <button class="btn-primary text-white text-xs font-bold px-3 py-1.5 rounded-lg">+ New</button>
+            </div>
+            <div class="space-y-2 mb-4">
+              {[
+                { icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z", bg: "linear-gradient(135deg,#EFF6FF,#DBEAFE)", color: "text-blue-600", label: "New lead → CRM + Email", sub: "Runs every form submission" },
+                { icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z", bg: "linear-gradient(135deg,#F0FDF4,#DCFCE7)", color: "text-green-600", label: "Invoice → Xero accounting", sub: "142 runs today" },
+                { icon: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9", bg: "linear-gradient(135deg,#FEF9EC,#FEF3C7)", color: "text-amber-600", label: "Slack alerts for tickets", sub: "Triggered 8 mins ago" },
+              ].map(row => (
+                <div class="bg-white rounded-xl px-4 py-3 flex items-center gap-3 shadow-brand-sm">
+                  <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={`background:${row.bg}`}>
+                    <svg class={`w-4 h-4 ${row.color}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d={row.icon}/></svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-slate-800 truncate">{row.label}</p>
+                    <p class="text-xs text-slate-400">{row.sub}</p>
+                  </div>
+                  <div class="flex items-center gap-1.5 flex-shrink-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+                    <span class="text-xs font-medium text-green-600">Active</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              {[["1,284","Runs today","text-slate-900"],["99.8%","Success rate","text-green-600"],["4.2h","Time saved","text-slate-900"]].map(([val,label,cls]) => (
+                <div class="bg-white rounded-xl p-3 text-center shadow-brand-sm">
+                  <p class={`text-base font-extrabold ${cls} leading-none mb-0.5`}>{val}</p>
+                  <p class="text-[10px] text-slate-400 font-medium">{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div class="absolute -top-4 -right-5 bg-white rounded-xl px-3 py-2 flex items-center gap-2" style="box-shadow:0 8px 24px rgba(21,101,192,0.16);border:1px solid rgba(21,101,192,0.1);">
+          <div class="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-800 leading-tight">Workflow complete</p>
+            <p class="text-[10px] text-slate-400">Invoice processed</p>
+          </div>
+        </div>
+        <div class="absolute -bottom-4 -left-5 bg-white rounded-xl px-3 py-2 flex items-center gap-2" style="box-shadow:0 8px 24px rgba(21,101,192,0.16);border:1px solid rgba(21,101,192,0.1);">
+          <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#2176D2,#1565C0);">
+            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-800 leading-tight">8h saved this week</p>
+            <p class="text-[10px] text-slate-400">↑ 23% vs last week</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF -->
+  <section class="py-12 border-y border-slate-100 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-8">Trusted by 500+ growing businesses across the UK</p>
+      <div class="grid grid-cols-5 gap-6 items-center">
+        {["Meridian","Stackfield","Northwave","Luminary","Vantara"].map(name => (
+          <div class="text-center"><p class="text-sm font-extrabold text-slate-300 tracking-tight">{name}</p></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="text-center mb-16">
+        <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">Features</span>
+        <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight" style="letter-spacing:-0.025em;">Everything your team needs to automate</h2>
+        <p class="mt-4 text-lg text-slate-500 max-w-xl mx-auto leading-relaxed">No IT department. No developers. Configr is built for operations teams who want to move fast.</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {[
+          { bg: "linear-gradient(135deg,#EFF6FF,#DBEAFE)", iconColor: "text-blue-600", title: "Visual Workflow Builder", desc: "Drag-and-drop automation. Connect triggers, actions, and conditions in minutes without writing a line of code.", path: "M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" },
+          { bg: "linear-gradient(135deg,#F0FDF4,#DCFCE7)", iconColor: "text-green-600", title: "200+ Integrations", desc: "Connect Slack, HubSpot, Xero, Shopify, Gmail, Notion, and more. If your team uses it, Configr connects to it.", path: "M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" },
+          { bg: "linear-gradient(135deg,#FEF9EC,#FEF3C7)", iconColor: "text-amber-600", title: "AI-Powered Suggestions", desc: "Configr analyses your connected apps and recommends automations you didn't know you needed — set up in seconds.", path: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" },
+          { bg: "linear-gradient(135deg,#FDF4FF,#FAE8FF)", iconColor: "text-purple-600", title: "Real-Time Analytics", desc: "Track every workflow run, time saved, and error caught. Know exactly what's working at a glance.", path: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" },
+          { bg: "linear-gradient(135deg,#FFF1F2,#FFE4E6)", iconColor: "text-rose-600", title: "Team Collaboration", desc: "Share workflows across your team with role-based permissions. Everyone stays aligned, nothing breaks.", path: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
+        ].map(f => (
+          <div class="feature-card bg-white rounded-2xl p-7 border border-slate-100 shadow-brand-sm">
+            <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style={`background:${f.bg}`}>
+              <svg class={`w-5 h-5 ${f.iconColor}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d={f.path}/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 mb-2">{f.title}</h3>
+            <p class="text-sm text-slate-500 leading-relaxed">{f.desc}</p>
+          </div>
+        ))}
+        <div class="feature-card rounded-2xl p-7 relative overflow-hidden grain" style="background:linear-gradient(140deg,#1565C0,#0D47A1);box-shadow:0 12px 32px rgba(21,101,192,0.35);">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5 bg-white/20 relative z-10">
+            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <h3 class="text-base font-bold text-white mb-2 relative z-10">Enterprise-Grade Security</h3>
+          <p class="text-sm text-blue-100 leading-relaxed relative z-10">SOC 2 compliant. Encrypted at rest and in transit. UK data residency available for all paid plans.</p>
+          <span class="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-white/70 relative z-10">
+            Learn about security
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works" class="py-28" style="background:linear-gradient(180deg,#F8FAFC 0%,#EFF6FF 100%);">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="text-center mb-16">
+        <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">How it works</span>
+        <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight" style="letter-spacing:-0.025em;">Up and running in under 10 minutes</h2>
+        <p class="mt-4 text-lg text-slate-500 max-w-lg mx-auto">Most businesses automate their first workflow on the same day they sign up.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8 relative">
+        <div aria-hidden="true" class="hidden md:block absolute top-[3.75rem] left-[calc(33.3%+1rem)] right-[calc(33.3%+1rem)] h-px" style="background:linear-gradient(90deg,#1565C0,#93C5FD 50%,#1565C0);opacity:0.35;"></div>
+        {[
+          { n: "1", title: "Connect your tools", desc: "Link your existing apps in a few clicks. We support 200+ platforms out of the box, with new integrations every week." },
+          { n: "2", title: "Build your workflow", desc: "Use our visual builder or choose from 100+ pre-built templates. Set triggers, actions, and conditions — zero code required." },
+          { n: "3", title: "Watch it run", desc: "Activate and let Configr handle the repetitive work. Monitor every run in real time and get alerts if anything needs attention." },
+        ].map(step => (
+          <div class="text-center">
+            <div class="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center text-white text-xl font-extrabold relative z-10" style="background:linear-gradient(140deg,#2176D2,#1565C0);box-shadow:0 8px 22px rgba(21,101,192,0.32);">{step.n}</div>
+            <div class="bg-white rounded-2xl p-6 shadow-brand">
+              <h3 class="text-base font-bold text-slate-900 mb-2">{step.title}</h3>
+              <p class="text-sm text-slate-500 leading-relaxed">{step.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="py-20 relative grain overflow-hidden" style="background:linear-gradient(140deg,#0D47A1,#1565C0 55%,#2176D2);">
+    <div aria-hidden="true" class="absolute inset-0 pointer-events-none overflow-hidden">
+      <div class="absolute -top-32 -right-32 w-80 h-80 rounded-full opacity-10 bg-white" style="filter:blur(60px);"></div>
+      <div class="absolute -bottom-24 -left-24 w-64 h-64 rounded-full opacity-10 bg-white" style="filter:blur(50px);"></div>
+    </div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-10">
+        {[["500+","Businesses automated"],["2M+","Workflow runs / month"],["14hrs","Avg. time saved weekly"],["99.9%","Uptime guarantee"]].map(([val,label]) => (
+          <div class="text-center">
+            <p class="text-4xl lg:text-5xl font-extrabold text-white mb-1" style="letter-spacing:-0.03em;">{val}</p>
+            <p class="text-sm font-medium text-blue-200">{label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="text-center mb-16">
+        <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">Customer stories</span>
+        <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight" style="letter-spacing:-0.025em;">Businesses like yours, saving hours every week</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="t-card bg-white rounded-2xl p-7 border border-slate-100 shadow-brand">
+          <div class="flex gap-0.5 mb-5">{Array(5).fill(0).map(() => <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}</div>
+          <blockquote class="text-sm text-slate-600 leading-relaxed mb-6">"We were spending 3 hours a day manually syncing HubSpot and Xero. Configr set it up in 15 minutes and it just works."</blockquote>
+          <div class="flex items-center gap-3">
+            <img src="https://placehold.co/40x40/1565C0/FFFFFF?text=SR" alt="Sarah R." class="w-10 h-10 rounded-full" width="40" height="40">
+            <div><p class="text-sm font-bold text-slate-900">Sarah R.</p><p class="text-xs text-slate-400">Ops Manager · Meridian Marketing</p></div>
+          </div>
+        </div>
+        <div class="t-card rounded-2xl p-7 relative overflow-hidden grain" style="background:linear-gradient(140deg,#1565C0,#0D47A1);box-shadow:0 16px 40px rgba(21,101,192,0.38);">
+          <div aria-hidden="true" class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-white/10" style="filter:blur(20px);"></div>
+          <div class="flex gap-0.5 mb-5 relative z-10">{Array(5).fill(0).map(() => <svg class="w-4 h-4 text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}</div>
+          <blockquote class="text-sm text-blue-100 leading-relaxed mb-6 relative z-10">"I'm not technical at all, but I had our first workflow live in 20 minutes. Configr has genuinely changed how we run the business."</blockquote>
+          <div class="flex items-center gap-3 relative z-10">
+            <img src="https://placehold.co/40x40/FFFFFF/1565C0?text=JT" alt="James T." class="w-10 h-10 rounded-full" width="40" height="40">
+            <div><p class="text-sm font-bold text-white">James T.</p><p class="text-xs text-blue-300">Founder · Northwave Logistics</p></div>
+          </div>
+        </div>
+        <div class="t-card bg-white rounded-2xl p-7 border border-slate-100 shadow-brand">
+          <div class="flex gap-0.5 mb-5">{Array(5).fill(0).map(() => <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}</div>
+          <blockquote class="text-sm text-slate-600 leading-relaxed mb-6">"The ROI was clear within the first week. We automated order fulfilment notifications and cut customer queries by 40%."</blockquote>
+          <div class="flex items-center gap-3">
+            <img src="https://placehold.co/40x40/1565C0/FFFFFF?text=EP" alt="Emma P." class="w-10 h-10 rounded-full" width="40" height="40">
+            <div><p class="text-sm font-bold text-slate-900">Emma P.</p><p class="text-xs text-slate-400">E-commerce Director · Luminary Retail</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing" class="py-28" style="background:linear-gradient(180deg,#EFF6FF 0%,#F8FAFC 100%);">
+    <div class="max-w-5xl mx-auto px-6 lg:px-10">
+      <div class="text-center mb-14">
+        <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">Pricing</span>
+        <h2 class="mt-3 text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight" style="letter-spacing:-0.025em;">Plans that grow with your business</h2>
+        <p class="mt-4 text-lg text-slate-500 max-w-md mx-auto">Start free, scale when you're ready. No hidden fees.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6 items-start">
+        <div class="bg-white rounded-2xl p-7 border border-slate-100 shadow-brand-sm">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Starter</p>
+          <p class="text-4xl font-extrabold text-slate-900 mb-0.5" style="letter-spacing:-0.03em;">Free</p>
+          <p class="text-sm text-slate-400 mb-6">Up to 100 runs/month</p>
+          <ul class="space-y-3 mb-8 text-sm text-slate-600">
+            {["3 active workflows","5 integrations","Community support"].map(i => (
+              <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>{i}</li>
+            ))}
+          </ul>
+          <a href="/signup" class="block text-center text-sm font-semibold text-blue-600 border border-blue-200 rounded-xl py-2.5 hover:bg-blue-50 transition-colors duration-150">Get started free</a>
+        </div>
+        <div class="rounded-2xl p-7 relative overflow-hidden grain" style="background:linear-gradient(140deg,#1565C0,#0D47A1);box-shadow:0 16px 40px rgba(21,101,192,0.38);">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+            <span class="bg-amber-400 text-amber-900 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wide">Most popular</span>
+          </div>
+          <p class="text-xs font-bold text-blue-300 uppercase tracking-wider mb-4 mt-2">Growth</p>
+          <p class="text-4xl font-extrabold text-white mb-0.5" style="letter-spacing:-0.03em;">£49<span class="text-base font-semibold text-blue-300">/mo</span></p>
+          <p class="text-sm text-blue-300 mb-6">Up to 10,000 runs/month</p>
+          <ul class="space-y-3 mb-8 text-sm text-blue-100">
+            {["Unlimited workflows","200+ integrations","AI-powered suggestions","Priority email support","Team collaboration"].map(i => (
+              <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-blue-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>{i}</li>
+            ))}
+          </ul>
+          <a href="/signup" class="block text-center text-sm font-bold text-blue-700 bg-white rounded-xl py-2.5 hover:bg-blue-50 transition-colors duration-150 relative z-10">Start 14-day free trial</a>
+        </div>
+        <div class="bg-white rounded-2xl p-7 border border-slate-100 shadow-brand-sm">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Scale</p>
+          <p class="text-4xl font-extrabold text-slate-900 mb-0.5" style="letter-spacing:-0.03em;">£149<span class="text-base font-semibold text-slate-400">/mo</span></p>
+          <p class="text-sm text-slate-400 mb-6">Unlimited runs</p>
+          <ul class="space-y-3 mb-8 text-sm text-slate-600">
+            {["Everything in Growth","Custom webhooks & API","Dedicated account manager"].map(i => (
+              <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>{i}</li>
+            ))}
+          </ul>
+          <a href="/contact" class="block text-center text-sm font-semibold text-blue-600 border border-blue-200 rounded-xl py-2.5 hover:bg-blue-50 transition-colors duration-150">Contact sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-6 lg:px-10">
+      <div class="rounded-3xl px-8 py-20 text-center relative overflow-hidden grain" style="background:linear-gradient(145deg,#0D47A1 0%,#1565C0 50%,#2176D2 100%);">
+        <div aria-hidden="true" class="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-white/10" style="filter:blur(40px);"></div>
+        <div aria-hidden="true" class="absolute -bottom-16 -left-16 w-56 h-56 rounded-full bg-white/10" style="filter:blur(35px);"></div>
+        <div class="relative z-10">
+          <h2 class="text-3xl lg:text-4xl font-extrabold text-white mb-4" style="letter-spacing:-0.025em;">Ready to automate your business?</h2>
+          <p class="text-lg text-blue-200 mb-8 max-w-md mx-auto leading-relaxed">Join 500+ UK businesses saving hours every week. Start your free trial — no credit card needed.</p>
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            <a href="/signup" class="btn-ghost inline-flex items-center gap-2 bg-white text-blue-700 font-bold px-7 py-3.5 rounded-xl text-sm" style="box-shadow:0 4px 16px rgba(0,0,0,0.18);">
+              Start for free
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            </a>
+            <a href="/contact" class="inline-flex items-center gap-2 bg-white/15 text-white font-semibold px-7 py-3.5 rounded-xl text-sm border border-white/25 hover:bg-white/25 transition-colors duration-150">Book a demo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</Layout>
