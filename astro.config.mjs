@@ -3,8 +3,9 @@ import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
-// https://astro.build/config
 export default defineConfig({
+  site: 'https://finncarrie-stack.github.io',
+  base: '/configr-uk',
   vite: {
     plugins: [tailwindcss()]
   }
