@@ -23,67 +23,73 @@ const pizzas = [
   <meta name="description" content="Suffolk's top pizza. Authentic wood-fired Neapolitan pizza at The Royal Oak, Beccles. Dine in, collect, or order to your table." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet" />
   <style>
+    :root{
+      --green:#019247; --green-d:#017a3b; --green-l:#02a851;
+      --red:#ce2a37; --red-d:#b3232f; --red-l:#e23744;
+      --orange:#e66721; --cream:#FFFDF7; --ink:#2C2C2C;
+    }
     * { font-family: 'Karla', system-ui, sans-serif; }
     h1,h2,h3,.font-display { font-family: 'Playfair Display', Georgia, serif; }
     html { scroll-behavior: smooth; }
+    body { background: var(--cream); color: var(--ink); }
 
-    .hero-bg {
+    .hero-bg{
       background:
-        radial-gradient(ellipse 70% 80% at 70% 20%, rgba(161,98,7,0.22) 0%, transparent 60%),
-        linear-gradient(165deg, #1C1917 0%, #292524 55%, #1C1917 100%);
+        radial-gradient(ellipse 60% 70% at 82% 25%, rgba(230,103,33,0.16) 0%, transparent 58%),
+        radial-gradient(ellipse 50% 60% at 12% 90%, rgba(1,146,71,0.10) 0%, transparent 55%),
+        var(--cream);
     }
-    .grain::before {
-      content:''; position:absolute; inset:0; pointer-events:none; z-index:1; border-radius:inherit;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    }
-    .btn-gold {
-      background: linear-gradient(135deg, #D4912B, #A16207 70%, #854D0E);
-      transition: transform 200ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 200ms ease;
-      cursor: pointer;
-    }
-    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(161,98,7,0.45); }
-    .btn-gold:active { transform: translateY(0); }
-    .btn-gold:focus-visible { outline: 3px solid #E8B86D; outline-offset: 2px; }
+    .btn-red{ background:linear-gradient(135deg,var(--red-l),var(--red) 70%,var(--red-d)); color:#fff;
+      transition:transform 200ms cubic-bezier(0.34,1.56,0.64,1),box-shadow 200ms ease; cursor:pointer; }
+    .btn-red:hover{ transform:translateY(-2px); box-shadow:0 10px 28px rgba(206,42,55,0.4); }
+    .btn-red:active{ transform:translateY(0); }
+    .btn-red:focus-visible{ outline:3px solid #f0a0a6; outline-offset:2px; }
 
-    .btn-outline { transition: all 200ms ease; cursor: pointer; }
-    .btn-outline:hover { background: #FAFAF9; color: #1C1917; border-color: #FAFAF9; }
+    .btn-green{ background:linear-gradient(135deg,var(--green-l),var(--green) 70%,var(--green-d)); color:#fff;
+      transition:transform 200ms cubic-bezier(0.34,1.56,0.64,1),box-shadow 200ms ease; cursor:pointer; }
+    .btn-green:hover{ transform:translateY(-2px); box-shadow:0 10px 28px rgba(1,146,71,0.38); }
+    .btn-green:active{ transform:translateY(0); }
 
-    .nav-link { position: relative; transition: color 150ms ease; }
-    .nav-link::after { content:''; position:absolute; bottom:-3px; left:0; width:0; height:2px; background:#D4912B; transition:width 220ms ease; }
-    .nav-link:hover { color: #E8B86D; }
-    .nav-link:hover::after { width:100%; }
+    .btn-ghost-green{ border:2px solid var(--green); color:var(--green-d); transition:all 180ms ease; cursor:pointer; }
+    .btn-ghost-green:hover{ background:var(--green); color:#fff; }
 
-    .menu-card { transition: transform 220ms ease, box-shadow 220ms ease; }
-    .menu-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(28,25,23,0.12); }
+    .nav-link{ position:relative; transition:color 150ms ease; color:var(--ink); }
+    .nav-link::after{ content:''; position:absolute; bottom:-3px; left:0; width:0; height:2px; background:var(--red); transition:width 220ms ease; }
+    .nav-link:hover{ color:var(--red); }
+    .nav-link:hover::after{ width:100%; }
 
-    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-    .float { animation: float 6s ease-in-out infinite; }
+    .menu-card{ transition:transform 200ms ease; }
+    .menu-card:hover{ transform:translateX(4px); }
 
+    .tricolore{ background:linear-gradient(90deg,var(--green) 0 33.3%,#fff 33.3% 66.6%,var(--red) 66.6% 100%); }
+
+    @keyframes float{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    .float{ animation:float 6s ease-in-out infinite; }
     @media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important} }
   </style>
 </head>
-<body class="bg-stone-50 text-stone-900 antialiased overflow-x-hidden">
+<body class="antialiased overflow-x-hidden">
 
   <!-- NAV -->
   <header class="absolute top-0 inset-x-0 z-50">
     <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20">
       <a href="#top" class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full flex items-center justify-center border-2 border-amber-500/60">
-          <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5 5 9c0 1.5.5 2.5 1 3.5L12 22l6-9.5c.5-1 1-2 1-3.5 0-4-3-7-7-7zm0 4a3 3 0 110 6 3 3 0 010-6z"/></svg>
+        <div class="w-11 h-11 rounded-full flex items-center justify-center" style="background:var(--green);">
+          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5 5 9c0 1.5.5 2.5 1 3.5L12 22l6-9.5c.5-1 1-2 1-3.5 0-4-3-7-7-7zm0 4a3 3 0 110 6 3 3 0 010-6z"/></svg>
         </div>
         <div class="leading-none">
-          <p class="font-display text-lg font-bold text-white">Oak Fired</p>
-          <p class="text-[10px] tracking-[0.2em] text-amber-300/80 uppercase">at The Royal Oak</p>
+          <p class="font-display text-lg font-bold" style="color:var(--ink);">Oak Fired</p>
+          <p class="text-[10px] tracking-[0.2em] uppercase" style="color:var(--green-d);">at The Royal Oak</p>
         </div>
       </a>
       <nav class="hidden md:flex items-center gap-8">
-        <a href="#menu" class="nav-link text-sm font-semibold text-stone-200">Menu</a>
-        <a href="#story" class="nav-link text-sm font-semibold text-stone-200">Our Story</a>
-        <a href="#visit" class="nav-link text-sm font-semibold text-stone-200">Visit</a>
+        <a href="#menu" class="nav-link text-sm font-semibold">Menu</a>
+        <a href="#story" class="nav-link text-sm font-semibold">Our Story</a>
+        <a href="#visit" class="nav-link text-sm font-semibold">Visit</a>
       </nav>
-      <a href={`${base}/demos/oak-fired/order`} class="btn-gold text-white text-sm font-bold px-5 py-2.5 rounded-full flex items-center gap-2">
+      <a href={`${base}/demos/oak-fired/order`} class="btn-red text-sm font-bold px-5 py-2.5 rounded-full flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
         Order Online
       </a>
@@ -91,67 +97,66 @@ const pizzas = [
   </header>
 
   <!-- HERO -->
-  <section id="top" class="hero-bg grain relative min-h-screen flex items-center overflow-hidden">
-    <div aria-hidden="true" class="absolute -right-32 top-1/2 -translate-y-1/2 w-[620px] h-[620px] float hidden lg:block" style="background:radial-gradient(circle at 40% 40%, rgba(212,145,43,0.35) 0%, rgba(161,98,7,0.12) 38%, transparent 68%);border-radius:9999px;filter:blur(8px);"></div>
-    <div aria-hidden="true" class="absolute right-16 top-1/2 -translate-y-1/2 w-72 h-72 rounded-full border border-amber-600/20 hidden lg:block"></div>
+  <section id="top" class="hero-bg relative min-h-screen flex items-center overflow-hidden">
+    <div aria-hidden="true" class="absolute -right-24 top-1/2 -translate-y-1/2 w-[560px] h-[560px] rounded-full float hidden lg:block" style="background:radial-gradient(circle at 42% 42%, rgba(230,103,33,0.30) 0%, rgba(206,42,55,0.12) 40%, transparent 70%);filter:blur(6px);"></div>
+    <div aria-hidden="true" class="absolute right-20 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full border-2 hidden lg:block" style="border-color:rgba(1,146,71,0.15);"></div>
+
     <div class="max-w-7xl mx-auto px-6 lg:px-10 relative z-10 py-32">
       <div class="max-w-2xl">
-        <div class="inline-flex items-center gap-2 border border-amber-500/40 rounded-full px-4 py-1.5 mb-7">
-          <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          <span class="text-xs font-bold text-amber-300 tracking-wide uppercase">Suffolk's Top Pizza — Tripadvisor</span>
+        <div class="inline-flex items-center gap-2 bg-white border rounded-full pl-1.5 pr-4 py-1.5 mb-7 shadow-sm" style="border-color:rgba(1,146,71,0.25);">
+          <span class="tricolore w-8 h-4 rounded-sm border border-stone-200"></span>
+          <span class="text-xs font-bold tracking-wide uppercase" style="color:var(--green-d);">Suffolk's Top Pizza — Tripadvisor</span>
         </div>
-        <h1 class="font-display text-5xl lg:text-7xl font-bold text-white leading-[1.05] mb-6">
-          True Neapolitan,<br><span class="text-amber-400 italic">wood-fired</span> in Beccles.
+        <h1 class="font-display text-5xl lg:text-7xl font-bold leading-[1.05] mb-6" style="color:var(--ink);">
+          True Neapolitan,<br><span class="italic" style="color:var(--red);">wood-fired</span> in Beccles.
         </h1>
-        <p class="text-lg text-stone-300 leading-relaxed mb-9 max-w-lg">
+        <p class="text-lg leading-relaxed mb-9 max-w-lg" style="color:#5a5a5a;">
           Slow-proved dough, San Marzano tomatoes and a blistering oak-fired oven. Honest Italian pizza in the heart of a proper Suffolk pub.
         </p>
         <div class="flex flex-wrap gap-4">
-          <a href={`${base}/demos/oak-fired/order`} class="btn-gold text-white font-bold px-8 py-4 rounded-full text-sm flex items-center gap-2">
+          <a href={`${base}/demos/oak-fired/order`} class="btn-red font-bold px-8 py-4 rounded-full text-sm flex items-center gap-2">
             Order for collection or table
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
           </a>
-          <a href="#menu" class="btn-outline text-white font-bold px-8 py-4 rounded-full text-sm border-2 border-white/40">
-            View the menu
-          </a>
+          <a href="#menu" class="btn-ghost-green font-bold px-8 py-4 rounded-full text-sm">View the menu</a>
         </div>
         <div class="flex flex-wrap gap-8 mt-12">
-          {[["4.6★","399+ reviews"],["00°","Oak-fired oven"],["35","Ravensmere, Beccles"]].map(([a,b]) => (
+          {[["4.6★","399+ reviews"],["450°","Oak-fired oven"],["35","Ravensmere, Beccles"]].map(([a,b]) => (
             <div>
-              <p class="font-display text-2xl font-bold text-amber-400 leading-none mb-1">{a}</p>
-              <p class="text-xs text-stone-400 uppercase tracking-wide">{b}</p>
+              <p class="font-display text-2xl font-bold leading-none mb-1" style="color:var(--green);">{a}</p>
+              <p class="text-xs uppercase tracking-wide" style="color:#8a8a8a;">{b}</p>
             </div>
           ))}
         </div>
       </div>
     </div>
-    <div class="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-amber-600/40 to-transparent"></div>
+    <div class="tricolore absolute bottom-0 inset-x-0 h-1"></div>
   </section>
 
   <!-- ORDER CTA STRIP -->
-  <section class="bg-amber-600 grain relative">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex flex-wrap items-center justify-between gap-4 relative z-10">
+  <section style="background:var(--green);">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex flex-wrap items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
         <p class="font-semibold text-white">Order from your phone — collect at the bar or have it brought to your table.</p>
       </div>
-      <a href={`${base}/demos/oak-fired/order`} class="bg-stone-900 text-white text-sm font-bold px-6 py-2.5 rounded-full hover:bg-stone-800 transition-colors duration-150 whitespace-nowrap">Start your order →</a>
+      <a href={`${base}/demos/oak-fired/order`} class="bg-white text-sm font-bold px-6 py-2.5 rounded-full hover:bg-stone-100 transition-colors duration-150 whitespace-nowrap" style="color:var(--green-d);">Start your order →</a>
     </div>
   </section>
 
   <!-- STORY -->
-  <section id="story" class="py-28 bg-stone-50">
+  <section id="story" class="py-28">
     <div class="max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-16 items-center">
       <div class="relative">
-        <img src="https://placehold.co/640x520/292524/D4912B?text=The+Oak-Fired+Oven" alt="Our oak-fired oven" class="rounded-3xl w-full shadow-2xl" width="640" height="520">
-        <div class="absolute -bottom-6 -right-6 bg-white rounded-2xl px-6 py-4 shadow-xl hidden sm:block">
-          <p class="font-display text-3xl font-bold text-amber-600 leading-none">60s</p>
+        <img src="https://placehold.co/640x520/019247/FFFFFF?text=The+Oak-Fired+Oven" alt="Our oak-fired oven" class="rounded-3xl w-full shadow-xl" width="640" height="520">
+        <div class="absolute -bottom-6 -right-6 bg-white rounded-2xl px-6 py-4 shadow-xl hidden sm:block border border-stone-100">
+          <p class="font-display text-3xl font-bold leading-none" style="color:var(--red);">60s</p>
           <p class="text-xs text-stone-500 mt-1">to cook, at 450°C</p>
         </div>
       </div>
       <div>
-        <span class="text-xs font-bold text-amber-600 uppercase tracking-[0.2em]">Our Story</span>
-        <h2 class="font-display text-4xl lg:text-5xl font-bold text-stone-900 mt-3 mb-6 leading-tight">Dough that takes its time.</h2>
+        <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color:var(--green-d);">Our Story</span>
+        <h2 class="font-display text-4xl lg:text-5xl font-bold mt-3 mb-6 leading-tight" style="color:var(--ink);">Dough that takes its time.</h2>
         <p class="text-stone-600 leading-relaxed mb-5">We proof our dough for 48 hours before it ever sees the oven. That patience is what gives our pizza its light, airy, blistered crust — the hallmark of a true Neapolitan base.</p>
         <p class="text-stone-600 leading-relaxed mb-8">Everything is cooked in our oak-fired oven in under 90 seconds, sealing in the flavour of the freshest Italian ingredients. It's pizza the way Naples intended — served in a warm, welcoming Suffolk pub.</p>
         <div class="grid grid-cols-2 gap-4">
@@ -162,11 +167,11 @@ const pizzas = [
             ["Oak wood","Real fire, real flavour"],
           ].map(([a,b]) => (
             <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-                <svg class="w-4 h-4 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style="background:rgba(1,146,71,0.12);">
+                <svg class="w-4 h-4" style="color:var(--green-d);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
               </div>
               <div>
-                <p class="font-display font-bold text-stone-900 leading-tight">{a}</p>
+                <p class="font-display font-bold leading-tight" style="color:var(--ink);">{a}</p>
                 <p class="text-xs text-stone-500">{b}</p>
               </div>
             </div>
@@ -177,29 +182,30 @@ const pizzas = [
   </section>
 
   <!-- MENU -->
-  <section id="menu" class="py-28 bg-stone-900 grain relative">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
+  <section id="menu" class="py-28" style="background:linear-gradient(180deg,#FFFDF7,#FFF6EC);">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
       <div class="text-center mb-16">
-        <span class="text-xs font-bold text-amber-400 uppercase tracking-[0.2em]">The Menu</span>
-        <h2 class="font-display text-4xl lg:text-5xl font-bold text-white mt-3">Our Pizzas</h2>
-        <p class="text-stone-400 mt-4 max-w-md mx-auto">Hand-stretched, oak-fired, and topped with the best of Italy. Gluten-free bases available.</p>
+        <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color:var(--red);">The Menu</span>
+        <h2 class="font-display text-4xl lg:text-5xl font-bold mt-3" style="color:var(--ink);">Our Pizzas</h2>
+        <p class="text-stone-500 mt-4 max-w-md mx-auto">Hand-stretched, oak-fired, and topped with the best of Italy. Gluten-free bases available.</p>
+        <div class="tricolore w-24 h-1 rounded-full mx-auto mt-5"></div>
       </div>
-      <div class="grid md:grid-cols-2 gap-x-12 gap-y-2 max-w-4xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-x-12 gap-y-1 max-w-4xl mx-auto">
         {pizzas.map(p => (
-          <div class="menu-card flex items-baseline gap-4 py-5 border-b border-stone-700/60">
+          <div class="menu-card flex items-baseline gap-4 py-5 border-b border-stone-200">
             <div class="flex-1">
               <div class="flex items-center gap-2.5 mb-1">
-                <h3 class="font-display text-xl font-bold text-white">{p.name}</h3>
-                {p.tag && <span class="text-[10px] font-bold uppercase tracking-wide text-amber-400 border border-amber-600/50 rounded-full px-2 py-0.5">{p.tag}</span>}
+                <h3 class="font-display text-xl font-bold" style="color:var(--ink);">{p.name}</h3>
+                {p.tag && <span class="text-[10px] font-bold uppercase tracking-wide rounded-full px-2 py-0.5" style="color:var(--green-d);border:1px solid rgba(1,146,71,0.4);">{p.tag}</span>}
               </div>
-              <p class="text-sm text-stone-400 leading-relaxed">{p.desc}</p>
+              <p class="text-sm text-stone-500 leading-relaxed">{p.desc}</p>
             </div>
-            <div class="font-display text-lg font-bold text-amber-400 whitespace-nowrap">{p.price}</div>
+            <div class="font-display text-lg font-bold whitespace-nowrap" style="color:var(--red);">{p.price}</div>
           </div>
         ))}
       </div>
       <div class="text-center mt-14">
-        <a href={`${base}/demos/oak-fired/order`} class="btn-gold inline-flex items-center gap-2 text-white font-bold px-8 py-4 rounded-full text-sm">
+        <a href={`${base}/demos/oak-fired/order`} class="btn-red inline-flex items-center gap-2 font-bold px-8 py-4 rounded-full text-sm">
           Order now — collection or table
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
         </a>
@@ -208,11 +214,11 @@ const pizzas = [
   </section>
 
   <!-- VISIT -->
-  <section id="visit" class="py-28 bg-stone-50">
+  <section id="visit" class="py-28">
     <div class="max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-14 items-start">
       <div>
-        <span class="text-xs font-bold text-amber-600 uppercase tracking-[0.2em]">Visit Us</span>
-        <h2 class="font-display text-4xl lg:text-5xl font-bold text-stone-900 mt-3 mb-8">Find The Royal Oak</h2>
+        <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color:var(--green-d);">Visit Us</span>
+        <h2 class="font-display text-4xl lg:text-5xl font-bold mt-3 mb-8" style="color:var(--ink);">Find The Royal Oak</h2>
         <div class="space-y-6">
           {[
             {t:"Address", l:["The Royal Oak, 35 Ravensmere","Beccles, Suffolk, NR34 9DH"], i:"M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"},
@@ -220,48 +226,48 @@ const pizzas = [
             {t:"Opening Hours", l:["Wed – Thu: 5pm – 9pm","Fri – Sat: 12pm – 10pm","Sun: 12pm – 8pm","Mon & Tue: Closed"], i:"M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"},
           ].map(b => (
             <div class="flex gap-4">
-              <div class="w-11 h-11 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d={b.i}/></svg>
+              <div class="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0" style="background:rgba(1,146,71,0.12);">
+                <svg class="w-5 h-5" style="color:var(--green-d);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d={b.i}/></svg>
               </div>
               <div>
-                <p class="font-display font-bold text-stone-900 mb-1">{b.t}</p>
+                <p class="font-display font-bold mb-1" style="color:var(--ink);">{b.t}</p>
                 {b.l.map(line => <p class="text-sm text-stone-600">{line}</p>)}
               </div>
             </div>
           ))}
         </div>
         <div class="flex gap-3 mt-9">
-          <a href={`${base}/demos/oak-fired/order`} class="btn-gold text-white font-bold px-6 py-3 rounded-full text-sm">Order online</a>
-          <a href="tel:01502710111" class="btn-outline text-stone-900 font-bold px-6 py-3 rounded-full text-sm border-2 border-stone-300">Call to book</a>
+          <a href={`${base}/demos/oak-fired/order`} class="btn-red font-bold px-6 py-3 rounded-full text-sm">Order online</a>
+          <a href="tel:01502710111" class="btn-ghost-green font-bold px-6 py-3 rounded-full text-sm">Call to book</a>
         </div>
       </div>
-      <div class="rounded-3xl overflow-hidden shadow-xl">
-        <img src="https://placehold.co/640x560/292524/D4912B?text=Map+%E2%80%94+Ravensmere%2C+Beccles" alt="Map to The Royal Oak, Beccles" class="w-full h-full object-cover" width="640" height="560">
+      <div class="rounded-3xl overflow-hidden shadow-xl border border-stone-100">
+        <img src="https://placehold.co/640x560/019247/FFFFFF?text=Map+%E2%80%94+Ravensmere%2C+Beccles" alt="Map to The Royal Oak, Beccles" class="w-full h-full object-cover" width="640" height="560">
       </div>
     </div>
   </section>
 
   <!-- FOOTER -->
-  <footer class="bg-stone-950 grain relative py-14">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-stone-800">
+  <footer style="background:var(--green-d);" class="py-14">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/15">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full flex items-center justify-center border-2 border-amber-500/60">
-            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5 5 9c0 1.5.5 2.5 1 3.5L12 22l6-9.5c.5-1 1-2 1-3.5 0-4-3-7-7-7zm0 4a3 3 0 110 6 3 3 0 010-6z"/></svg>
+          <div class="w-11 h-11 rounded-full flex items-center justify-center bg-white/15">
+            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5 5 9c0 1.5.5 2.5 1 3.5L12 22l6-9.5c.5-1 1-2 1-3.5 0-4-3-7-7-7zm0 4a3 3 0 110 6 3 3 0 010-6z"/></svg>
           </div>
           <div>
             <p class="font-display text-lg font-bold text-white">Oak Fired</p>
-            <p class="text-[10px] tracking-[0.2em] text-amber-300/70 uppercase">at The Royal Oak, Beccles</p>
+            <p class="text-[10px] tracking-[0.2em] text-white/70 uppercase">at The Royal Oak, Beccles</p>
           </div>
         </div>
-        <div class="flex gap-3">
-          <a href="#" aria-label="Facebook" class="w-9 h-9 rounded-full bg-stone-800 flex items-center justify-center hover:bg-amber-600 transition-colors duration-150">
-            <svg class="w-4 h-4 text-stone-300" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
+        <div class="flex items-center gap-3">
+          <a href="#" aria-label="Facebook" class="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/30 transition-colors duration-150">
+            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
           </a>
-          <a href={`${base}/demos/oak-fired/order`} class="bg-amber-600 text-white text-sm font-bold px-5 py-2 rounded-full hover:bg-amber-500 transition-colors duration-150">Order Online</a>
+          <a href={`${base}/demos/oak-fired/order`} class="btn-red text-sm font-bold px-5 py-2 rounded-full">Order Online</a>
         </div>
       </div>
-      <p class="text-center text-xs text-stone-500 mt-8">© 2026 Oak Fired at The Royal Oak · 35 Ravensmere, Beccles, Suffolk NR34 9DH · 01502 710111</p>
+      <p class="text-center text-xs text-white/70 mt-8">© 2026 Oak Fired at The Royal Oak · 35 Ravensmere, Beccles, Suffolk NR34 9DH · 01502 710111</p>
     </div>
   </footer>
 
