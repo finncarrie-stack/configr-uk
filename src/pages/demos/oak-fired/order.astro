@@ -1,0 +1,329 @@
+---
+import '../../../styles/global.css';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const menu = {
+  "Pizzas": [
+    { id:"marg", name:"Margherita", desc:"San Marzano tomato, fior di latte, basil", price:9.50 },
+    { id:"mari", name:"Marinara", desc:"Tomato, garlic, oregano (vegan)", price:8.50 },
+    { id:"diav", name:"Diavola", desc:"Spicy Neapolitan salami, chilli", price:12.50 },
+    { id:"pros", name:"Prosciutto e Funghi", desc:"Parma ham, chestnut mushrooms", price:13.50 },
+    { id:"quat", name:"Quattro Formaggi", desc:"Mozzarella, gorgonzola, parmesan, scamorza", price:12.95 },
+    { id:"nduj", name:"Nduja & Honey", desc:"Spicy nduja, hot honey drizzle", price:13.95 },
+    { id:"giar", name:"Giardiniera", desc:"Courgette, peppers, aubergine (veggie)", price:12.50 },
+    { id:"mega", name:"The Megapolitan (20\")", desc:"Giant sharing pizza, any two toppings", price:26.00 },
+  ],
+  "Starters & Sides": [
+    { id:"doug", name:"Garlic Dough Balls", desc:"With garlic butter & rosemary", price:5.50 },
+    { id:"brus", name:"Bruschetta", desc:"Tomato, basil, EVOO on sourdough", price:6.00 },
+    { id:"oliv", name:"Marinated Olives", desc:"Nocellara & Kalamata", price:4.00 },
+    { id:"aran", name:"Arancini (3)", desc:"Crispy risotto balls, truffle mayo", price:6.50 },
+    { id:"frie", name:"Rosemary Fries", desc:"Skin-on, sea salt & rosemary", price:4.50 },
+    { id:"sala", name:"Rocket & Parmesan Salad", desc:"Lemon dressing, shaved parmesan", price:5.00 },
+  ],
+  "Desserts": [
+    { id:"tira", name:"Tiramisu", desc:"Classic, made in house", price:6.50 },
+    { id:"nutp", name:"Nutella Pizza", desc:"Wood-fired, with mascarpone", price:8.00 },
+    { id:"affo", name:"Affogato", desc:"Vanilla gelato, espresso shot", price:5.00 },
+  ],
+  "Drinks": [
+    { id:"peroni", name:"Peroni (330ml)", desc:"", price:4.50 },
+    { id:"redwine", name:"House Red (175ml)", desc:"Montepulciano", price:5.50 },
+    { id:"whitewine", name:"House White (175ml)", desc:"Pinot Grigio", price:5.50 },
+    { id:"sanp", name:"San Pellegrino", desc:"Limonata / Aranciata", price:3.00 },
+    { id:"coke", name:"Coca-Cola (330ml)", desc:"", price:2.80 },
+    { id:"water", name:"Still / Sparkling Water", desc:"500ml", price:2.50 },
+  ],
+};
+const menuJson = JSON.stringify(menu);
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Online — Oak Fired at The Royal Oak</title>
+  <meta name="description" content="Order Oak Fired's Neapolitan pizza online for collection or straight to your table." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: 'Karla', system-ui, sans-serif; }
+    h1,h2,h3,.font-display { font-family: 'Playfair Display', Georgia, serif; }
+    html { scroll-behavior: smooth; }
+    .btn-gold { background: linear-gradient(135deg, #D4912B, #A16207 70%, #854D0E); transition: transform 150ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 150ms ease; cursor:pointer; }
+    .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(161,98,7,0.4); }
+    .btn-gold:active { transform: translateY(0); }
+    .seg { transition: all 180ms ease; cursor:pointer; }
+    .qty-btn { transition: background-color 120ms ease, transform 120ms ease; cursor:pointer; }
+    .qty-btn:hover { background-color:#A16207; color:#fff; }
+    .qty-btn:active { transform: scale(0.9); }
+    .add-btn { transition: transform 150ms cubic-bezier(0.34,1.56,0.64,1), background-color 150ms ease; cursor:pointer; }
+    .add-btn:hover { background-color:#A16207; }
+    .add-btn:active { transform: scale(0.92); }
+    @keyframes pop { 0%{transform:scale(1)} 40%{transform:scale(1.25)} 100%{transform:scale(1)} }
+    .pop { animation: pop 300ms ease; }
+    @media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important} }
+  </style>
+</head>
+<body class="bg-stone-100 text-stone-900 antialiased">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 bg-stone-900 text-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+      <a href={`${base}/demos/oak-fired`} class="flex items-center gap-2.5">
+        <svg class="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        <div class="leading-none">
+          <p class="font-display text-base font-bold">Oak Fired</p>
+          <p class="text-[9px] tracking-[0.18em] text-amber-300/80 uppercase">Order Online</p>
+        </div>
+      </a>
+      <button id="cart-toggle" class="lg:hidden relative flex items-center gap-2 bg-amber-600 px-4 py-2 rounded-full text-sm font-bold">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        <span id="cart-count-badge">0</span>
+        <span>·</span>
+        <span id="cart-total-badge">£0.00</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 grid lg:grid-cols-[1fr_360px] gap-8">
+
+    <!-- LEFT: order type + menu -->
+    <div>
+      <!-- ORDER TYPE -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm mb-6">
+        <p class="font-display text-lg font-bold text-stone-900 mb-3">How would you like your order?</p>
+        <div class="grid grid-cols-2 gap-2 p-1 bg-stone-100 rounded-xl">
+          <button data-type="collection" class="seg order-type-btn rounded-lg py-3 px-2 text-sm font-bold text-white" style="background:#1C1917;">
+            <span class="block">🛍️ Collection</span>
+            <span class="block text-[11px] font-normal opacity-70 mt-0.5">Ready in ~20 mins</span>
+          </button>
+          <button data-type="table" class="seg order-type-btn rounded-lg py-3 px-2 text-sm font-bold text-stone-500">
+            <span class="block">🍽️ To my table</span>
+            <span class="block text-[11px] font-normal opacity-70 mt-0.5">Dine in now</span>
+          </button>
+        </div>
+        <div id="table-input" class="mt-3 hidden">
+          <label class="block text-xs font-bold text-stone-500 uppercase tracking-wide mb-1.5">Table number</label>
+          <input id="table-number" type="number" min="1" placeholder="e.g. 12" class="w-full px-4 py-3 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent">
+        </div>
+      </div>
+
+      <!-- CATEGORY NAV -->
+      <nav id="cat-nav" class="sticky top-16 z-30 bg-stone-100/90 backdrop-blur py-3 -mx-1 px-1 mb-2 flex gap-2 overflow-x-auto"></nav>
+
+      <!-- MENU -->
+      <div id="menu-root" class="space-y-8"></div>
+    </div>
+
+    <!-- RIGHT: basket -->
+    <aside id="cart-panel" class="lg:block hidden">
+      <div class="lg:sticky lg:top-20">
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div class="bg-stone-900 text-white px-5 py-4 flex items-center justify-between">
+            <p class="font-display text-lg font-bold">Your Order</p>
+            <button id="cart-close" class="lg:hidden text-stone-400 hover:text-white">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div id="cart-items" class="px-5 py-3 max-h-[45vh] overflow-y-auto divide-y divide-stone-100"></div>
+          <div id="cart-empty" class="px-5 py-10 text-center">
+            <p class="text-4xl mb-2">🍕</p>
+            <p class="text-sm text-stone-400">Your basket is empty.<br>Add something delicious!</p>
+          </div>
+          <div class="px-5 py-4 border-t border-stone-100 bg-stone-50">
+            <div class="flex items-center justify-between mb-1 text-sm text-stone-500">
+              <span>Subtotal</span><span id="cart-subtotal">£0.00</span>
+            </div>
+            <div id="cart-fulfilment-line" class="flex items-center justify-between mb-3 text-sm text-stone-500">
+              <span>Collection</span><span class="text-green-600 font-semibold">Free</span>
+            </div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="font-display text-lg font-bold text-stone-900">Total</span>
+              <span id="cart-total" class="font-display text-lg font-bold text-amber-600">£0.00</span>
+            </div>
+            <button id="checkout-btn" class="btn-gold w-full text-white font-bold py-3.5 rounded-xl text-sm disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+              Place order
+            </button>
+            <p class="text-[11px] text-stone-400 text-center mt-2">Pay securely on collection or at your table.</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Mobile cart backdrop -->
+  <div id="cart-backdrop" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"></div>
+
+  <!-- SUCCESS MODAL -->
+  <div id="success-modal" class="fixed inset-0 z-[100] hidden items-center justify-center px-6 bg-black/60">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-8 text-center">
+      <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">
+        <svg class="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h3 class="font-display text-2xl font-bold text-stone-900 mb-2">Order placed!</h3>
+      <p id="success-msg" class="text-sm text-stone-500 leading-relaxed mb-6"></p>
+      <button id="success-close" class="btn-gold w-full text-white font-bold py-3 rounded-xl text-sm">Done</button>
+    </div>
+  </div>
+
+  <!-- Configr demo banner (bottom) -->
+  <div style="background:linear-gradient(135deg,#1565C0,#0D47A1);position:fixed;bottom:0;left:0;right:0;z-index:90;padding:8px 16px;text-align:center;">
+    <span style="font-size:12px;font-weight:600;color:white;">⚡ Live ordering demo built by Configr — fully working basket. <a href={`${base}/contact`} style="color:#fff;text-decoration:underline;">Get this for your business →</a></span>
+  </div>
+  <div style="height:40px;"></div>
+
+  <script is:inline define:vars={{ menuJson }}>
+    const MENU = JSON.parse(menuJson);
+    const cart = {};           // id -> {item, qty}
+    let orderType = "collection";
+
+    const fmt = n => "£" + n.toFixed(2);
+    const allItems = {};
+    Object.values(MENU).flat().forEach(i => allItems[i.id] = i);
+
+    // ---- Render menu ----
+    const menuRoot = document.getElementById("menu-root");
+    const catNav = document.getElementById("cat-nav");
+    Object.entries(MENU).forEach(([cat, items], idx) => {
+      const slug = "cat-" + idx;
+      const chip = document.createElement("a");
+      chip.href = "#" + slug;
+      chip.className = "whitespace-nowrap text-sm font-semibold px-4 py-2 rounded-full bg-white text-stone-600 hover:bg-amber-600 hover:text-white transition-colors";
+      chip.textContent = cat;
+      catNav.appendChild(chip);
+
+      const section = document.createElement("section");
+      section.id = slug;
+      section.className = "scroll-mt-32";
+      section.innerHTML = `<h2 class="font-display text-2xl font-bold text-stone-900 mb-4">${cat}</h2>`;
+      const grid = document.createElement("div");
+      grid.className = "space-y-3";
+      items.forEach(it => {
+        const row = document.createElement("div");
+        row.className = "bg-white rounded-2xl p-4 flex items-center gap-4 shadow-sm";
+        row.innerHTML = `
+          <div class="flex-1 min-w-0">
+            <p class="font-display text-lg font-bold text-stone-900">${it.name}</p>
+            ${it.desc ? `<p class="text-sm text-stone-500 leading-snug">${it.desc}</p>` : ""}
+            <p class="text-amber-600 font-bold mt-1">${fmt(it.price)}</p>
+          </div>
+          <div data-controls="${it.id}"></div>`;
+        grid.appendChild(row);
+        section.appendChild(grid);
+      });
+      menuRoot.appendChild(section);
+    });
+
+    // ---- Controls (add / qty) per item ----
+    function renderControls(id) {
+      const holder = document.querySelector(`[data-controls="${id}"]`);
+      if (!holder) return;
+      const entry = cart[id];
+      if (!entry) {
+        holder.innerHTML = `<button class="add-btn w-10 h-10 rounded-full bg-stone-900 text-white flex items-center justify-center" aria-label="Add ${allItems[id].name}">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg></button>`;
+        holder.querySelector("button").onclick = () => { add(id); };
+      } else {
+        holder.innerHTML = `<div class="flex items-center gap-2.5">
+            <button class="qty-btn w-8 h-8 rounded-full bg-stone-100 text-stone-900 flex items-center justify-center font-bold" aria-label="Remove one">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/></svg></button>
+            <span class="font-bold text-stone-900 w-5 text-center">${entry.qty}</span>
+            <button class="qty-btn w-8 h-8 rounded-full bg-stone-900 text-white flex items-center justify-center font-bold" aria-label="Add one">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg></button>
+          </div>`;
+        const [minus, , plus] = holder.querySelectorAll("button");
+        minus.onclick = () => remove(id);
+        plus.onclick = () => add(id);
+      }
+    }
+
+    function add(id) { cart[id] = cart[id] || {item:allItems[id], qty:0}; cart[id].qty++; renderControls(id); renderCart(); bumpBadge(); }
+    function remove(id) { if(!cart[id]) return; cart[id].qty--; if(cart[id].qty<=0) delete cart[id]; renderControls(id); renderCart(); }
+
+    // ---- Cart panel ----
+    const cartItems = document.getElementById("cart-items");
+    const cartEmpty = document.getElementById("cart-empty");
+    function renderCart() {
+      const ids = Object.keys(cart);
+      const subtotal = ids.reduce((s,id)=> s + cart[id].item.price*cart[id].qty, 0);
+      const count = ids.reduce((s,id)=> s + cart[id].qty, 0);
+      cartItems.innerHTML = "";
+      cartEmpty.style.display = ids.length ? "none" : "block";
+      ids.forEach(id => {
+        const e = cart[id];
+        const row = document.createElement("div");
+        row.className = "py-3 flex items-center gap-3";
+        row.innerHTML = `
+          <span class="font-bold text-stone-900 text-sm">${e.qty}×</span>
+          <div class="flex-1 min-w-0"><p class="text-sm font-semibold text-stone-800 truncate">${e.item.name}</p></div>
+          <span class="text-sm font-bold text-stone-900">${fmt(e.item.price*e.qty)}</span>`;
+        cartItems.appendChild(row);
+      });
+      document.getElementById("cart-subtotal").textContent = fmt(subtotal);
+      document.getElementById("cart-total").textContent = fmt(subtotal);
+      document.getElementById("cart-count-badge").textContent = count;
+      document.getElementById("cart-total-badge").textContent = fmt(subtotal);
+      document.getElementById("checkout-btn").disabled = ids.length === 0;
+    }
+    function bumpBadge(){ const b=document.getElementById("cart-count-badge"); b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop"); }
+
+    // ---- Order type toggle ----
+    const fulfilLine = document.getElementById("cart-fulfilment-line");
+    document.querySelectorAll(".order-type-btn").forEach(btn => {
+      btn.onclick = () => {
+        orderType = btn.dataset.type;
+        document.querySelectorAll(".order-type-btn").forEach(b => {
+          const active = b === btn;
+          b.style.background = active ? "#1C1917" : "transparent";
+          b.classList.toggle("text-white", active);
+          b.classList.toggle("text-stone-500", !active);
+        });
+        document.getElementById("table-input").classList.toggle("hidden", orderType !== "table");
+        fulfilLine.querySelector("span").textContent = orderType === "table" ? "Service" : "Collection";
+      };
+    });
+
+    // ---- Mobile cart drawer ----
+    const panel = document.getElementById("cart-panel");
+    const backdrop = document.getElementById("cart-backdrop");
+    function openCart(){ panel.classList.remove("hidden"); panel.classList.add("fixed","bottom-0","inset-x-0","z-50","p-4"); backdrop.classList.remove("hidden"); }
+    function closeCart(){ if(window.innerWidth<1024){ panel.classList.add("hidden"); panel.classList.remove("fixed","bottom-0","inset-x-0","z-50","p-4"); backdrop.classList.add("hidden"); } }
+    document.getElementById("cart-toggle").onclick = openCart;
+    document.getElementById("cart-close").onclick = closeCart;
+    backdrop.onclick = closeCart;
+
+    // ---- Checkout ----
+    document.getElementById("checkout-btn").onclick = () => {
+      const count = Object.values(cart).reduce((s,e)=>s+e.qty,0);
+      const total = Object.values(cart).reduce((s,e)=>s+e.item.price*e.qty,0);
+      let msg;
+      if (orderType === "table") {
+        const t = document.getElementById("table-number").value;
+        if (!t) { document.getElementById("table-number").focus(); return; }
+        msg = `Your ${count} item(s) totalling ${fmt(total)} are being prepared and will be brought to <strong>table ${t}</strong>. Sit back and relax!`;
+      } else {
+        msg = `Thanks! Your ${count} item(s) totalling ${fmt(total)} will be ready for collection in about 20 minutes at The Royal Oak.`;
+      }
+      document.getElementById("success-msg").innerHTML = msg;
+      const m = document.getElementById("success-modal");
+      m.classList.remove("hidden"); m.classList.add("flex");
+      closeCart();
+    };
+    document.getElementById("success-close").onclick = () => {
+      const m = document.getElementById("success-modal");
+      m.classList.add("hidden"); m.classList.remove("flex");
+      for (const id in cart) delete cart[id];
+      document.querySelectorAll("[data-controls]").forEach(h => renderControls(h.dataset.controls));
+      renderCart();
+    };
+
+    // init
+    Object.keys(allItems).forEach(renderControls);
+    renderCart();
+  </script>
+
+</body>
+</html>
