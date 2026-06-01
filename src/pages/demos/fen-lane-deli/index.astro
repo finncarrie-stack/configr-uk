@@ -1,0 +1,333 @@
+---
+import '../../../styles/global.css';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const menu = {
+  "Breakfast": [
+    { n:"The Fen Lane Full English", d:"Sausage, bacon, egg, beans, mushroom, tomato, toast", p:"£10.95" },
+    { n:"Smashed Avocado on Sourdough", d:"Poached eggs, chilli flakes, lemon", p:"£8.50" },
+    { n:"Bacon or Sausage Bap", d:"In a soft floured roll, brown or red sauce", p:"£5.50" },
+    { n:"Granola & Greek Yoghurt", d:"Honey, seasonal compote, toasted seeds", p:"£6.50" },
+  ],
+  "Brunch": [
+    { n:"Eggs Benedict", d:"Toasted muffin, ham, poached eggs, hollandaise", p:"£9.95" },
+    { n:"Shakshuka", d:"Baked eggs, spiced tomato, feta, flatbread", p:"£9.50" },
+    { n:"Buttermilk Pancakes", d:"Maple syrup, streaky bacon or berries", p:"£8.95" },
+    { n:"Smoked Salmon Bagel", d:"Cream cheese, dill, capers, red onion", p:"£8.50" },
+  ],
+  "Lunch": [
+    { n:"Soup of the Day", d:"Freshly made, with warm sourdough", p:"£6.50" },
+    { n:"Deli Ploughman's", d:"Local cheese, ham, pickles, chutney, bread", p:"£11.50" },
+    { n:"Toasted Panini", d:"Choice of fillings, side salad & slaw", p:"£7.95" },
+    { n:"Quiche & Salad", d:"Daily quiche with dressed leaves", p:"£8.50" },
+  ],
+  "Coffee & Drinks": [
+    { n:"Flat White / Latte / Cappuccino", d:"Locally roasted beans", p:"£3.20" },
+    { n:"Hot Chocolate", d:"With cream & marshmallows", p:"£3.50" },
+    { n:"Loose-leaf Tea", d:"Breakfast, Earl Grey, herbal", p:"£2.80" },
+    { n:"Fresh Orange Juice", d:"Squeezed that morning", p:"£3.00" },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fen Lane Deli — Breakfast, Brunch & Lunch in Beccles</title>
+  <meta name="description" content="A cosy, dog-friendly deli on Fen Lane, Beccles. Breakfast, brunch & lunch, freshly made daily 9am–3pm. Book a table online." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700;800&family=Varela+Round&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --sage:#5E7355; --sage-d:#4A5C43; --sage-l:#6f8765;
+      --clay:#C2683D; --clay-d:#A8542E; --clay-l:#d2774a;
+      --cream:#FAF5EC; --cream-2:#F3EAD9; --ink:#3A352C; --muted:#7c7464;
+    }
+    *{ font-family:'Nunito Sans', system-ui, sans-serif; }
+    h1,h2,h3,.font-round{ font-family:'Varela Round', system-ui, sans-serif; }
+    html{ scroll-behavior:smooth; overflow-x:hidden; }
+    body{ background:var(--cream); color:var(--ink); overflow-x:hidden; }
+
+    .hero-bg{
+      background:
+        radial-gradient(ellipse 60% 70% at 80% 25%, rgba(194,104,61,0.14) 0%, transparent 58%),
+        radial-gradient(ellipse 55% 60% at 10% 85%, rgba(94,115,85,0.12) 0%, transparent 55%),
+        var(--cream);
+    }
+    .btn-clay{ background:linear-gradient(135deg,var(--clay-l),var(--clay) 70%,var(--clay-d)); color:#fff;
+      transition:transform 180ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 180ms ease; cursor:pointer; }
+    .btn-clay:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(194,104,61,0.4); }
+    .btn-clay:active{ transform:translateY(0); }
+    .btn-clay:focus-visible{ outline:3px solid #e6b59c; outline-offset:2px; }
+
+    .btn-sage{ background:linear-gradient(135deg,var(--sage-l),var(--sage) 70%,var(--sage-d)); color:#fff;
+      transition:transform 180ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 180ms ease; cursor:pointer; }
+    .btn-sage:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(94,115,85,0.38); }
+
+    .btn-ghost{ border:2px solid var(--sage); color:var(--sage-d); transition:all 180ms ease; cursor:pointer; }
+    .btn-ghost:hover{ background:var(--sage); color:#fff; }
+
+    .nav-link{ position:relative; transition:color 150ms ease; color:var(--ink); }
+    .nav-link::after{ content:''; position:absolute; bottom:-3px; left:0; width:0; height:2px; background:var(--clay); transition:width 220ms ease; }
+    .nav-link:hover{ color:var(--clay); } .nav-link:hover::after{ width:100%; }
+
+    .menu-card{ transition:transform 200ms ease; }
+    .menu-card:hover{ transform:translateX(4px); }
+
+    .field input, .field select, .field textarea{ width:100%; font-family:inherit; font-size:15px; padding:12px 14px; border:1.5px solid #e4dccb; border-radius:12px; background:#fff; color:var(--ink); }
+    .field input:focus, .field select:focus, .field textarea:focus{ outline:none; border-color:var(--sage); box-shadow:0 0 0 3px rgba(94,115,85,0.15); }
+    .field label{ display:block; font-size:13px; font-weight:700; color:var(--ink); margin-bottom:6px; }
+
+    @keyframes float{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    .float{ animation:float 6s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important} }
+  </style>
+</head>
+<body class="antialiased overflow-x-hidden">
+
+  <!-- NAV -->
+  <header class="absolute top-0 inset-x-0 z-50">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 flex items-center justify-between h-20">
+      <a href="#top" class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-full flex items-center justify-center" style="background:var(--sage);">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8h13a4 4 0 010 8h-1M3 8v9a1 1 0 001 1h11M3 8V6a1 1 0 011-1h11a1 1 0 011 1v2M7 12h.01"/></svg>
+        </div>
+        <div class="leading-tight">
+          <p class="font-round text-lg font-bold" style="color:var(--ink);">Fen Lane Deli</p>
+          <p class="text-[10px] tracking-[0.18em] uppercase" style="color:var(--clay-d);">Beccles</p>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center gap-8">
+        <a href="#menu" class="nav-link text-sm font-bold">Menu</a>
+        <a href="#story" class="nav-link text-sm font-bold">About</a>
+        <a href="#visit" class="nav-link text-sm font-bold">Visit</a>
+      </nav>
+      <a href="#book" class="btn-clay text-sm font-bold px-5 py-2.5 rounded-full">Book a table</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="top" class="hero-bg relative min-h-screen flex items-center overflow-hidden">
+    <div aria-hidden="true" class="absolute -right-20 top-1/2 -translate-y-1/2 w-[480px] h-[480px] rounded-full float hidden lg:block" style="background:radial-gradient(circle at 42% 42%, rgba(194,104,61,0.22) 0%, rgba(94,115,85,0.10) 42%, transparent 70%);filter:blur(6px);"></div>
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 relative z-10 py-32 w-full min-w-0">
+      <div class="max-w-2xl min-w-0">
+        <div class="inline-flex items-center gap-2 bg-white rounded-full px-4 py-1.5 mb-7 shadow-sm" style="border:1px solid #e8dfd0;">
+          <span style="color:var(--sage-d);" class="text-base">🐾</span>
+          <span class="text-xs font-extrabold tracking-wide uppercase" style="color:var(--sage-d);">Dog-friendly · Open daily 9–3</span>
+        </div>
+        <h1 class="font-round text-[2rem] sm:text-5xl lg:text-7xl font-bold leading-[1.1] mb-6" style="color:var(--ink);">
+          Breakfast, brunch &amp; lunch on <span style="color:var(--clay);">Fen Lane</span>.
+        </h1>
+        <p class="text-lg leading-relaxed mb-9 max-w-lg" style="color:var(--muted);">
+          A cosy little deli in the heart of Beccles — freshly made food, proper coffee, and a warm welcome for you (and your four-legged friends).
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#book" class="btn-clay font-bold px-8 py-4 rounded-full text-sm flex items-center gap-2">
+            Book a table
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          </a>
+          <a href="#menu" class="btn-ghost font-bold px-8 py-4 rounded-full text-sm">See the menu</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HIGHLIGHTS -->
+  <section style="background:var(--sage);">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 py-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-white">
+      {[
+        {i:"🐾", t:"Dog friendly", s:"Water bowls & treats"},
+        {i:"☕", t:"Proper coffee", s:"Locally roasted"},
+        {i:"🍳", t:"Made fresh", s:"Daily, on site"},
+        {i:"🕘", t:"Open daily", s:"9am – 3pm"},
+      ].map(h => (
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">{h.i}</span>
+          <div>
+            <p class="font-round font-bold text-sm leading-tight">{h.t}</p>
+            <p class="text-xs text-white/80">{h.s}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- MENU -->
+  <section id="menu" class="py-24">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8">
+      <div class="text-center mb-14">
+        <span class="text-xs font-extrabold uppercase tracking-[0.2em]" style="color:var(--clay);">Freshly made</span>
+        <h2 class="font-round text-4xl lg:text-5xl font-bold mt-2" style="color:var(--ink);">Our Menu</h2>
+        <p class="mt-3 max-w-md mx-auto" style="color:var(--muted);">A little taste of what's on. We change specials daily — pop in to see today's board.</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-x-12 gap-y-10">
+        {Object.entries(menu).map(([cat, items]) => (
+          <div>
+            <h3 class="font-round text-2xl font-bold mb-4 pb-2" style="color:var(--sage-d); border-bottom:2px solid #e8dfd0;">{cat}</h3>
+            <div class="space-y-4">
+              {items.map(it => (
+                <div class="menu-card flex items-baseline gap-3">
+                  <div class="flex-1">
+                    <p class="font-bold" style="color:var(--ink);">{it.n}</p>
+                    <p class="text-sm" style="color:var(--muted);">{it.d}</p>
+                  </div>
+                  <span class="font-round font-bold whitespace-nowrap" style="color:var(--clay);">{it.p}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section id="story" class="py-24" style="background:linear-gradient(180deg,var(--cream),#F5EEE0);">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-14 items-center">
+      <div class="rounded-3xl overflow-hidden shadow-xl order-2 lg:order-1">
+        <img src="https://placehold.co/620x480/5E7355/FFFFFF?text=Inside+Fen+Lane+Deli" alt="Inside Fen Lane Deli" class="w-full" width="620" height="480">
+      </div>
+      <div class="order-1 lg:order-2">
+        <span class="text-xs font-extrabold uppercase tracking-[0.2em]" style="color:var(--clay);">Our Story</span>
+        <h2 class="font-round text-4xl lg:text-5xl font-bold mt-2 mb-5" style="color:var(--ink);">A friendly spot on the lane.</h2>
+        <p class="leading-relaxed mb-4" style="color:var(--muted);">Fen Lane Deli is a small, independent café tucked away in Beccles. We're all about honest, freshly-made food — a proper breakfast, a relaxed brunch, or a light lunch with a great cup of coffee.</p>
+        <p class="leading-relaxed mb-7" style="color:var(--muted);">Bring the family, bring a friend, bring the dog — there's always a warm welcome and a comfy corner waiting.</p>
+        <div class="flex flex-wrap gap-3">
+          {["Locally sourced","Homemade cakes","Vegetarian & GF options","Takeaway available"].map(t => (
+            <span class="bg-white rounded-full px-4 py-2 text-sm font-bold" style="color:var(--sage-d);border:1px solid #e8dfd0;">{t}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOK A TABLE -->
+  <section id="book" class="py-24">
+    <div class="max-w-3xl mx-auto px-5 sm:px-8">
+      <div class="text-center mb-10">
+        <span class="text-xs font-extrabold uppercase tracking-[0.2em]" style="color:var(--clay);">Reserve your spot</span>
+        <h2 class="font-round text-4xl lg:text-5xl font-bold mt-2" style="color:var(--ink);">Book a Table</h2>
+        <p class="mt-3" style="color:var(--muted);">Pop in your details and we'll confirm by text. Tables for up to 8 — for bigger groups, just give us a call.</p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-7 sm:p-9 shadow-lg" style="border:1px solid #ece3d3;">
+        <!-- success -->
+        <div id="ok" class="hidden text-center py-10">
+          <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style="background:rgba(94,115,85,0.15);">
+            <svg class="w-8 h-8" style="color:var(--sage-d);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <h3 class="font-round text-2xl font-bold mb-2" style="color:var(--ink);">Table requested!</h3>
+          <p id="ok-msg" style="color:var(--muted);" class="leading-relaxed"></p>
+        </div>
+
+        <form id="book-form" class="space-y-5">
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div class="field"><label>Your name</label><input id="b-name" type="text" required placeholder="Jane Smith"></div>
+            <div class="field"><label>Phone</label><input id="b-phone" type="tel" required placeholder="07700 900000"></div>
+          </div>
+          <div class="field"><label>Email</label><input id="b-email" type="email" required placeholder="jane@example.com"></div>
+          <div class="grid sm:grid-cols-3 gap-5">
+            <div class="field"><label>Date</label><input id="b-date" type="date" required></div>
+            <div class="field"><label>Time</label>
+              <select id="b-time" required>
+                {["9:00","9:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30"].map(t => <option>{t}</option>)}
+              </select>
+            </div>
+            <div class="field"><label>Party size</label>
+              <select id="b-size" required>
+                {[1,2,3,4,5,6,7,8].map(n => <option>{n} {n===1?'person':'people'}</option>)}
+              </select>
+            </div>
+          </div>
+          <label class="flex items-center gap-3 cursor-pointer select-none py-1">
+            <input id="b-dog" type="checkbox" class="w-5 h-5 rounded" style="accent-color:var(--sage);">
+            <span class="text-sm font-semibold" style="color:var(--ink);">🐾 I'll be bringing my dog</span>
+          </label>
+          <div class="field"><label>Anything else? <span style="color:var(--muted);font-weight:400;">(optional)</span></label><textarea id="b-notes" rows="2" placeholder="High chair, allergies, special occasion…"></textarea></div>
+          <button type="submit" class="btn-clay w-full font-bold py-4 rounded-xl text-sm flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            Request my table
+          </button>
+          <p class="text-xs text-center" style="color:var(--muted);">We'll text to confirm — usually within the hour during opening times.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISIT -->
+  <section id="visit" class="py-24" style="background:var(--sage-d);">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-12 items-center">
+      <div class="text-white">
+        <span class="text-xs font-extrabold uppercase tracking-[0.2em]" style="color:#cdd8c6;">Come say hello</span>
+        <h2 class="font-round text-4xl lg:text-5xl font-bold mt-2 mb-8">Find Us</h2>
+        <div class="space-y-6">
+          {[
+            {t:"Where", l:["Fen Lane","Beccles, Suffolk"], i:"M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"},
+            {t:"Opening hours", l:["Every day, 9am – 3pm"], i:"M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"},
+            {t:"Call us", l:["01502 470999"], i:"M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"},
+          ].map(b => (
+            <div class="flex gap-4">
+              <div class="w-11 h-11 rounded-full bg-white/15 flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d={b.i}/></svg>
+              </div>
+              <div>
+                <p class="font-round font-bold mb-1">{b.t}</p>
+                {b.l.map(line => <p class="text-sm text-white/85">{line}</p>)}
+              </div>
+            </div>
+          ))}
+        </div>
+        <a href="#book" class="btn-clay inline-flex items-center gap-2 font-bold px-6 py-3 rounded-full text-sm mt-9">Book a table</a>
+      </div>
+      <div class="rounded-3xl overflow-hidden shadow-xl">
+        <img src="https://placehold.co/620x460/4A5C43/FFFFFF?text=Map+%E2%80%94+Fen+Lane%2C+Beccles" alt="Map — Fen Lane, Beccles" class="w-full h-full object-cover" width="620" height="460">
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="background:var(--ink);" class="py-12">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-5">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--sage);">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8h13a4 4 0 010 8h-1M3 8v9a1 1 0 001 1h11M3 8V6a1 1 0 011-1h11a1 1 0 011 1v2"/></svg>
+        </div>
+        <div>
+          <p class="font-round font-bold text-white">Fen Lane Deli</p>
+          <p class="text-xs text-white/60">Fen Lane, Beccles · Open daily 9–3</p>
+        </div>
+      </div>
+      <p class="text-xs text-white/50">© 2026 Fen Lane Deli · Dog-friendly · 01502 470999</p>
+    </div>
+  </footer>
+
+  <!-- CONFIGR DEMO BANNER -->
+  <div style="background:linear-gradient(135deg,#1565C0,#0D47A1);position:fixed;bottom:0;left:0;right:0;z-index:9999;padding:10px 24px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
+    <span style="font-size:13px;font-weight:600;color:white;">Demo built by <strong>Configr</strong> — a free preview of what your website could look like</span>
+    <a href={`${base}/contact`} style="font-size:12px;font-weight:700;color:#1B2B4B;background:white;padding:6px 14px;border-radius:8px;white-space:nowrap;">Get this website →</a>
+  </div>
+  <div style="height:52px;"></div>
+
+  <script is:inline>
+    const form = document.getElementById('book-form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('b-name').value || 'there';
+      const date = document.getElementById('b-date').value;
+      const time = document.getElementById('b-time').value;
+      const size = document.getElementById('b-size').value;
+      const dog = document.getElementById('b-dog').checked;
+      const niceDate = date ? new Date(date+'T00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}) : 'your chosen day';
+      document.getElementById('ok-msg').innerHTML =
+        `Thanks ${name}! We've received your request for a table of <strong>${size}</strong> on <strong>${niceDate}</strong> at <strong>${time}</strong>${dog?' 🐾 (and your pup!)':''}. We'll send a text to confirm shortly.`;
+      form.classList.add('hidden');
+      document.getElementById('ok').classList.remove('hidden');
+      document.getElementById('ok').scrollIntoView({behavior:'smooth', block:'center'});
+    });
+  </script>
+
+</body>
+</html>
