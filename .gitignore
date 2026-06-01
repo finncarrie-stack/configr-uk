@@ -8,3 +8,7 @@ dist/
 # Private business material — never publish to the public repo
 brand_identity/
 prospects/
+
+# local screenshots & OS files
+temporary screenshots/
+.DS_Store
