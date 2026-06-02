@@ -1,0 +1,630 @@
+---
+// The Murderers — Management System demo, built by Configr
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Murderers — Management System</title>
+<style>
+  :root {
+    --bg: #f4f6f4;
+    --surface: #4d7855;
+    --card: #ffffff;
+    --border: #dde8de;
+    --gold: #4d7855;
+    --gold-light: #5d9068;
+    --red: #c0392b;
+    --green: #2a7a3b;
+    --text: #1e2d1e;
+    --muted: #6b8a6e;
+    --amber: #c8922a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Georgia', serif; min-height: 100vh; }
+
+  /* Header */
+  .header {
+    background: var(--surface);
+    border-bottom: 2px solid var(--gold);
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo { font-size: 22px; font-weight: bold; color: #ffffff; letter-spacing: 1px; }
+  .logo span { color: rgba(255,255,255,0.75); font-size: 13px; font-family: sans-serif; font-weight: normal; display: block; letter-spacing: 0; margin-top: 1px; }
+  .badge { background: #ffffff; color: var(--gold); font-size: 11px; font-family: sans-serif; padding: 3px 8px; border-radius: 3px; font-weight: bold; }
+  .header-right { font-family: sans-serif; font-size: 13px; color: rgba(255,255,255,0.7); }
+  .header-right strong { color: #ffffff; }
+
+  /* Nav */
+  .nav {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    display: flex;
+    gap: 4px;
+  }
+  .nav-tab {
+    padding: 12px 18px;
+    font-family: sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* Main */
+  .main { padding: 24px 28px; max-width: 1300px; }
+
+  /* Section */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Summary cards */
+  .summary-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .summary-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+  }
+  .summary-card .label { font-family: sans-serif; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .summary-card .value { font-size: 28px; color: var(--gold); font-weight: bold; }
+  .summary-card .sub { font-family: sans-serif; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .summary-card .up { color: var(--green); }
+  .summary-card .down { color: var(--red); }
+
+  /* Panel */
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .panel-header {
+    background: #f0f5f0;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .panel-title { font-size: 15px; color: var(--gold); font-weight: bold; }
+  .panel-body { padding: 20px; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(200,146,42,0.05); }
+
+  /* Pill */
+  .pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    font-family: sans-serif;
+  }
+  .pill-green { background: rgba(42,122,59,0.2); color: #4caf6e; border: 1px solid rgba(42,122,59,0.4); }
+  .pill-amber { background: rgba(212,118,10,0.2); color: #e09030; border: 1px solid rgba(212,118,10,0.4); }
+  .pill-red { background: rgba(155,32,32,0.2); color: #e05050; border: 1px solid rgba(155,32,32,0.4); }
+  .pill-blue { background: rgba(42,90,160,0.2); color: #6090e0; border: 1px solid rgba(42,90,160,0.4); }
+
+  /* Grid 2-col */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  /* Shift grid */
+  .shift-grid { display: grid; grid-template-columns: 120px repeat(7, 1fr); gap: 2px; font-family: sans-serif; font-size: 12px; }
+  .shift-grid .day-header { text-align: center; padding: 8px 4px; color: var(--muted); font-size: 11px; text-transform: uppercase; }
+  .shift-grid .staff-name { padding: 8px; color: var(--text); display: flex; align-items: center; }
+  .shift-cell {
+    padding: 6px 4px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 11px;
+    cursor: default;
+  }
+  .shift-on { background: rgba(42,122,59,0.25); color: #4caf6e; border: 1px solid rgba(42,122,59,0.3); }
+  .shift-off { background: #f4f6f4; color: var(--muted); border: 1px solid var(--border); }
+  .shift-leave { background: rgba(212,118,10,0.2); color: #e09030; border: 1px solid rgba(212,118,10,0.3); }
+
+  /* Alert */
+  .alert {
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    font-family: sans-serif;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .alert-red { background: rgba(155,32,32,0.15); border: 1px solid rgba(155,32,32,0.4); color: #e07070; }
+  .alert-amber { background: rgba(212,118,10,0.15); border: 1px solid rgba(212,118,10,0.4); color: #e09030; }
+  .alert-green { background: rgba(42,122,59,0.15); border: 1px solid rgba(42,122,59,0.4); color: #4caf6e; }
+  .alert-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-red { background: #e05050; }
+  .dot-amber { background: #e09030; }
+  .dot-green { background: #4caf6e; }
+
+  /* Payroll summary */
+  .payroll-breakdown { font-family: sans-serif; font-size: 13px; }
+  .payroll-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .payroll-row:last-child { border-bottom: none; }
+  .payroll-row .amt { font-weight: bold; }
+  .payroll-row .ni { color: var(--amber); }
+  .payroll-total { display: flex; justify-content: space-between; padding: 12px 0 0; font-size: 16px; font-weight: bold; color: var(--gold); }
+
+  /* Progress bar */
+  .progress-bar { background: var(--border); border-radius: 4px; height: 6px; margin-top: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; background: var(--gold); transition: width 0.5s; }
+  .progress-fill.red { background: var(--red); }
+  .progress-fill.amber { background: var(--amber); }
+
+  /* Btn */
+  .btn {
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-family: sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: var(--gold-light); }
+  .btn-outline {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+  }
+  .btn-outline:hover { background: rgba(200,146,42,0.1); }
+  .btn-sm { padding: 4px 10px; font-size: 11px; }
+
+  /* Configr footer */
+  .configr-footer {
+    margin-top: 32px;
+    padding: 16px 20px;
+    background: var(--gold);
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    font-family: sans-serif;
+    font-size: 12px;
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+  }
+  .configr-footer strong { color: #ffffff; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo">The Murderers<span>& The Gardeners Arms · Timberhill, Norwich</span></div>
+    <div class="badge">DEMO</div>
+  </div>
+  <div class="header-right">Management Portal · <strong>Phil Cutter</strong> · Tue 2 Jun 2026</div>
+</div>
+
+<div class="nav">
+  <div class="nav-tab active" onclick="showTab('overview')">Overview</div>
+  <div class="nav-tab" onclick="showTab('payroll')">Payroll</div>
+  <div class="nav-tab" onclick="showTab('shifts')">Shift Rota</div>
+  <div class="nav-tab" onclick="showTab('inventory')">Inventory</div>
+</div>
+
+<div class="main">
+
+  <!-- OVERVIEW -->
+  <div class="section active" id="overview">
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="label">Weekly Wage Bill</div>
+        <div class="value">£3,840</div>
+        <div class="sub">8 staff · auto-calculated</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">NI Contributions (wk)</div>
+        <div class="value">£486</div>
+        <div class="sub class="down">↑ £140 vs last year</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Stock Alerts</div>
+        <div class="value" style="color:#e09030">3</div>
+        <div class="sub">Items low or critical</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Hours This Week</div>
+        <div class="value">214</div>
+        <div class="sub">Rota confirmed ✓</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">⚠ Alerts</div>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-red"><div class="alert-dot dot-red"></div><strong>London Pride keg — CRITICAL.</strong> &nbsp;1 keg remaining. Auto-reorder sent to Charles Wells.</div>
+          <div class="alert alert-amber"><div class="alert-dot dot-amber"></div><strong>Doom Bar — LOW.</strong> &nbsp;3 kegs left. Reorder recommended by Thursday.</div>
+          <div class="alert alert-amber"><div class="alert-dot dot-amber"></div><strong>Sarah K. — Payroll query.</strong> &nbsp;Overtime hours flagged for approval this week.</div>
+          <div class="alert alert-green"><div class="alert-dot dot-green"></div>Payroll run scheduled for Friday. All timesheets submitted.</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">📅 This Week's Rota</div>
+        </div>
+        <div class="panel-body">
+          <table>
+            <thead><tr><th>Staff</th><th>Role</th><th>Hours</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Phil C.</td><td>Manager</td><td>48h</td><td><span class="pill pill-green">Confirmed</span></td></tr>
+              <tr><td>Sarah K.</td><td>Bar</td><td>36h</td><td><span class="pill pill-amber">OT flag</span></td></tr>
+              <tr><td>Tom W.</td><td>Bar</td><td>32h</td><td><span class="pill pill-green">Confirmed</span></td></tr>
+              <tr><td>Lucy B.</td><td>Kitchen</td><td>28h</td><td><span class="pill pill-green">Confirmed</span></td></tr>
+              <tr><td>Marcus R.</td><td>Kitchen</td><td>24h</td><td><span class="pill pill-green">Confirmed</span></td></tr>
+              <tr><td>Jess P.</td><td>Bar</td><td>20h</td><td><span class="pill pill-blue">Leave</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">📦 Inventory Snapshot</div>
+        <button class="btn btn-sm" onclick="showTab('inventory')">Full Inventory →</button>
+      </div>
+      <div class="panel-body">
+        <table>
+          <thead><tr><th>Item</th><th>Category</th><th>Stock</th><th>Par Level</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>London Pride</td><td>Cask Ale</td><td>1 keg</td><td>6 kegs</td><td><span class="pill pill-red">Critical</span></td><td><span class="pill pill-green">Auto-ordered ✓</span></td></tr>
+            <tr><td>Doom Bar</td><td>Cask Ale</td><td>3 kegs</td><td>6 kegs</td><td><span class="pill pill-amber">Low</span></td><td><button class="btn btn-outline btn-sm">Order Now</button></td></tr>
+            <tr><td>Wherry</td><td>Cask Ale</td><td>8 kegs</td><td>6 kegs</td><td><span class="pill pill-green">Good</span></td><td>—</td></tr>
+            <tr><td>Guinness (keg)</td><td>Draught</td><td>5 kegs</td><td>4 kegs</td><td><span class="pill pill-green">Good</span></td><td>—</td></tr>
+            <tr><td>House Red Wine</td><td>Wine</td><td>6 btl</td><td>12 btl</td><td><span class="pill pill-amber">Low</span></td><td><button class="btn btn-outline btn-sm">Order Now</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAYROLL -->
+  <div class="section" id="payroll">
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="label">Total Wage Bill (Jun)</div>
+        <div class="value">£15,360</div>
+        <div class="sub">Auto-calculated from timesheets</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Employer NI (Jun)</div>
+        <div class="value" style="color:#e09030">£1,944</div>
+        <div class="sub">↑ vs pre-April threshold change</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Next Payroll Run</div>
+        <div class="value" style="font-size:20px">Fri 6 Jun</div>
+        <div class="sub">All timesheets received ✓</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Payslips Sent</div>
+        <div class="value">8/8</div>
+        <div class="sub">Last run: Fri 30 May</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">June Payroll Breakdown</div></div>
+        <div class="panel-body">
+          <div class="payroll-breakdown">
+            <div class="payroll-row"><span>Phil Cutter (Manager)</span><span class="amt">£3,200</span></div>
+            <div class="payroll-row"><span>Sarah K. (Bar Lead)</span><span class="amt">£1,980</span></div>
+            <div class="payroll-row"><span>Tom W. (Bar)</span><span class="amt">£1,760</span></div>
+            <div class="payroll-row"><span>Lucy B. (Kitchen)</span><span class="amt">£1,540</span></div>
+            <div class="payroll-row"><span>Marcus R. (Kitchen)</span><span class="amt">£1,320</span></div>
+            <div class="payroll-row"><span>Jess P. (Bar)</span><span class="amt">£1,100</span></div>
+            <div class="payroll-row"><span>Danny H. (Bar)</span><span class="amt">£1,100</span></div>
+            <div class="payroll-row"><span>Emma S. (Kitchen)</span><span class="amt">£1,100</span></div>
+            <hr style="border-color: var(--border); margin: 8px 0;">
+            <div class="payroll-row"><span>Gross wages</span><span class="amt">£13,100</span></div>
+            <div class="payroll-row"><span class="ni">Employer NI (15%)</span><span class="amt ni">£1,944</span></div>
+            <div class="payroll-row"><span>Pension contributions</span><span class="amt">£316</span></div>
+            <div class="payroll-total"><span>Total employer cost</span><span>£15,360</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">NI Cost Trend</div></div>
+        <div class="panel-body">
+          <p style="font-family:sans-serif;font-size:12px;color:var(--muted);margin-bottom:16px">Monthly employer NI contributions — impact of April 2025 threshold change</p>
+          <div style="font-family:sans-serif;font-size:13px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span>Jan 2025 (old threshold)</span><span style="color:var(--muted)">£1,242</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:64%"></div></div>
+            <div style="display:flex;justify-content:space-between;margin:12px 0 8px"><span>Apr 2025 (new threshold)</span><span style="color:var(--amber)">£1,688</span></div>
+            <div class="progress-bar"><div class="progress-fill amber" style="width:87%"></div></div>
+            <div style="display:flex;justify-content:space-between;margin:12px 0 8px"><span>Jun 2026 (current)</span><span style="color:#e05050">£1,944</span></div>
+            <div class="progress-bar"><div class="progress-fill red" style="width:100%"></div></div>
+            <div style="margin-top:16px;padding:12px;background:rgba(155,32,32,0.1);border:1px solid rgba(155,32,32,0.3);border-radius:4px;font-size:12px;color:#e07070">
+              ↑ £702/month extra since Jan 2025 — that's <strong style="color:#e05050">£8,424/year</strong> in additional NI costs alone.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title">Staff Payroll Records</div><button class="btn btn-sm">Export Payslips</button></div>
+      <div class="panel-body">
+        <table>
+          <thead><tr><th>Name</th><th>Role</th><th>Hours (Jun)</th><th>Rate</th><th>Gross</th><th>Emp. NI</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Phil Cutter</td><td>Manager</td><td>192h</td><td>£16.67/h</td><td>£3,200</td><td>£477</td><td><span class="pill pill-green">Processed</span></td></tr>
+            <tr><td>Sarah K.</td><td>Bar Lead</td><td>148h</td><td>£13.37/h</td><td>£1,980</td><td>£295</td><td><span class="pill pill-amber">Pending approval</span></td></tr>
+            <tr><td>Tom W.</td><td>Bar</td><td>128h</td><td>£13.75/h</td><td>£1,760</td><td>£262</td><td><span class="pill pill-green">Processed</span></td></tr>
+            <tr><td>Lucy B.</td><td>Kitchen</td><td>112h</td><td>£13.75/h</td><td>£1,540</td><td>£230</td><td><span class="pill pill-green">Processed</span></td></tr>
+            <tr><td>Marcus R.</td><td>Kitchen</td><td>96h</td><td>£13.75/h</td><td>£1,320</td><td>£197</td><td><span class="pill pill-green">Processed</span></td></tr>
+            <tr><td>Jess P.</td><td>Bar</td><td>80h</td><td>£13.75/h</td><td>£1,100</td><td>£164</td><td><span class="pill pill-blue">On leave</span></td></tr>
+            <tr><td>Danny H.</td><td>Bar</td><td>80h</td><td>£13.75/h</td><td>£1,100</td><td>£164</td><td><span class="pill pill-green">Processed</span></td></tr>
+            <tr><td>Emma S.</td><td>Kitchen</td><td>80h</td><td>£13.75/h</td><td>£1,100</td><td>£164</td><td><span class="pill pill-green">Processed</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHIFTS -->
+  <div class="section" id="shifts">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Week of 2–8 June 2026 — Shift Rota</div>
+        <button class="btn btn-sm">Auto-Generate Next Week</button>
+      </div>
+      <div class="panel-body">
+        <div class="shift-grid">
+          <div></div>
+          <div class="day-header">Mon<br>2</div>
+          <div class="day-header">Tue<br>3</div>
+          <div class="day-header">Wed<br>4</div>
+          <div class="day-header">Thu<br>5</div>
+          <div class="day-header" style="color:var(--gold)">Fri<br>6</div>
+          <div class="day-header" style="color:var(--gold)">Sat<br>7</div>
+          <div class="day-header">Sun<br>8</div>
+
+          <div class="staff-name">Phil C.</div>
+          <div class="shift-cell shift-on">11–23</div>
+          <div class="shift-cell shift-on">11–23</div>
+          <div class="shift-cell shift-off">Off</div>
+          <div class="shift-cell shift-on">11–23</div>
+          <div class="shift-cell shift-on">11–23</div>
+          <div class="shift-cell shift-on">11–23</div>
+          <div class="shift-cell shift-on">11–21</div>
+
+          <div class="staff-name">Sarah K.</div>
+          <div class="shift-cell shift-on">16–23</div>
+          <div class="shift-cell shift-on">16–23</div>
+          <div class="shift-cell shift-on">16–23</div>
+          <div class="shift-cell shift-off">Off</div>
+          <div class="shift-cell shift-on">16–23</div>
+          <div class="shift-cell shift-on">12–23</div>
+          <div class="shift-cell shift-off">Off</div>
+
+          <div class="staff-name">Tom W.</div>
+          <div class="shift-cell shift-off">Off</div>
+          <div class="shift-cell shift-on">16–23</div>
+          <div class="shift-cell shift-on">16–23</div>
+          <div class="shift-cell shift-on">16–23</div>
+          <div class="shift-cell shift-on">16–23</div>
+          <div class="shift-cell shift-on">12–23</div>
+          <div class="shift-cell shift-off">Off</div>
+
+          <div class="staff-name">Lucy B.</div>
+          <div class="shift-cell shift-on">11–17</div>
+          <div class="shift-cell shift-on">11–17</div>
+          <div class="shift-cell shift-on">11–17</div>
+          <div class="shift-cell shift-off">Off</div>
+          <div class="shift-cell shift-on">11–17</div>
+          <div class="shift-cell shift-on">11–17</div>
+          <div class="shift-cell shift-off">Off</div>
+
+          <div class="staff-name">Marcus R.</div>
+          <div class="shift-cell shift-off">Off</div>
+          <div class="shift-cell shift-off">Off</div>
+          <div class="shift-cell shift-on">12–20</div>
+          <div class="shift-cell shift-on">12–20</div>
+          <div class="shift-cell shift-on">12–20</div>
+          <div class="shift-cell shift-on">12–21</div>
+          <div class="shift-cell shift-on">12–20</div>
+
+          <div class="staff-name">Jess P.</div>
+          <div class="shift-cell shift-leave">Leave</div>
+          <div class="shift-cell shift-leave">Leave</div>
+          <div class="shift-cell shift-leave">Leave</div>
+          <div class="shift-cell shift-leave">Leave</div>
+          <div class="shift-cell shift-leave">Leave</div>
+          <div class="shift-cell shift-off">Off</div>
+          <div class="shift-cell shift-off">Off</div>
+
+          <div class="staff-name">Danny H.</div>
+          <div class="shift-cell shift-on">16–23</div>
+          <div class="shift-cell shift-off">Off</div>
+          <div class="shift-cell shift-on">16–23</div>
+          <div class="shift-cell shift-on">16–23</div>
+          <div class="shift-cell shift-off">Off</div>
+          <div class="shift-cell shift-on">12–23</div>
+          <div class="shift-cell shift-on">12–21</div>
+
+          <div class="staff-name">Emma S.</div>
+          <div class="shift-cell shift-on">12–20</div>
+          <div class="shift-cell shift-on">12–20</div>
+          <div class="shift-cell shift-off">Off</div>
+          <div class="shift-cell shift-on">12–20</div>
+          <div class="shift-cell shift-on">12–20</div>
+          <div class="shift-cell shift-off">Off</div>
+          <div class="shift-cell shift-on">12–20</div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:16px;font-family:sans-serif;font-size:12px;color:var(--muted)">
+          <span><span style="display:inline-block;width:12px;height:12px;background:rgba(42,122,59,0.3);border-radius:2px;margin-right:4px;vertical-align:middle"></span>Working</span>
+          <span><span style="display:inline-block;width:12px;height:12px;background:var(--border);border-radius:2px;margin-right:4px;vertical-align:middle"></span>Day off</span>
+          <span><span style="display:inline-block;width:12px;height:12px;background:rgba(212,118,10,0.2);border-radius:2px;margin-right:4px;vertical-align:middle"></span>Annual leave</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title">Staff Availability — System Generated</div></div>
+      <div class="panel-body" style="font-family:sans-serif;font-size:13px;color:var(--muted)">
+        <p>Staff submit availability via the app each week by <strong style="color:var(--text)">Sunday midnight</strong>. The system auto-generates a rota based on hours contracted, availability, and minimum cover requirements. Phil approves with one click.</p>
+        <div style="margin-top:16px;padding:12px;background:rgba(200,146,42,0.08);border:1px solid rgba(200,146,42,0.2);border-radius:4px;color:var(--text)">
+          ⏱ Previously: 2–3 hours building the rota manually by phone and text. Now: <strong style="color:var(--gold)">under 5 minutes to review and approve.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INVENTORY -->
+  <div class="section" id="inventory">
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="label">Total SKUs Tracked</div>
+        <div class="value">47</div>
+        <div class="sub">Ales, spirits, wine, food</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Critical Items</div>
+        <div class="value" style="color:#e05050">1</div>
+        <div class="sub">Auto-reorder triggered</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Low Stock Items</div>
+        <div class="value" style="color:#e09030">2</div>
+        <div class="sub">Reorder recommended</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Last Stocktake</div>
+        <div class="value" style="font-size:18px">Mon 2 Jun</div>
+        <div class="sub">Auto-synced with orders</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Ales & Draught</div>
+        <button class="btn btn-sm">Order All Low Stock</button>
+      </div>
+      <div class="panel-body">
+        <table>
+          <thead><tr><th>Product</th><th>Supplier</th><th>In Stock</th><th>Par Level</th><th>% of Par</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>London Pride</strong></td><td>Charles Wells</td><td>1 keg</td><td>6 kegs</td>
+              <td><div style="font-size:11px;color:#e05050">17%</div><div class="progress-bar"><div class="progress-fill red" style="width:17%"></div></div></td>
+              <td><span class="pill pill-red">Critical</span></td>
+              <td><span class="pill pill-green" style="font-size:11px">Auto-ordered ✓</span></td>
+            </tr>
+            <tr>
+              <td><strong>Doom Bar</strong></td><td>Sharp's</td><td>3 kegs</td><td>6 kegs</td>
+              <td><div style="font-size:11px;color:#e09030">50%</div><div class="progress-bar"><div class="progress-fill amber" style="width:50%"></div></div></td>
+              <td><span class="pill pill-amber">Low</span></td>
+              <td><button class="btn btn-outline btn-sm">Order Now</button></td>
+            </tr>
+            <tr>
+              <td><strong>Wherry (Woodforde's)</strong></td><td>Woodforde's</td><td>8 kegs</td><td>6 kegs</td>
+              <td><div style="font-size:11px;color:#4caf6e">133%</div><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div></td>
+              <td><span class="pill pill-green">Good</span></td><td>—</td>
+            </tr>
+            <tr>
+              <td><strong>Guinness</strong></td><td>Diageo</td><td>5 kegs</td><td>4 kegs</td>
+              <td><div style="font-size:11px;color:#4caf6e">125%</div><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div></td>
+              <td><span class="pill pill-green">Good</span></td><td>—</td>
+            </tr>
+            <tr>
+              <td><strong>Peroni</strong></td><td>Asahi</td><td>6 kegs</td><td>4 kegs</td>
+              <td><div style="font-size:11px;color:#4caf6e">150%</div><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div></td>
+              <td><span class="pill pill-green">Good</span></td><td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title">Wines & Spirits</div></div>
+      <div class="panel-body">
+        <table>
+          <thead><tr><th>Product</th><th>Supplier</th><th>In Stock</th><th>Par Level</th><th>% of Par</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>House Red Wine</strong></td><td>Matthew Clark</td><td>6 btl</td><td>12 btl</td>
+              <td><div style="font-size:11px;color:#e09030">50%</div><div class="progress-bar"><div class="progress-fill amber" style="width:50%"></div></div></td>
+              <td><span class="pill pill-amber">Low</span></td>
+              <td><button class="btn btn-outline btn-sm">Order Now</button></td>
+            </tr>
+            <tr>
+              <td><strong>House White Wine</strong></td><td>Matthew Clark</td><td>10 btl</td><td>12 btl</td>
+              <td><div style="font-size:11px;color:#4caf6e">83%</div><div class="progress-bar"><div class="progress-fill" style="width:83%"></div></div></td>
+              <td><span class="pill pill-green">Good</span></td><td>—</td>
+            </tr>
+            <tr>
+              <td><strong>Jack Daniel's</strong></td><td>LWC</td><td>3 btl</td><td>3 btl</td>
+              <td><div style="font-size:11px;color:#4caf6e">100%</div><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div></td>
+              <td><span class="pill pill-green">Good</span></td><td>—</td>
+            </tr>
+            <tr>
+              <td><strong>Absolut Vodka</strong></td><td>LWC</td><td>2 btl</td><td>3 btl</td>
+              <td><div style="font-size:11px;color:#e09030">67%</div><div class="progress-bar"><div class="progress-fill" style="width:67%"></div></div></td>
+              <td><span class="pill pill-green">Good</span></td><td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title">⚙ Auto-Reorder Rules</div></div>
+      <div class="panel-body" style="font-family:sans-serif;font-size:13px;color:var(--muted)">
+        <p>When stock drops below the critical threshold (20% of par), the system automatically emails the preferred supplier with a standard order. Phil receives a notification. No manual action needed.</p>
+        <div style="margin-top:16px;padding:12px;background:rgba(200,146,42,0.08);border:1px solid rgba(200,146,42,0.2);border-radius:4px;color:var(--text)">
+          ⏱ Previously: checking stock manually, calling suppliers, chasing deliveries. Now: <strong style="color:var(--gold)">automatic — Phil gets an alert only when it matters.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="configr-footer">
+    This is a demo built by <strong>Configr</strong> — finn@configr.uk · configr.uk &nbsp;·&nbsp; This is what The Murderers could look like with a bespoke management system. No obligation — just something to look at.
+  </div>
+
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const tabs = ['overview','payroll','shifts','inventory'];
+  document.querySelectorAll('.nav-tab')[tabs.indexOf(id)].classList.add('active');
+}
+</script>
+</body>
+</html>
