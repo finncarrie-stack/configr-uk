@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   // Hosted on Vercel at the custom domain configr.uk — served from the root.
   site: 'https://configr.uk',
-  output: 'hybrid',
+  output: 'server',
   adapter: vercel(),
   vite: {
     plugins: [tailwindcss()]
