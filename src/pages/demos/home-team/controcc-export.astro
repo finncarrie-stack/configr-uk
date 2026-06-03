@@ -1,0 +1,732 @@
+---
+// The Home Team — controcc-export demo, built by Configr
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Home Team — Controcc Export</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --olive:      #4a5e25;
+    --lime:       #8ab540;
+    --lime-light: #f0f7e0;
+    --coral:      #d4614a;
+    --coral-light:#fdf0ee;
+    --bg:         #f4f7f0;
+    --white:      #ffffff;
+    --border:     #dde8cf;
+    --text:       #1e2d10;
+    --muted:      #6b7c4a;
+    --amber:      #d4900a;
+    --amber-light:#fef8e8;
+    --blue:       #2563eb;
+    --blue-light: #eff6ff;
+    --submitted:  #0e7a45;
+    --submitted-light: #e8f5ef;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+
+  .topbar { background: var(--olive); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; height: 58px; position: sticky; top: 0; z-index: 50; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo { width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .brand-name { color: #fff; font-size: 16px; font-weight: 700; }
+  .brand-name span { color: rgba(255,255,255,0.6); font-weight: 400; font-size: 13px; display: block; }
+  .topbar-nav { display: flex; gap: 2px; }
+  .nav-item { color: rgba(255,255,255,0.65); font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-block; }
+  .nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .nav-item.active { background: rgba(255,255,255,0.18); color: #fff; font-weight: 600; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .demo-pill { background: var(--coral); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+  .avatar { width: 30px; height: 30px; background: var(--lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: #fff; }
+  .user-chip { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.8); font-size: 13px; }
+
+  .page { display: flex; height: calc(100vh - 58px); }
+
+  .sidebar { width: 220px; background: var(--white); border-right: 1px solid var(--border); padding: 16px 12px; flex-shrink: 0; }
+  .sidebar-section { margin-bottom: 24px; }
+  .sidebar-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0 8px; margin-bottom: 6px; }
+  .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+  .sidebar-item:hover { background: var(--bg); color: var(--text); }
+  .sidebar-item.active { background: var(--lime-light); color: var(--olive); font-weight: 600; }
+  .sidebar-item .icon { font-size: 15px; width: 20px; text-align: center; }
+  .sidebar-badge { margin-left: auto; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+
+  .main { flex: 1; overflow-y: auto; padding: 24px 28px 80px; }
+
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+  .page-title { font-size: 22px; font-weight: 800; }
+  .page-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 9px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .btn-primary { background: var(--coral); color: #fff; }
+  .btn-primary:hover { background: #c0553f; }
+  .btn-olive { background: var(--olive); color: #fff; }
+  .btn-olive:hover { background: #3a4d18; }
+  .btn-outline { background: #fff; color: var(--olive); border: 1.5px solid var(--border); }
+  .btn-outline:hover { border-color: var(--olive); }
+  .btn-green { background: var(--submitted); color: #fff; }
+  .btn-green:hover { background: #0a6337; }
+  .btn-disabled { background: #e5ead8; color: #a0ae82; cursor: not-allowed; }
+
+  /* Month tabs */
+  .month-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .month-tab { padding: 8px 18px; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--muted); transition: all 0.15s; }
+  .month-tab.active { background: var(--olive); color: #fff; border-color: var(--olive); }
+  .month-tab .tab-badge { display: inline-block; margin-left: 6px; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 700; }
+  .tab-badge-green { background: var(--submitted-light); color: var(--submitted); }
+  .tab-badge-amber { background: var(--amber-light); color: #7a5500; }
+
+  /* Submitted banner */
+  .submitted-banner { background: var(--submitted-light); border: 1.5px solid #a3d9be; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 14px; }
+  .submitted-icon { font-size: 28px; }
+  .submitted-text .title { font-size: 15px; font-weight: 800; color: var(--submitted); }
+  .submitted-text .sub { font-size: 12px; color: #2a7a55; margin-top: 2px; }
+  .submitted-actions { margin-left: auto; display: flex; gap: 8px; }
+
+  /* Alert banner */
+  .alert-banner { border-radius: 10px; padding: 12px 16px; margin-bottom: 14px; font-size: 13px; display: flex; align-items: center; gap: 10px; }
+  .alert-banner.amber { background: var(--amber-light); border: 1px solid #f0d080; color: #7a5500; }
+  .alert-banner.info { background: var(--blue-light); border: 1px solid #bfdbfe; color: #1e40af; }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 22px; }
+  .stat { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; }
+  .stat .n { font-size: 24px; font-weight: 800; line-height: 1; }
+  .stat .l { font-size: 11px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+
+  /* Review table */
+  .section-head { font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead { background: #f8faf4; }
+  th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1px solid var(--border); }
+  th.right { text-align: right; }
+  td { padding: 12px 14px; border-bottom: 1px solid #f0f4ea; vertical-align: middle; }
+  td.right { text-align: right; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: none; }
+  tr.clickable { cursor: pointer; }
+  tr.clickable:hover td { background: #f8fdf0; }
+  tr.flagged td { background: #fffaf4; }
+  tr.readonly td { opacity: 0.8; }
+
+  .pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .pill-ok { background: #e8f5d8; color: #3a6e10; border: 1px solid #c0e090; }
+  .pill-under { background: var(--amber-light); color: #8a5a00; border: 1px solid #f0d080; }
+  .pill-cc { background: var(--lime-light); color: var(--olive); border: 1px solid #c8e090; }
+  .pill-submitted { background: var(--submitted-light); color: var(--submitted); border: 1px solid #a3d9be; }
+  .pill-readonly { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+
+  /* CSV preview box */
+  .csv-preview { background: #1e2d10; color: #a8c070; font-family: 'Courier New', monospace; font-size: 11px; border-radius: 10px; padding: 16px 18px; margin-bottom: 20px; overflow-x: auto; line-height: 1.7; }
+  .csv-preview .csv-head { color: #f0f7e0; font-weight: 700; border-bottom: 1px solid #3a5020; padding-bottom: 6px; margin-bottom: 6px; }
+  .csv-preview .csv-flag { color: #f0c040; }
+
+  /* Export CTA card */
+  .export-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+  .export-card-title { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+  .export-card-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+  .export-steps { display: flex; gap: 0; margin-bottom: 24px; }
+  .export-step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+  .export-step:not(:last-child)::after { content: ''; position: absolute; top: 18px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+  .step-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; border: 2px solid var(--border); background: var(--white); position: relative; z-index: 1; margin-bottom: 8px; }
+  .step-circle.done { background: var(--submitted-light); border-color: var(--submitted); color: var(--submitted); }
+  .step-circle.active { background: var(--olive); border-color: var(--olive); color: #fff; }
+  .step-circle.pending { background: var(--bg); color: var(--muted); }
+  .step-label { font-size: 11px; font-weight: 600; color: var(--muted); max-width: 100px; line-height: 1.4; }
+  .step-label.done { color: var(--submitted); }
+  .step-label.active { color: var(--olive); font-weight: 700; }
+
+  /* Archive list */
+  .archive-item { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-bottom: 1px solid #f0f4ea; }
+  .archive-item:last-child { border-bottom: none; }
+  .archive-month { font-size: 14px; font-weight: 700; color: var(--text); min-width: 120px; }
+  .archive-meta { font-size: 12px; color: var(--muted); flex: 1; }
+  .archive-meta strong { color: var(--text); }
+  .archive-actions { display: flex; gap: 8px; }
+
+  /* Modal */
+  .overlay { position: fixed; inset: 0; background: rgba(30,45,16,0.5); z-index: 200; display: none; align-items: center; justify-content: center; }
+  .overlay.open { display: flex; }
+  .modal { background: var(--white); border-radius: 16px; padding: 28px 32px; width: 480px; max-width: 96vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+  .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+  .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+  .modal-checklist { background: var(--bg); border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .modal-check { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .modal-check .tick { color: var(--submitted); font-weight: 700; font-size: 16px; }
+  .modal-check .warn { color: var(--amber); font-size: 14px; }
+  .modal-btns { display: flex; gap: 10px; }
+  .modal-btns .btn { flex: 1; justify-content: center; }
+
+  /* Drawer */
+  .drawer-overlay { position: fixed; inset: 0; background: rgba(30,45,16,0.4); z-index: 100; display: none; }
+  .drawer-overlay.open { display: block; }
+  .drawer { position: fixed; top: 0; right: 0; height: 100%; width: 520px; max-width: 96vw; background: var(--white); z-index: 110; transform: translateX(100%); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; box-shadow: -6px 0 24px rgba(0,0,0,0.12); }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head { background: var(--olive); padding: 20px 24px; display: flex; align-items: flex-start; justify-content: space-between; position: sticky; top: 0; z-index: 2; }
+  .drawer-head-name { color: #fff; font-size: 17px; font-weight: 800; }
+  .drawer-head-sub { color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 2px; }
+  .drawer-close { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; }
+  .drawer-body { padding: 20px 24px; }
+  .d-section { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 16px 0 8px; }
+  .d-section:first-child { margin-top: 0; }
+  .d-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .d-card { background: var(--bg); border-radius: 9px; padding: 10px 12px; }
+  .d-card.full { grid-column: 1/3; }
+  .d-card .k { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 3px; }
+  .d-card .v { font-size: 13px; font-weight: 700; }
+  .d-card .v.mono { font-family: 'Courier New', monospace; font-size: 12px; letter-spacing: 0.03em; }
+  .visit-row { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--bg); border-radius: 8px; font-size: 12px; margin-bottom: 4px; }
+  .visit-row .dt { color: var(--muted); width: 60px; flex-shrink: 0; }
+  .visit-row .tm { font-weight: 600; flex: 1; }
+  .visit-row .dur { font-weight: 700; color: var(--olive); min-width: 48px; text-align: right; }
+  .gps { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); flex-shrink: 0; }
+
+  .readonly-notice { background: #f8faf4; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+
+  .configr-bar { background: var(--olive); color: rgba(255,255,255,0.7); text-align: center; font-size: 12px; padding: 12px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 20; }
+  .configr-bar strong { color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">☕</div>
+    <div class="brand-name">The Home Team<span>Care Management · Norwich</span></div>
+  </div>
+  <div class="topbar-nav">
+    <a class="nav-item" href="service-users.html">Service Users</a>
+    <a class="nav-item" href="care-plans.html">Care Plans</a>
+    <a class="nav-item" href="visit-log.html">Visit Logs</a>
+    <a class="nav-item" href="hours-summary.html">Hours Summary</a>
+    <a class="nav-item active" href="controcc-export.html">Controcc Export</a>
+  </div>
+  <div class="topbar-right">
+    <div class="demo-pill">DEMO</div>
+    <div class="user-chip"><div class="avatar">PS</div>Peter Shaw</div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Submissions</div>
+      <div class="sidebar-item active"><span class="icon">📤</span>Controcc Export</div>
+      <div class="sidebar-item"><span class="icon">✅</span>Archive <span class="sidebar-badge" style="background:var(--submitted-light);color:var(--submitted)">3</span></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">This Month</div>
+      <div class="sidebar-item"><span class="icon">🔍</span>Pre-Export Review</div>
+      <div class="sidebar-item"><span class="icon">⚠️</span>Flag Review <span class="sidebar-badge" style="background:var(--amber-light);color:#7a5500">1</span></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Reports</div>
+      <div class="sidebar-item"><span class="icon">📄</span>Submission History</div>
+      <div class="sidebar-item"><span class="icon">🏛️</span>Norfolk CC Portal</div>
+    </div>
+  </div>
+
+  <div class="main" id="main-content">
+    <!-- Month tabs -->
+    <div class="page-header">
+      <div>
+        <div class="page-title">Controcc Export</div>
+        <div class="page-sub">Generate monthly care hours submission for Norfolk County Council</div>
+      </div>
+    </div>
+
+    <div class="month-tabs">
+      <div class="month-tab" onclick="showMonth('apr')" id="tab-apr">April 2026 <span class="tab-badge tab-badge-green">Submitted</span></div>
+      <div class="month-tab active" onclick="showMonth('may')" id="tab-may">May 2026 <span class="tab-badge tab-badge-amber">Ready</span></div>
+      <div class="month-tab" onclick="showMonth('jun')" id="tab-jun">June 2026 <span class="tab-badge" style="background:#f1f5f9;color:#64748b">In progress</span></div>
+    </div>
+
+    <!-- MAY 2026 PANEL (default) -->
+    <div id="panel-may">
+
+      <div class="alert-banner amber">
+        ⚠️ <strong>1 flag to review before export</strong> — Irene Blackwell has 2h underprovision in May. You must add an explanation before submitting.
+      </div>
+
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat"><div class="n" style="color:var(--olive)">4</div><div class="l">CC Clients This Month</div></div>
+        <div class="stat"><div class="n" style="color:var(--lime)">215.5h</div><div class="l">Commissioned (May)</div></div>
+        <div class="stat"><div class="n" style="color:var(--lime)">211.0h</div><div class="l">Delivered (GPS verified)</div></div>
+        <div class="stat"><div class="n" style="color:var(--coral)">1</div><div class="l">Underprovision flag</div></div>
+        <div class="stat"><div class="n" style="color:var(--submitted)">0</div><div class="l">Disputed charges</div></div>
+      </div>
+
+      <!-- Export steps -->
+      <div class="export-card">
+        <div class="export-card-title">Ready to submit May 2026</div>
+        <div class="export-card-sub">
+          Review the data below, resolve any flags, then download the Controcc file.<br>
+          Log in to the <strong>Norfolk CC Controcc portal</strong>, upload the file, and mark as submitted here.
+        </div>
+        <div class="export-steps">
+          <div class="export-step">
+            <div class="step-circle done">✓</div>
+            <div class="step-label done">Hours verified (GPS)</div>
+          </div>
+          <div class="export-step">
+            <div class="step-circle active">2</div>
+            <div class="step-label active">Resolve 1 flag</div>
+          </div>
+          <div class="export-step">
+            <div class="step-circle pending">3</div>
+            <div class="step-label">Download CSV</div>
+          </div>
+          <div class="export-step">
+            <div class="step-circle pending">4</div>
+            <div class="step-label">Upload to Controcc portal</div>
+          </div>
+          <div class="export-step">
+            <div class="step-circle pending">5</div>
+            <div class="step-label">Mark submitted &amp; archive</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="btn btn-green" onclick="showExportModal()">📤 Export &amp; Download CSV</button>
+          <button class="btn btn-outline" onclick="openDrawerById('irene-flag')">⚠️ Review Irene Blackwell flag first</button>
+          <span style="font-size:12px;color:var(--muted);margin-left:4px">Filename: <code style="background:#f0f4ea;padding:2px 6px;border-radius:4px;font-size:11px">NCC_HomeTeam_May2026_Care.csv</code></span>
+        </div>
+      </div>
+
+      <!-- Pre-export review table -->
+      <div class="section-head">
+        Pre-Export Review — Norfolk CC Clients
+        <span style="font-size:12px;font-weight:400;color:var(--muted)">May 2026 · 4 clients · Private pay clients excluded from Controcc submission</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Service User</th>
+              <th>Controcc Ref</th>
+              <th class="right">Commissioned</th>
+              <th class="right">Delivered</th>
+              <th class="right">Variance</th>
+              <th>Visits</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="clickable flagged" onclick="openDrawerById('irene-flag')">
+              <td><strong>Irene Blackwell</strong><div style="font-size:11px;color:var(--muted)">Mixed (14h CC + 7h Private)</div></td>
+              <td><code style="font-size:11px;background:#f0f4ea;padding:2px 5px;border-radius:4px">NCC-2018-002390</code></td>
+              <td class="right"><strong>60.7h</strong><div style="font-size:10px;color:var(--muted)">(21h/wk × 4.33wks)</div></td>
+              <td class="right"><strong>58.7h</strong></td>
+              <td class="right" style="color:var(--coral);font-weight:700">−2.0h</td>
+              <td><strong>86</strong> <span style="font-size:11px;color:var(--muted)">visits</span></td>
+              <td><span class="pill pill-under">⚠ Flag</span></td>
+              <td><button class="btn btn-outline" style="font-size:11px;padding:5px 10px">Review</button></td>
+            </tr>
+            <tr class="clickable" onclick="openDrawerById('margaret')">
+              <td><strong>Margaret Holloway</strong><div style="font-size:11px;color:var(--muted)">Norfolk CC</div></td>
+              <td><code style="font-size:11px;background:#f0f4ea;padding:2px 5px;border-radius:4px">NCC-2019-004821</code></td>
+              <td class="right"><strong>60.6h</strong><div style="font-size:10px;color:var(--muted)">(14h/wk × 4.33wks)</div></td>
+              <td class="right"><strong>60.6h</strong></td>
+              <td class="right" style="color:var(--lime);font-weight:700">0.0h</td>
+              <td><strong>60</strong> <span style="font-size:11px;color:var(--muted)">visits</span></td>
+              <td><span class="pill pill-ok">✓ Ready</span></td>
+              <td><button class="btn btn-outline" style="font-size:11px;padding:5px 10px">Review</button></td>
+            </tr>
+            <tr class="clickable" onclick="openDrawerById('derek')">
+              <td><strong>Derek Simmons</strong><div style="font-size:11px;color:var(--muted)">Norfolk CC</div></td>
+              <td><code style="font-size:11px;background:#f0f4ea;padding:2px 5px;border-radius:4px">NCC-2021-007142</code></td>
+              <td class="right"><strong>45.5h</strong><div style="font-size:10px;color:var(--muted)">(10.5h/wk × 4.33wks)</div></td>
+              <td class="right"><strong>45.7h</strong></td>
+              <td class="right" style="color:var(--blue);font-weight:700">+0.2h</td>
+              <td><strong>134</strong> <span style="font-size:11px;color:var(--muted)">visits</span></td>
+              <td><span class="pill pill-ok">✓ Ready</span></td>
+              <td><button class="btn btn-outline" style="font-size:11px;padding:5px 10px">Review</button></td>
+            </tr>
+            <tr class="clickable" onclick="openDrawerById('gladys')">
+              <td><strong>Gladys Norton</strong><div style="font-size:11px;color:var(--muted)">Norfolk CC · New referral</div></td>
+              <td><code style="font-size:11px;background:#f0f4ea;padding:2px 5px;border-radius:4px">NCC-2026-014502</code></td>
+              <td class="right"><strong>45.5h</strong><div style="font-size:10px;color:var(--muted)">(started 19 May)</div></td>
+              <td class="right"><strong>46.0h</strong></td>
+              <td class="right" style="color:var(--blue);font-weight:700">+0.5h</td>
+              <td><strong>26</strong> <span style="font-size:11px;color:var(--muted)">visits</span></td>
+              <td><span class="pill pill-ok">✓ Ready</span></td>
+              <td><button class="btn btn-outline" style="font-size:11px;padding:5px 10px">Review</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CSV Preview -->
+      <div class="section-head">
+        CSV Preview
+        <span style="font-size:12px;font-weight:400;color:var(--muted)">Exact column structure to be confirmed with Norfolk CC before live use</span>
+      </div>
+      <div class="csv-preview">
+        <div class="csv-head">ProviderID,ProviderRef,ClientRef,ClientSurname,ClientForename,PeriodStart,PeriodEnd,CommissionedHours,DeliveredHours,VisitCount,Variance,VarianceNote,SubmissionStatus</div>
+NCC-P-04418,HomeTeamNorwich,NCC-2018-002390,Blackwell,Irene,2026-05-01,2026-05-31,60.67,58.67,86,<span class="csv-flag">-2.00</span>,"<span class="csv-flag">Underprovision: carer absence 19-21 May, cover arranged 22 May</span>",PENDING
+NCC-P-04418,HomeTeamNorwich,NCC-2019-004821,Holloway,Margaret,2026-05-01,2026-05-31,60.62,60.62,60,0.00,,PENDING
+NCC-P-04418,HomeTeamNorwich,NCC-2021-007142,Simmons,Derek,2026-05-01,2026-05-31,45.46,45.67,134,+0.21,,PENDING
+NCC-P-04418,HomeTeamNorwich,NCC-2026-014502,Norton,Gladys,2026-05-01,2026-05-31,45.46,45.96,26,+0.50,,PENDING
+      </div>
+
+    </div><!-- end panel-may -->
+
+    <!-- APRIL 2026 PANEL -->
+    <div id="panel-apr" style="display:none">
+      <div class="submitted-banner">
+        <div class="submitted-icon">✅</div>
+        <div class="submitted-text">
+          <div class="title">April 2026 submitted to Norfolk CC</div>
+          <div class="sub">Submitted 2 May 2026 · Reference: NCC-SUB-2026-0412 · 4 clients · 194.3h delivered</div>
+        </div>
+        <div class="submitted-actions">
+          <button class="btn btn-outline" onclick="downloadArchivedCSV('apr')">⬇ Download Archive</button>
+        </div>
+      </div>
+      <div class="alert-banner info">
+        🔒 Submitted records are read-only. All visit data has been archived and cannot be altered.
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="n" style="color:var(--olive)">4</div><div class="l">CC Clients</div></div>
+        <div class="stat"><div class="n" style="color:var(--lime)">194.8h</div><div class="l">Commissioned</div></div>
+        <div class="stat"><div class="n" style="color:var(--lime)">194.3h</div><div class="l">Delivered</div></div>
+        <div class="stat"><div class="n" style="color:var(--submitted)">0</div><div class="l">Disputed</div></div>
+        <div class="stat"><div class="n" style="color:var(--submitted)">✓</div><div class="l">CC Accepted</div></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Service User</th>
+              <th>Controcc Ref</th>
+              <th class="right">Commissioned</th>
+              <th class="right">Delivered</th>
+              <th class="right">Variance</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="readonly">
+              <td><strong>Irene Blackwell</strong></td>
+              <td><code style="font-size:11px;background:#f0f4ea;padding:2px 5px;border-radius:4px">NCC-2018-002390</code></td>
+              <td class="right">58.7h</td><td class="right">58.7h</td>
+              <td class="right" style="color:var(--lime);font-weight:700">0.0h</td>
+              <td><span class="pill pill-submitted">✓ Accepted</span></td>
+            </tr>
+            <tr class="readonly">
+              <td><strong>Margaret Holloway</strong></td>
+              <td><code style="font-size:11px;background:#f0f4ea;padding:2px 5px;border-radius:4px">NCC-2019-004821</code></td>
+              <td class="right">58.7h</td><td class="right">58.2h</td>
+              <td class="right" style="color:var(--amber);font-weight:700">−0.5h</td>
+              <td><span class="pill pill-submitted">✓ Accepted</span></td>
+            </tr>
+            <tr class="readonly">
+              <td><strong>Derek Simmons</strong></td>
+              <td><code style="font-size:11px;background:#f0f4ea;padding:2px 5px;border-radius:4px">NCC-2021-007142</code></td>
+              <td class="right">42.0h</td><td class="right">42.2h</td>
+              <td class="right" style="color:var(--blue);font-weight:700">+0.2h</td>
+              <td><span class="pill pill-submitted">✓ Accepted</span></td>
+            </tr>
+            <tr class="readonly">
+              <td><strong>Irene Blackwell (Private)</strong><div style="font-size:11px;color:var(--muted)">Private 7h/wk — not in CC submission</div></td>
+              <td><span style="font-size:11px;color:var(--muted)">Private pay</span></td>
+              <td class="right">30.3h</td><td class="right">30.2h</td>
+              <td class="right" style="color:var(--lime);font-weight:700">−0.1h</td>
+              <td><span class="pill pill-readonly">Private only</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="readonly-notice">🔒 <strong>Read-only archive.</strong> Submission reference: NCC-SUB-2026-0412. Accepted by Norfolk CC on 8 May 2026. Full GPS-verified visit log retained for audit.</div>
+    </div><!-- end panel-apr -->
+
+    <!-- JUNE 2026 PANEL -->
+    <div id="panel-jun" style="display:none">
+      <div class="alert-banner info">
+        📅 <strong>June 2026 is in progress</strong> — the month is not yet complete. Return here at the end of June to generate the submission.
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="n" style="color:var(--olive)">4</div><div class="l">CC Clients</div></div>
+        <div class="stat"><div class="n" style="color:var(--lime)">16.8h</div><div class="l">Delivered so far</div></div>
+        <div class="stat"><div class="n" style="color:var(--muted)">—</div><div class="l">Month complete</div></div>
+        <div class="stat"><div class="n" style="color:var(--muted)">—</div><div class="l">Export ready</div></div>
+        <div class="stat"><div class="n" style="color:var(--muted)">28</div><div class="l">Days remaining</div></div>
+      </div>
+      <div class="export-card" style="opacity:0.75">
+        <div class="export-card-title">Export not yet available</div>
+        <div class="export-card-sub">June 2026 ends on 30 June. The Controcc export will be available from <strong>1 July 2026</strong> once all visits are confirmed and hours are finalised.</div>
+        <button class="btn btn-disabled" disabled>📤 Export not available yet</button>
+      </div>
+    </div><!-- end panel-jun -->
+
+  </div><!-- end main -->
+</div><!-- end page -->
+
+<!-- Export confirmation modal -->
+<div class="overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal-title">📤 Export May 2026 to Controcc</div>
+    <div class="modal-sub">This will download <strong>NCC_HomeTeam_May2026_Care.csv</strong>. Log in to the Norfolk CC Controcc portal and upload the file. Once uploaded, mark as submitted here to archive the data.</div>
+    <div class="modal-checklist">
+      <div class="modal-check"><span class="tick">✓</span> 4 Norfolk CC clients included</div>
+      <div class="modal-check"><span class="tick">✓</span> 211.0h delivered — all GPS-verified</div>
+      <div class="modal-check"><span class="tick">✓</span> Irene Blackwell: underprovision note added</div>
+      <div class="modal-check"><span class="warn">⚠</span> Colin Farrow excluded (Private Pay — not CC commissioned)</div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-green" onclick="doExport()">⬇ Download CSV &amp; Proceed</button>
+    </div>
+  </div>
+</div>
+
+<!-- Submitted modal -->
+<div class="overlay" id="submittedModal">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:48px;margin-bottom:12px">✅</div>
+    <div class="modal-title" style="justify-content:center">May 2026 submitted</div>
+    <div class="modal-sub">CSV downloaded. Log in to the Norfolk CC Controcc portal and upload the file, then click <strong>Mark as Submitted</strong> to archive this month's data.</div>
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="closeSubmittedModal()">Back</button>
+      <button class="btn btn-green" onclick="markSubmitted()">✓ Mark as Submitted &amp; Archive</button>
+    </div>
+  </div>
+</div>
+
+<!-- Drawer overlay -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer"></div>
+
+<div class="configr-bar">Demo built by <strong>Configr</strong> — finn.carrie@configr.uk · configr.uk &nbsp;·&nbsp; No obligation — just something to look at.</div>
+
+<script>
+// Month tab switching
+function showMonth(m) {
+  ['apr','may','jun'].forEach(id => {
+    document.getElementById('panel-'+id).style.display = id===m ? '' : 'none';
+    document.getElementById('tab-'+id).classList.toggle('active', id===m);
+  });
+}
+
+// Export modal
+function showExportModal() { document.getElementById('exportModal').classList.add('open'); }
+function closeModal() { document.getElementById('exportModal').classList.remove('open'); }
+function doExport() {
+  closeModal();
+  // Build and download CSV
+  const csv = [
+    'ProviderID,ProviderRef,ClientRef,ClientSurname,ClientForename,PeriodStart,PeriodEnd,CommissionedHours,DeliveredHours,VisitCount,Variance,VarianceNote,SubmissionStatus',
+    'NCC-P-04418,HomeTeamNorwich,NCC-2018-002390,Blackwell,Irene,2026-05-01,2026-05-31,60.67,58.67,86,-2.00,"Underprovision: carer absence 19-21 May cover arranged 22 May",PENDING',
+    'NCC-P-04418,HomeTeamNorwich,NCC-2019-004821,Holloway,Margaret,2026-05-01,2026-05-31,60.62,60.62,60,0.00,,PENDING',
+    'NCC-P-04418,HomeTeamNorwich,NCC-2021-007142,Simmons,Derek,2026-05-01,2026-05-31,45.46,45.67,134,+0.21,,PENDING',
+    'NCC-P-04418,HomeTeamNorwich,NCC-2026-014502,Norton,Gladys,2026-05-01,2026-05-31,45.46,45.96,26,+0.50,,PENDING'
+  ].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'NCC_HomeTeam_May2026_Care.csv'; a.click();
+  URL.revokeObjectURL(url);
+  document.getElementById('submittedModal').classList.add('open');
+}
+function closeSubmittedModal() { document.getElementById('submittedModal').classList.remove('open'); }
+function markSubmitted() {
+  closeSubmittedModal();
+  // Switch May tab to show as submitted
+  const mayTab = document.getElementById('tab-may');
+  mayTab.innerHTML = 'May 2026 <span class="tab-badge tab-badge-green">Submitted</span>';
+  // Replace May panel with submitted view
+  const panel = document.getElementById('panel-may');
+  panel.innerHTML = `
+    <div class="submitted-banner">
+      <div class="submitted-icon">✅</div>
+      <div class="submitted-text">
+        <div class="title">May 2026 submitted to Norfolk CC</div>
+        <div class="sub">Submitted 3 June 2026 · 4 clients · 211.0h delivered · 306 GPS-verified visits</div>
+      </div>
+      <div class="submitted-actions">
+        <button class="btn btn-outline" onclick="downloadArchivedCSV('may')">⬇ Download Archive</button>
+      </div>
+    </div>
+    <div class="alert-banner info">
+      🔒 Submitted records are read-only. All visit data has been archived and cannot be altered.
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n" style="color:var(--olive)">4</div><div class="l">CC Clients</div></div>
+      <div class="stat"><div class="n" style="color:var(--lime)">211.9h</div><div class="l">Commissioned</div></div>
+      <div class="stat"><div class="n" style="color:var(--lime)">211.0h</div><div class="l">Delivered</div></div>
+      <div class="stat"><div class="n" style="color:var(--coral)">1</div><div class="l">Noted variance</div></div>
+      <div class="stat"><div class="n" style="color:var(--submitted)">✓</div><div class="l">Archived</div></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Service User</th><th>Controcc Ref</th>
+            <th class="right">Commissioned</th><th class="right">Delivered</th>
+            <th class="right">Variance</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="readonly"><td><strong>Irene Blackwell</strong></td><td><code style="font-size:11px;background:#f0f4ea;padding:2px 5px;border-radius:4px">NCC-2018-002390</code></td><td class="right">60.7h</td><td class="right">58.7h</td><td class="right" style="color:var(--coral);font-weight:700">−2.0h</td><td><span class="pill pill-submitted">✓ Submitted (note)</span></td></tr>
+          <tr class="readonly"><td><strong>Margaret Holloway</strong></td><td><code style="font-size:11px;background:#f0f4ea;padding:2px 5px;border-radius:4px">NCC-2019-004821</code></td><td class="right">60.6h</td><td class="right">60.6h</td><td class="right" style="color:var(--lime);font-weight:700">0.0h</td><td><span class="pill pill-submitted">✓ Submitted</span></td></tr>
+          <tr class="readonly"><td><strong>Derek Simmons</strong></td><td><code style="font-size:11px;background:#f0f4ea;padding:2px 5px;border-radius:4px">NCC-2021-007142</code></td><td class="right">45.5h</td><td class="right">45.7h</td><td class="right" style="color:var(--blue);font-weight:700">+0.2h</td><td><span class="pill pill-submitted">✓ Submitted</span></td></tr>
+          <tr class="readonly"><td><strong>Gladys Norton</strong></td><td><code style="font-size:11px;background:#f0f4ea;padding:2px 5px;border-radius:4px">NCC-2026-014502</code></td><td class="right">45.5h</td><td class="right">46.0h</td><td class="right" style="color:var(--blue);font-weight:700">+0.5h</td><td><span class="pill pill-submitted">✓ Submitted</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="readonly-notice">🔒 <strong>Read-only archive.</strong> All GPS-verified visit records retained. Click "Download Archive" to get the CSV at any time.</div>
+  `;
+}
+
+// Archived CSV download (Apr)
+function downloadArchivedCSV(month) {
+  const csv = 'ProviderID,ProviderRef,ClientRef,ClientSurname,PeriodStart,PeriodEnd,CommissionedHours,DeliveredHours,Status\nNCC-P-04418,HomeTeamNorwich,NCC-2018-002390,Blackwell,2026-0'+(month==='apr'?'4':'5')+'-01,2026-0'+(month==='apr'?'4':'5')+'-30,58.67,58.67,ACCEPTED\n';
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'NCC_HomeTeam_'+(month==='apr'?'Apr':'May')+'2026_Care_Archive.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Drawer data
+const drawerData = {
+  'irene-flag': {
+    name: "Irene Blackwell — Flag Review",
+    sub: "NCC-2018-002390 · Underprovision · May 2026",
+    rows: [
+      { k: "Commissioned (May)", v: "60.7h (21h/wk)" },
+      { k: "Delivered (May)", v: "58.7h (−2.0h)", warn: true },
+      { k: "Controcc Ref", v: "NCC-2018-002390", mono: true },
+      { k: "Funding type", v: "Mixed (14h CC + 7h Private)" },
+    ],
+    flagNote: "3 missed evening visits: 19, 20, 21 May — carer Leanne W. off sick. Cover arranged from 22 May. All other visits GPS-verified.",
+    varianceNote: "Underprovision: carer absence 19–21 May, cover arranged 22 May. All other visits GPS-verified and within commissioned schedule.",
+    visits: [
+      { dt: "21 May", tm: "18:05 — MISSED", dur: "—", carer: "No cover", flag: true },
+      { dt: "20 May", tm: "18:02 — MISSED", dur: "—", carer: "No cover", flag: true },
+      { dt: "19 May", tm: "18:08 — MISSED", dur: "—", carer: "No cover", flag: true },
+      { dt: "18 May", tm: "18:01 – 18:49", dur: "48 min", carer: "Leanne W.", gps: true },
+      { dt: "17 May", tm: "18:04 – 18:52", dur: "48 min", carer: "Leanne W.", gps: true },
+      { dt: "16 May", tm: "18:00 – 18:47", dur: "47 min", carer: "Leanne W.", gps: true },
+    ]
+  },
+  margaret: {
+    name: "Margaret Holloway",
+    sub: "NCC-2019-004821 · No flags · May 2026",
+    rows: [
+      { k: "Commissioned (May)", v: "60.6h (14h/wk)" },
+      { k: "Delivered (May)", v: "60.6h ✓" },
+      { k: "Controcc Ref", v: "NCC-2019-004821", mono: true },
+      { k: "Funding type", v: "Norfolk CC" },
+    ],
+    flagNote: null,
+    varianceNote: null,
+    visits: [
+      { dt: "31 May", tm: "08:04 – 08:49", dur: "45 min", carer: "Sarah M.", gps: true },
+      { dt: "31 May", tm: "13:02 – 13:31", dur: "29 min", carer: "Ben T.", gps: true },
+      { dt: "30 May", tm: "08:01 – 08:48", dur: "47 min", carer: "Sarah M.", gps: true },
+      { dt: "30 May", tm: "13:05 – 13:34", dur: "29 min", carer: "Ben T.", gps: true },
+    ]
+  },
+  derek: {
+    name: "Derek Simmons",
+    sub: "NCC-2021-007142 · +0.2h over · May 2026",
+    rows: [
+      { k: "Commissioned (May)", v: "45.5h (10.5h/wk)" },
+      { k: "Delivered (May)", v: "45.7h (+0.2h)" },
+      { k: "Controcc Ref", v: "NCC-2021-007142", mono: true },
+      { k: "Funding type", v: "Norfolk CC" },
+    ],
+    flagNote: null,
+    varianceNote: null,
+    visits: [
+      { dt: "31 May", tm: "08:32 – 09:19", dur: "47 min", carer: "Leanne W.", gps: true },
+      { dt: "30 May", tm: "08:30 – 09:17", dur: "47 min", carer: "Leanne W.", gps: true },
+      { dt: "29 May", tm: "15:18 – 15:48", dur: "30 min", carer: "Tom H.", gps: true },
+      { dt: "28 May", tm: "15:20 – 15:51", dur: "31 min", carer: "Tom H.", gps: true },
+    ]
+  },
+  gladys: {
+    name: "Gladys Norton",
+    sub: "NCC-2026-014502 · First month · Started 19 May",
+    rows: [
+      { k: "Commissioned (May)", v: "45.5h (pro-rated from 19 May)" },
+      { k: "Delivered (May)", v: "46.0h (+0.5h)" },
+      { k: "Controcc Ref", v: "NCC-2026-014502", mono: true },
+      { k: "Funding type", v: "Norfolk CC · New referral" },
+    ],
+    flagNote: null,
+    varianceNote: null,
+    visits: [
+      { dt: "31 May", tm: "08:45 – 09:31", dur: "46 min", carer: "Claire B.", gps: true },
+      { dt: "30 May", tm: "08:42 – 09:29", dur: "47 min", carer: "Claire B.", gps: true },
+      { dt: "29 May", tm: "08:40 – 09:26", dur: "46 min", carer: "Claire B.", gps: true },
+    ]
+  }
+};
+
+function openDrawerById(id) {
+  const d = drawerData[id];
+  if (!d) return;
+  const infoRows = d.rows.map(r => `
+    <div class="d-card"><div class="k">${r.k}</div><div class="v ${r.mono?'mono':''}" style="${r.warn?'color:var(--coral)':''}">${r.v}</div></div>
+  `).join('');
+
+  const flagHtml = d.flagNote ? `
+    <div style="background:var(--amber-light);border:1px solid #f0d080;border-radius:9px;padding:12px 14px;font-size:13px;color:#7a5500;margin-bottom:12px">
+      <strong>⚠ Flag:</strong> ${d.flagNote}
+    </div>
+    <div style="background:var(--bg);border-radius:9px;padding:12px 14px;margin-bottom:12px">
+      <div class="k" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px">Variance note (will appear in CSV)</div>
+      <div style="font-size:13px;font-style:italic;color:var(--text)">"${d.varianceNote}"</div>
+    </div>
+  ` : `<div style="background:#e8f5ef;border-radius:9px;padding:12px 14px;font-size:13px;color:var(--submitted);margin-bottom:12px">✓ No flags — this client is ready for submission.</div>`;
+
+  const visitHtml = d.visits.map(v => `
+    <div class="visit-row" style="${v.flag?'background:#fff8f7;':''}">
+      <div class="dt">${v.dt}</div>
+      <div class="tm" style="${v.flag?'color:var(--coral);':''}${v.flag?' font-weight:700;':''}">${v.tm}${v.carer?' · '+v.carer:''}</div>
+      <div class="dur" style="${v.flag?'color:var(--coral)':''}">${v.dur}</div>
+      ${v.gps ? '<div class="gps" title="GPS verified"></div>' : (v.flag ? '<span style="font-size:10px;color:var(--coral);font-weight:700">MISSED</span>' : '')}
+    </div>
+  `).join('');
+
+  document.getElementById('drawer').innerHTML = `
+    <div class="drawer-head">
+      <div>
+        <div class="drawer-head-name">${d.name}</div>
+        <div class="drawer-head-sub">${d.sub}</div>
+      </div>
+      <button class="drawer-close" onclick="closeDrawer()">×</button>
+    </div>
+    <div class="drawer-body">
+      <div class="d-section">Summary</div>
+      <div class="d-grid">${infoRows}</div>
+      <div class="d-section">Flag Status</div>
+      ${flagHtml}
+      <div class="d-section">Recent Visits</div>
+      ${visitHtml}
+      <div style="margin-top:8px;font-size:11px;color:var(--muted)">🟢 GPS dot = verified at service user's address. Timestamps locked on submission.</div>
+      <div style="margin-top:16px;display:flex;gap:8px">
+        <button class="btn btn-outline" onclick="closeDrawer()" style="flex:1">Close</button>
+        ${d.flagNote?`<button class="btn btn-primary" style="flex:1">⚠ Edit Variance Note</button>`:`<button class="btn btn-green" style="flex:1">✓ Ready for export</button>`}
+      </div>
+    </div>`;
+
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+</script>
+</body>
+</html>

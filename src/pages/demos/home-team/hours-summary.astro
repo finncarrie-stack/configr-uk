@@ -1,0 +1,492 @@
+---
+// The Home Team — hours-summary demo, built by Configr
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Home Team — Hours Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --olive:      #4a5e25;
+    --lime:       #8ab540;
+    --lime-light: #f0f7e0;
+    --coral:      #d4614a;
+    --coral-light:#fdf0ee;
+    --bg:         #f4f7f0;
+    --white:      #ffffff;
+    --border:     #dde8cf;
+    --text:       #1e2d10;
+    --muted:      #6b7c4a;
+    --amber:      #d4900a;
+    --amber-light:#fef8e8;
+    --blue:       #2563eb;
+    --blue-light: #eff6ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+
+  .topbar { background: var(--olive); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; height: 58px; position: sticky; top: 0; z-index: 50; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo { width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .brand-name { color: #fff; font-size: 16px; font-weight: 700; }
+  .brand-name span { color: rgba(255,255,255,0.6); font-weight: 400; font-size: 13px; display: block; }
+  .topbar-nav { display: flex; gap: 2px; }
+  .nav-item { color: rgba(255,255,255,0.65); font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-block; }
+  .nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .nav-item.active { background: rgba(255,255,255,0.18); color: #fff; font-weight: 600; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .demo-pill { background: var(--coral); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+  .avatar { width: 30px; height: 30px; background: var(--lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: #fff; }
+  .user-chip { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.8); font-size: 13px; }
+
+  .page { display: flex; height: calc(100vh - 58px); }
+
+  .sidebar { width: 220px; background: var(--white); border-right: 1px solid var(--border); padding: 16px 12px; flex-shrink: 0; }
+  .sidebar-section { margin-bottom: 24px; }
+  .sidebar-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0 8px; margin-bottom: 6px; }
+  .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+  .sidebar-item:hover { background: var(--bg); color: var(--text); }
+  .sidebar-item.active { background: var(--lime-light); color: var(--olive); font-weight: 600; }
+  .sidebar-item .icon { font-size: 15px; width: 20px; text-align: center; }
+  .sidebar-badge { margin-left: auto; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; color: #fff; }
+
+  .main { flex: 1; overflow-y: auto; padding: 24px 28px 80px; }
+
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+  .page-title { font-size: 22px; font-weight: 800; }
+  .page-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 9px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .btn-primary { background: var(--coral); color: #fff; }
+  .btn-primary:hover { background: #c0553f; }
+  .btn-olive { background: var(--olive); color: #fff; }
+  .btn-olive:hover { background: #3a4d18; }
+  .btn-outline { background: #fff; color: var(--olive); border: 1.5px solid var(--border); }
+  .btn-outline:hover { border-color: var(--olive); }
+  .btn-lime { background: var(--lime); color: #fff; }
+
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 22px; }
+  .stat { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; }
+  .stat .n { font-size: 24px; font-weight: 800; line-height: 1; }
+  .stat .l { font-size: 11px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+
+  .month-selector { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .month-btn { background: var(--white); border: 1.5px solid var(--border); border-radius: 8px; padding: 6px 12px; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--olive); cursor: pointer; }
+  .month-btn:hover { border-color: var(--olive); }
+  .month-label { font-size: 16px; font-weight: 800; color: var(--text); min-width: 160px; text-align: center; }
+
+  .alert-banner { border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; font-size: 13px; display: flex; align-items: center; gap: 10px; }
+  .alert-banner.red { background: var(--coral-light); border: 1px solid #f0b8a8; color: #8a2010; }
+  .alert-banner.amber { background: var(--amber-light); border: 1px solid #f0d080; color: #7a5500; }
+
+  /* Main hours table */
+  .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead { background: #f8faf4; }
+  th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1px solid var(--border); }
+  th.right { text-align: right; }
+  td { padding: 12px 14px; border-bottom: 1px solid #f0f4ea; vertical-align: middle; }
+  td.right { text-align: right; }
+  tr:last-child td { border-bottom: none; }
+  tr.clickable { cursor: pointer; transition: background 0.1s; }
+  tr.clickable:hover td { background: #f8fdf0; }
+  tr.flagged td { background: #fffaf4; }
+  tr.critical td { background: #fff8f7; }
+
+  .pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .pill-ok { background: #e8f5d8; color: #3a6e10; border: 1px solid #c0e090; }
+  .pill-under { background: var(--amber-light); color: #8a5a00; border: 1px solid #f0d080; }
+  .pill-critical { background: var(--coral-light); color: #8a2010; border: 1px solid #f0b8a8; }
+  .pill-over { background: var(--blue-light); color: #1a4db8; border: 1px solid #bfdbfe; }
+  .pill-cc { background: var(--lime-light); color: var(--olive); border: 1px solid #c8e090; }
+  .pill-private { background: #f3f0ff; color: #5b21b6; border: 1px solid #ddd6fe; }
+  .pill-mixed { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+
+  /* Progress bar */
+  .bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .bar-track { background: #eef2e8; border-radius: 4px; height: 8px; width: 100px; overflow: hidden; flex-shrink: 0; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s; }
+  .bar-ok { background: var(--lime); }
+  .bar-under { background: var(--amber); }
+  .bar-critical { background: var(--coral); }
+  .bar-over { background: var(--blue); }
+  .bar-pct { font-size: 12px; font-weight: 700; min-width: 36px; }
+
+  /* Dispute panel */
+  .dispute-panel { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .dispute-head { background: #f8faf4; border-bottom: 1px solid var(--border); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; }
+  .dispute-title { font-size: 15px; font-weight: 700; color: var(--text); }
+  .dispute-body { padding: 18px; }
+  .dispute-row { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f0f4ea; }
+  .dispute-row:last-child { border-bottom: none; }
+  .dispute-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+  .dispute-info .client { font-weight: 700; font-size: 14px; }
+  .dispute-info .detail { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
+  .dispute-action { margin-left: auto; flex-shrink: 0; }
+
+  /* Drawer */
+  .overlay { position: fixed; inset: 0; background: rgba(30,45,16,0.4); z-index: 100; display: none; }
+  .overlay.open { display: block; }
+  .drawer { position: fixed; top: 0; right: 0; height: 100%; width: 540px; max-width: 96vw; background: var(--white); z-index: 110; transform: translateX(100%); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; box-shadow: -6px 0 24px rgba(0,0,0,0.12); }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head { background: var(--olive); padding: 20px 24px; display: flex; align-items: flex-start; justify-content: space-between; position: sticky; top: 0; z-index: 2; }
+  .drawer-head-name { color: #fff; font-size: 18px; font-weight: 800; }
+  .drawer-head-sub { color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 2px; }
+  .drawer-close { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; }
+  .drawer-body { padding: 22px 24px; }
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 10px; margin-top: 20px; }
+  .section-title:first-child { margin-top: 0; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .info-card { background: var(--bg); border-radius: 9px; padding: 11px 13px; }
+  .info-card .k { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 3px; }
+  .info-card .v { font-size: 14px; font-weight: 700; }
+  .info-card.full { grid-column: 1/3; }
+
+  /* Week breakdown */
+  .week-rows { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .week-row { display: flex; align-items: center; gap: 12px; background: var(--bg); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
+  .week-row .wk { font-weight: 700; color: var(--olive); width: 70px; flex-shrink: 0; }
+  .week-row .hrs { flex: 1; }
+  .week-row .flag { font-size: 11px; font-weight: 700; }
+
+  /* Visit log mini */
+  .mini-log { display: flex; flex-direction: column; gap: 6px; }
+  .mini-visit { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--bg); border-radius: 8px; font-size: 12px; }
+  .mini-visit .date { color: var(--muted); width: 70px; flex-shrink: 0; }
+  .mini-visit .time { font-weight: 600; flex: 1; }
+  .mini-visit .dur { font-weight: 700; color: var(--olive); }
+  .gps-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); flex-shrink: 0; }
+
+  .configr-bar { background: var(--olive); color: rgba(255,255,255,0.7); text-align: center; font-size: 12px; padding: 12px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 20; }
+  .configr-bar strong { color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">☕</div>
+    <div class="brand-name">The Home Team<span>Care Management · Norwich</span></div>
+  </div>
+  <div class="topbar-nav">
+    <a class="nav-item" href="service-users.html">Service Users</a>
+    <a class="nav-item" href="care-plans.html">Care Plans</a>
+    <a class="nav-item" href="visit-log.html">Visit Logs</a>
+    <a class="nav-item active" href="hours-summary.html">Hours Summary</a>
+    <a class="nav-item" href="controcc-export.html">Controcc Export</a>
+  </div>
+  <div class="topbar-right">
+    <div class="demo-pill">DEMO</div>
+    <div class="user-chip"><div class="avatar">PS</div>Peter Shaw</div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">This Month</div>
+      <div class="sidebar-item active"><span class="icon">📊</span>Hours Summary</div>
+      <div class="sidebar-item"><span class="icon">⚠️</span>Underprovision <span class="sidebar-badge" style="background:var(--coral)">2</span></div>
+      <div class="sidebar-item"><span class="icon">📁</span>Dispute Log <span class="sidebar-badge" style="background:var(--amber)">1</span></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Reports</div>
+      <div class="sidebar-item"><span class="icon">🏛️</span>Norfolk CC Hours</div>
+      <div class="sidebar-item"><span class="icon">💳</span>Private Pay Hours</div>
+      <div class="sidebar-item"><span class="icon">👤</span>By Carer</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Export</div>
+      <div class="sidebar-item"><span class="icon">📤</span>Controcc Export</div>
+      <div class="sidebar-item"><span class="icon">⬇</span>Download CSV</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Hours Summary</div>
+        <div class="page-sub">Delivered vs commissioned — review before Controcc submission</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline">⬇ Export CSV</button>
+        <button class="btn btn-olive" onclick="window.location.href='controcc-export.html'">📤 Controcc Export →</button>
+      </div>
+    </div>
+
+    <!-- Month selector -->
+    <div class="month-selector">
+      <button class="month-btn">◀ May 2026</button>
+      <div class="month-label">June 2026</div>
+      <button class="month-btn">July 2026 ▶</button>
+      <span style="font-size:12px;color:var(--muted);margin-left:8px">· 2 Jun complete · 28 days remaining</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat"><div class="n" style="color:var(--olive)">84.0h</div><div class="l">Commissioned/wk</div></div>
+      <div class="stat"><div class="n" style="color:var(--lime)">16.8h</div><div class="l">Delivered (2 days)</div></div>
+      <div class="stat"><div class="n" style="color:var(--coral)">2</div><div class="l">Underprovision flags</div></div>
+      <div class="stat"><div class="n" style="color:var(--amber)">1</div><div class="l">Disputed (prev. month)</div></div>
+      <div class="stat"><div class="n" style="color:var(--blue)">£0</div><div class="l">At risk (disputes)</div></div>
+    </div>
+
+    <!-- Alert banners -->
+    <div class="alert-banner red">🔴 <strong>Irene Blackwell</strong> — 2 hours below commissioned in May. Norfolk CC queried this charge. Evidence pack ready — <a href="#" style="color:inherit;font-weight:700">view dispute →</a></div>
+    <div class="alert-banner amber">⚠️ <strong>Margaret Holloway</strong> — 0.5h below commissioned this week. Review before month-end to avoid underprovision at submission.</div>
+
+    <!-- Main table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Service User</th>
+            <th>Funding</th>
+            <th class="right">Commissioned/wk</th>
+            <th class="right">Delivered (Jun so far)</th>
+            <th>vs Target</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="clickable critical" onclick="openDrawer('irene')">
+            <td><strong>Irene Blackwell</strong><div style="font-size:11px;color:var(--muted)">Dementia, diabetes · 3 visits/day</div></td>
+            <td><span class="pill pill-mixed">Mixed</span></td>
+            <td class="right"><strong>21.0h</strong></td>
+            <td class="right"><strong>7.8h</strong></td>
+            <td>
+              <div class="bar-wrap">
+                <div class="bar-track"><div class="bar-fill bar-critical" style="width:74%"></div></div>
+                <span class="bar-pct" style="color:var(--coral)">74%</span>
+              </div>
+            </td>
+            <td><span class="pill pill-critical">⚠ Underprovision</span></td>
+            <td><button class="btn btn-outline" style="font-size:11px;padding:5px 10px">View</button></td>
+          </tr>
+          <tr class="clickable flagged" onclick="openDrawer('margaret')">
+            <td><strong>Margaret Holloway</strong><div style="font-size:11px;color:var(--muted)">Mild dementia · 2 visits/day (Mon–Fri), 1 weekend</div></td>
+            <td><span class="pill pill-cc">Norfolk CC</span></td>
+            <td class="right"><strong>14.0h</strong></td>
+            <td class="right"><strong>5.3h</strong></td>
+            <td>
+              <div class="bar-wrap">
+                <div class="bar-track"><div class="bar-fill bar-under" style="width:76%"></div></div>
+                <span class="bar-pct" style="color:var(--amber)">76%</span>
+              </div>
+            </td>
+            <td><span class="pill pill-under">↓ Monitor</span></td>
+            <td><button class="btn btn-outline" style="font-size:11px;padding:5px 10px">View</button></td>
+          </tr>
+          <tr class="clickable" onclick="openDrawer('derek')">
+            <td><strong>Derek Simmons</strong><div style="font-size:11px;color:var(--muted)">Parkinson's · Daily AM + 3x PM</div></td>
+            <td><span class="pill pill-cc">Norfolk CC</span></td>
+            <td class="right"><strong>10.5h</strong></td>
+            <td class="right"><strong>3.5h</strong></td>
+            <td>
+              <div class="bar-wrap">
+                <div class="bar-track"><div class="bar-fill bar-ok" style="width:100%"></div></div>
+                <span class="bar-pct" style="color:var(--lime)">100%</span>
+              </div>
+            </td>
+            <td><span class="pill pill-ok">✓ On track</span></td>
+            <td><button class="btn btn-outline" style="font-size:11px;padding:5px 10px">View</button></td>
+          </tr>
+          <tr class="clickable" onclick="openDrawer('colin')">
+            <td><strong>Colin Farrow</strong><div style="font-size:11px;color:var(--muted)">Post-stroke · 3x MWF + 2x TTh</div></td>
+            <td><span class="pill pill-private">Private Pay</span></td>
+            <td class="right"><strong>7.0h</strong></td>
+            <td class="right"><strong>1.6h</strong></td>
+            <td>
+              <div class="bar-wrap">
+                <div class="bar-track"><div class="bar-fill bar-ok" style="width:92%"></div></div>
+                <span class="bar-pct" style="color:var(--lime)">92%</span>
+              </div>
+            </td>
+            <td><span class="pill pill-ok">✓ On track</span></td>
+            <td><button class="btn btn-outline" style="font-size:11px;padding:5px 10px">View</button></td>
+          </tr>
+          <tr onclick="openDrawer('gladys')" style="cursor:pointer;opacity:0.7">
+            <td><strong>Gladys Norton</strong><div style="font-size:11px;color:var(--muted)">New referral · Not yet started</div></td>
+            <td><span class="pill pill-cc">Norfolk CC</span></td>
+            <td class="right"><strong>10.5h</strong></td>
+            <td class="right" style="color:var(--muted)">0.0h</td>
+            <td>
+              <div class="bar-wrap">
+                <div class="bar-track"><div class="bar-fill bar-under" style="width:0%"></div></div>
+                <span class="bar-pct" style="color:var(--muted)">—</span>
+              </div>
+            </td>
+            <td><span class="pill" style="background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0">Not started</span></td>
+            <td><button class="btn btn-outline" style="font-size:11px;padding:5px 10px">View</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Dispute log -->
+    <div class="dispute-panel">
+      <div class="dispute-head">
+        <div class="dispute-title">📁 Dispute Log</div>
+        <button class="btn btn-outline" style="font-size:12px">+ Log Dispute</button>
+      </div>
+      <div class="dispute-body">
+        <div class="dispute-row">
+          <div class="dispute-dot" style="background:var(--coral)"></div>
+          <div class="dispute-info">
+            <div class="client">Irene Blackwell — May 2026</div>
+            <div class="detail">
+              Norfolk CC queried 2h underprovision (3 missed evening visits due to carer absence). <br>
+              <strong>GPS-verified visit log attached</strong> — all attended visits confirmed with timestamps. <br>
+              Explanation submitted: carer absence 19–21 May, cover arranged from 22 May. Awaiting CC response.
+            </div>
+          </div>
+          <div class="dispute-action">
+            <span class="pill" style="background:#fff7ed;color:#9a3412;border:1px solid #fed7aa">Pending</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Drawer -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer"></div>
+
+<div class="configr-bar">Demo built by <strong>Configr</strong> — finn.carrie@configr.uk · configr.uk &nbsp;·&nbsp; No obligation — just something to look at.</div>
+
+<script>
+const drawerData = {
+  irene: {
+    name: "Irene Blackwell", sub: "Mixed funding (Norfolk CC 14h + Private 7h) · June 2026",
+    commissioned: 21.0, delivered: 7.8, pct: 74, status: "critical",
+    controcc: "NCC-2018-002390",
+    weeks: [
+      { wk: "Wk 1 (2–8 Jun)", commissioned: 21, delivered: 7.8, note: "2 days complete" },
+    ],
+    visits: [
+      { date: "2 Jun", time: "07:32 – 08:34", dur: "62 min", gps: true, carer: "Claire B." },
+      { date: "2 Jun", time: "12:58 – 13:29", dur: "31 min", gps: true, carer: "Amy R." },
+      { date: "2 Jun", time: "18:05 – 18:51", dur: "46 min", gps: true, carer: "Sarah M." },
+      { date: "1 Jun", time: "07:29 – 08:32", dur: "63 min", gps: true, carer: "Ben T." },
+      { date: "1 Jun", time: "12:55 – 13:28", dur: "33 min", gps: true, carer: "Amy R." },
+      { date: "1 Jun", time: "18:02 – 18:50", dur: "48 min", gps: true, carer: "Sarah M." },
+    ],
+    note: "3 visits/day · All GPS verified · Dispute re May underprovision open with Norfolk CC"
+  },
+  margaret: {
+    name: "Margaret Holloway", sub: "Norfolk CC commissioned · June 2026",
+    commissioned: 14.0, delivered: 5.3, pct: 76, status: "under",
+    controcc: "NCC-2019-004821",
+    weeks: [
+      { wk: "Wk 1 (2–8 Jun)", commissioned: 14, delivered: 5.3, note: "2 days — 0.2h short" },
+    ],
+    visits: [
+      { date: "2 Jun", time: "08:03 – 08:49", dur: "46 min", gps: true, carer: "Sarah M." },
+      { date: "2 Jun", time: "13:04 – 13:33", dur: "29 min", gps: true, carer: "Ben T." },
+      { date: "1 Jun", time: "08:01 – 08:48", dur: "47 min", gps: true, carer: "Sarah M." },
+      { date: "1 Jun", time: "13:02 – 13:31", dur: "29 min", gps: true, carer: "Ben T." },
+    ],
+    note: "0.5h below commissioned this week — monitor and ensure full cover Sat/Sun"
+  },
+  derek: {
+    name: "Derek Simmons", sub: "Norfolk CC commissioned · June 2026",
+    commissioned: 10.5, delivered: 3.5, pct: 100, status: "ok",
+    controcc: "NCC-2021-007142",
+    weeks: [
+      { wk: "Wk 1 (2–8 Jun)", commissioned: 10.5, delivered: 3.5, note: "On track" },
+    ],
+    visits: [
+      { date: "2 Jun", time: "08:31 – 09:17", dur: "46 min", gps: true, carer: "Leanne W." },
+      { date: "1 Jun", time: "08:29 – 09:16", dur: "47 min", gps: true, carer: "Leanne W." },
+    ],
+    note: "All hours on track — no issues"
+  },
+  colin: {
+    name: "Colin Farrow", sub: "Private Pay · June 2026",
+    commissioned: 7.0, delivered: 1.6, pct: 92, status: "ok",
+    controcc: null,
+    weeks: [
+      { wk: "Wk 1 (2–8 Jun)", commissioned: 7, delivered: 1.6, note: "1 of 2 visits complete" },
+    ],
+    visits: [
+      { date: "2 Jun", time: "09:04 – 09:51", dur: "47 min", gps: true, carer: "Tom H." },
+    ],
+    note: "Private pay — not submitted to Controcc. Invoice to Patricia Farrow on 1 Jul."
+  },
+  gladys: {
+    name: "Gladys Norton", sub: "Norfolk CC commissioned · New referral",
+    commissioned: 10.5, delivered: 0, pct: 0, status: "new",
+    controcc: "NCC-2026-014502",
+    weeks: [],
+    visits: [],
+    note: "Not yet started — awaiting carer assignment and key safe installation. First visit target w/c 9 Jun."
+  }
+};
+
+function openDrawer(id){
+  const d = drawerData[id];
+  const pctColor = d.status==='ok'?'var(--lime)':d.status==='under'?'var(--amber)':d.status==='critical'?'var(--coral)':'var(--muted)';
+  const statusLabel = d.status==='ok'?'✓ On track':d.status==='under'?'↓ Monitor':d.status==='critical'?'⚠ Underprovision':'Not started';
+  const statusCls = d.status==='ok'?'pill-ok':d.status==='under'?'pill-under':d.status==='critical'?'pill-critical':'';
+
+  const weekRows = d.weeks.map(w=>`
+    <div class="week-row">
+      <div class="wk">${w.wk}</div>
+      <div class="hrs">${w.delivered}h of ${w.commissioned}h commissioned</div>
+      <div class="flag" style="color:${w.delivered>=w.commissioned?'var(--lime)':w.delivered/w.commissioned>0.85?'var(--amber)':'var(--coral)'}">${w.note}</div>
+    </div>`).join('') || '<div style="color:var(--muted);font-size:13px;padding:8px 0">No week data yet.</div>';
+
+  const visitRows = d.visits.map(v=>`
+    <div class="mini-visit">
+      <div class="date">${v.date}</div>
+      <div class="time">${v.time} · ${v.carer}</div>
+      <div class="dur">${v.dur}</div>
+      ${v.gps?'<div class="gps-dot" title="GPS verified"></div>':''}
+    </div>`).join('') || '<div style="color:var(--muted);font-size:13px;padding:8px 0">No visits recorded yet.</div>';
+
+  document.getElementById('drawer').innerHTML = `
+    <div class="drawer-head">
+      <div>
+        <div class="drawer-head-name">${d.name}</div>
+        <div class="drawer-head-sub">${d.sub}</div>
+      </div>
+      <button class="drawer-close" onclick="closeDrawer()">×</button>
+    </div>
+    <div class="drawer-body">
+      <div class="info-grid">
+        <div class="info-card"><div class="k">Commissioned</div><div class="v">${d.commissioned}h / week</div></div>
+        <div class="info-card"><div class="k">Delivered (Jun)</div><div class="v" style="color:${pctColor}">${d.delivered}h (${d.pct}%)</div></div>
+        <div class="info-card"><div class="k">Controcc Ref</div><div class="v" style="font-family:monospace;font-size:12px">${d.controcc||'N/A — Private'}</div></div>
+        <div class="info-card"><div class="k">Status</div><div class="v"><span class="pill ${statusCls}">${statusLabel}</span></div></div>
+        <div class="info-card full"><div class="k">Notes</div><div class="v" style="font-weight:500;font-size:13px">${d.note}</div></div>
+      </div>
+
+      <div class="section-title">Weekly Breakdown</div>
+      <div class="week-rows">${weekRows}</div>
+
+      <div class="section-title">Visit Log — GPS Verified Timestamps</div>
+      <div class="mini-log">${visitRows}</div>
+      ${d.visits.length?`<div style="margin-top:8px;font-size:12px;color:var(--muted)">🟢 Green dot = GPS verified at service user's address. Every timestamp is locked and cannot be edited after submission.</div>`:''}
+
+      <div style="margin-top:20px;display:flex;gap:10px">
+        ${d.status==='critical'||d.status==='under'?`<button class="btn btn-primary" style="flex:1">⚠ Log Dispute</button>`:''}
+        <button class="btn btn-outline" style="flex:1">⬇ Download Evidence Pack</button>
+      </div>
+    </div>`;
+
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+
+function closeDrawer(){
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+</script>
+</body>
+</html>

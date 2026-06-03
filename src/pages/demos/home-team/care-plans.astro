@@ -1,0 +1,612 @@
+---
+// The Home Team — care-plans demo, built by Configr
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Home Team — Care Plans</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --olive:      #4a5e25;
+    --olive-mid:  #5c7530;
+    --lime:       #8ab540;
+    --lime-light: #f0f7e0;
+    --coral:      #d4614a;
+    --coral-light:#fdf0ee;
+    --bg:         #f4f7f0;
+    --white:      #ffffff;
+    --border:     #dde8cf;
+    --text:       #1e2d10;
+    --muted:      #6b7c4a;
+    --amber:      #d4900a;
+    --amber-light:#fef8e8;
+    --blue:       #2563eb;
+    --blue-light: #eff6ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+
+  .topbar { background: var(--olive); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; height: 58px; position: sticky; top: 0; z-index: 50; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo { width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .brand-name { color: #fff; font-size: 16px; font-weight: 700; }
+  .brand-name span { color: rgba(255,255,255,0.6); font-weight: 400; font-size: 13px; display: block; }
+  .topbar-nav { display: flex; gap: 2px; }
+  .nav-item { color: rgba(255,255,255,0.65); font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-block; }
+  .nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .nav-item.active { background: rgba(255,255,255,0.18); color: #fff; font-weight: 600; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .demo-pill { background: var(--coral); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+  .avatar { width: 30px; height: 30px; background: var(--lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: #fff; }
+  .user-chip { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.8); font-size: 13px; }
+
+  .page { display: flex; height: calc(100vh - 58px); }
+
+  .sidebar { width: 220px; background: var(--white); border-right: 1px solid var(--border); padding: 16px 12px; flex-shrink: 0; overflow-y: auto; }
+  .sidebar-section { margin-bottom: 24px; }
+  .sidebar-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0 8px; margin-bottom: 6px; }
+  .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+  .sidebar-item:hover { background: var(--bg); color: var(--text); }
+  .sidebar-item.active { background: var(--lime-light); color: var(--olive); font-weight: 600; }
+  .sidebar-item .icon { font-size: 15px; width: 20px; text-align: center; }
+  .sidebar-badge { margin-left: auto; background: var(--coral); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+  .sidebar-badge.amber { background: var(--amber); }
+
+  .main { flex: 1; overflow-y: auto; padding: 24px 28px 80px; }
+
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .page-title { font-size: 22px; font-weight: 800; }
+  .page-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 9px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .btn-primary { background: var(--coral); color: #fff; }
+  .btn-primary:hover { background: #c0553f; }
+  .btn-outline { background: #fff; color: var(--olive); border: 1.5px solid var(--border); }
+  .btn-outline:hover { border-color: var(--olive); }
+  .btn-lime { background: var(--lime); color: #fff; }
+  .btn-lime:hover { background: #7aa030; }
+
+  .filters { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
+  .filter-input { font-family: inherit; font-size: 13px; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 9px; background: var(--white); color: var(--text); min-width: 220px; }
+  .filter-input:focus { outline: none; border-color: var(--olive); }
+  .filter-select { font-family: inherit; font-size: 13px; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 9px; background: var(--white); color: var(--text); }
+
+  /* Plan cards grid */
+  .plans-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+
+  .plan-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.15s, border-color 0.15s;
+  }
+  .plan-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74,94,37,0.12); border-color: #b8d890; }
+  .plan-card-head {
+    background: var(--olive);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .plan-card-head.review { background: var(--amber); }
+  .plan-card-head.new { background: var(--blue); }
+  .plan-name { color: #fff; font-weight: 700; font-size: 15px; }
+  .plan-meta { color: rgba(255,255,255,0.75); font-size: 12px; margin-top: 2px; }
+  .plan-status-chip { background: rgba(255,255,255,0.2); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+  .plan-body { padding: 14px 18px; }
+  .plan-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #f0f4ea; font-size: 13px; }
+  .plan-row:last-child { border-bottom: none; }
+  .plan-row .lbl { color: var(--muted); font-size: 12px; }
+  .plan-row .val { font-weight: 600; }
+  .plan-footer { padding: 12px 18px; background: #f8faf4; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+
+  .pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .pill-active { background: #e8f5d8; color: #3a6e10; border: 1px solid #c0e090; }
+  .pill-review { background: var(--amber-light); color: #8a5a00; border: 1px solid #f0d080; }
+  .pill-new { background: var(--blue-light); color: #1a4db8; border: 1px solid #bfdbfe; }
+  .pill-cc { background: var(--lime-light); color: var(--olive); border: 1px solid #c8e090; }
+  .pill-private { background: #f3f0ff; color: #5b21b6; border: 1px solid #ddd6fe; }
+  .pill-mixed { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+
+  /* Hours ring */
+  .hours-ring-wrap { display: flex; align-items: center; gap: 14px; padding: 12px 0; }
+  .ring-svg { flex-shrink: 0; }
+  .ring-label { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .ring-label strong { color: var(--text); font-size: 14px; }
+
+  /* Visit blocks */
+  .visit-blocks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .visit-block { border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .visit-block-head { background: var(--lime-light); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .visit-block-head .vtitle { font-weight: 700; font-size: 13px; color: var(--olive); }
+  .visit-block-head .vmeta { font-size: 12px; color: var(--muted); }
+  .visit-block-body { padding: 12px 14px; background: var(--white); }
+  .task-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; padding: 5px 0; border-bottom: 1px solid #f0f4ea; }
+  .task-item:last-child { border-bottom: none; }
+  .task-check { width: 20px; height: 20px; border-radius: 5px; background: var(--lime-light); border: 1.5px solid var(--lime); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--olive); flex-shrink: 0; margin-top: 1px; }
+  .task-detail { flex: 1; }
+  .task-name { font-weight: 600; }
+  .task-note { font-size: 12px; color: var(--muted); }
+
+  /* Meds table */
+  .med-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px; }
+  .med-table th { text-align: left; padding: 7px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1px solid var(--border); background: #f8faf4; }
+  .med-table td { padding: 9px 12px; border-bottom: 1px solid #f0f4ea; }
+  .med-table tr:last-child td { border-bottom: none; }
+
+  /* Carer assign strip */
+  .carer-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .carer-chip { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 20px; padding: 6px 12px 6px 6px; font-size: 13px; font-weight: 600; }
+  .carer-av-sm { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; }
+  .lead-tag { font-size: 10px; font-weight: 700; background: var(--lime-light); color: var(--olive); padding: 2px 6px; border-radius: 4px; }
+
+  /* Print styles */
+  .print-header { display: none; }
+  @media print {
+    .topbar, .sidebar, .filters, .plans-grid, .plan-footer, .btn, .demo-pill, .configr-bar { display: none !important; }
+    .overlay, .drawer { position: relative !important; transform: none !important; width: 100% !important; box-shadow: none !important; }
+    .print-header { display: block !important; }
+    .page { display: block; height: auto; }
+    .main { display: none; }
+  }
+
+  /* Drawer */
+  .overlay { position: fixed; inset: 0; background: rgba(30,45,16,0.4); z-index: 100; display: none; }
+  .overlay.open { display: block; }
+  .drawer { position: fixed; top: 0; right: 0; height: 100%; width: 580px; max-width: 96vw; background: var(--white); z-index: 110; transform: translateX(100%); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; box-shadow: -6px 0 24px rgba(0,0,0,0.12); }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head { padding: 20px 24px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--white); z-index: 2; display: flex; justify-content: space-between; align-items: flex-start; }
+  .drawer-head-inner .title { font-size: 18px; font-weight: 800; color: var(--text); }
+  .drawer-head-inner .sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .drawer-close { background: var(--bg); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; color: var(--muted); }
+  .drawer-body { padding: 22px 24px; }
+  .drawer-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+  .drawer-tab { padding: 10px 16px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: all 0.15s; }
+  .drawer-tab.active { color: var(--olive); border-bottom-color: var(--olive); }
+  .drawer-section { display: none; }
+  .drawer-section.active { display: block; }
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 10px; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .info-card { background: var(--bg); border-radius: 9px; padding: 11px 13px; }
+  .info-card .k { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 3px; }
+  .info-card .v { font-size: 13px; font-weight: 600; }
+  .info-card.full { grid-column: 1/3; }
+  .note-box { background: #fffbf0; border: 1px solid #f0d878; border-radius: 9px; padding: 12px 14px; font-size: 13px; color: #5a4000; margin-bottom: 16px; line-height: 1.6; }
+  .risk-tag { display: inline-block; background: var(--coral-light); border: 1px solid #f0b8a8; color: #8a2010; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 6px; margin: 2px; }
+  .risk-tag.amber { background: var(--amber-light); border-color: #f0d080; color: #7a5500; }
+  .risk-tag.low { background: var(--lime-light); border-color: #c0e090; color: #3a6010; }
+
+  .configr-bar { background: var(--olive); color: rgba(255,255,255,0.7); text-align: center; font-size: 12px; padding: 12px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 20; }
+  .configr-bar strong { color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">☕</div>
+    <div class="brand-name">The Home Team<span>Care Management · Norwich</span></div>
+  </div>
+  <div class="topbar-nav">
+    <a class="nav-item" href="service-users.html">Service Users</a>
+    <a class="nav-item active" href="care-plans.html">Care Plans</a>
+    <a class="nav-item" href="visit-log.html">Visit Logs</a>
+    <a class="nav-item" href="controcc-export.html">Controcc Export</a>
+  </div>
+  <div class="topbar-right">
+    <div class="demo-pill">DEMO</div>
+    <div class="user-chip"><div class="avatar">PS</div>Peter Shaw</div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Care Plans</div>
+      <div class="sidebar-item active"><span class="icon">📋</span>All Plans <span class="sidebar-badge" style="background:var(--lime)">5</span></div>
+      <div class="sidebar-item"><span class="icon">🔄</span>Due for Review <span class="sidebar-badge amber">2</span></div>
+      <div class="sidebar-item"><span class="icon">🆕</span>New / Draft</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Actions</div>
+      <div class="sidebar-item"><span class="icon">➕</span>New Care Plan</div>
+      <div class="sidebar-item"><span class="icon">⬇</span>Download All PDFs</div>
+      <div class="sidebar-item"><span class="icon">📨</span>Send to Carers</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Care Plans</div>
+        <div class="page-sub">5 active plans · 2 due for review · June 2026</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline">📨 Send All to Carers</button>
+        <button class="btn btn-primary">+ New Care Plan</button>
+      </div>
+    </div>
+
+    <div class="filters">
+      <input class="filter-input" placeholder="🔍  Search service user, carer, condition…">
+      <select class="filter-select">
+        <option>All statuses</option>
+        <option>Active</option>
+        <option>Due for Review</option>
+        <option>Draft</option>
+      </select>
+      <select class="filter-select">
+        <option>All funding</option>
+        <option>Norfolk CC</option>
+        <option>Private Pay</option>
+        <option>Mixed</option>
+      </select>
+    </div>
+
+    <div class="plans-grid" id="plansGrid"></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer"></div>
+
+<div class="configr-bar">Demo built by <strong>Configr</strong> — finn.carrie@configr.uk · configr.uk &nbsp;·&nbsp; No obligation — just something to look at.</div>
+
+<script>
+const CARER_COLORS = {'Sarah M.':'#4a5e25','Ben T.':'#8ab540','Leanne W.':'#d4614a','Tom H.':'#2563eb','Claire B.':'#7c3aed','Amy R.':'#0891b2'};
+
+const plans = [
+  {
+    id: 1,
+    user: "Margaret Holloway", age: 88,
+    address: "12 Laburnum Close, Thorpe St Andrew, Norwich NR7 0QT",
+    controcc: "NCC-2019-004821", funding: "Norfolk CC",
+    status: "Active", reviewStatus: "ok",
+    planStart: "12 Jan 2023", nextReview: "12 Jul 2026",
+    commissioned: 14, conditions: "Mild dementia, limited mobility",
+    carers: ["Sarah M.", "Ben T.", "Leanne W."], leadCarer: "Sarah M.",
+    visits: [
+      { label: "Morning Visit", days: "Mon–Fri", time: "8:00 AM", duration: "45 min",
+        tasks: [
+          { name: "Personal care", note: "Assist with washing, dressing. Prefers shower Tue/Thu." },
+          { name: "Medication prompt", note: "Amlodipine 5mg — check compliance, do not administer." },
+          { name: "Breakfast preparation", note: "Porridge or toast. Decaf tea only." },
+          { name: "General welfare check", note: "Note mood, mobility and any concerns in visit log." }
+        ]},
+      { label: "Lunchtime Visit", days: "Mon–Fri", time: "1:00 PM", duration: "30 min",
+        tasks: [
+          { name: "Lunch preparation", note: "Light meal. Refer to meal plan in kitchen folder." },
+          { name: "Welfare check", note: "" }
+        ]},
+      { label: "Weekend Morning", days: "Sat–Sun", time: "9:00 AM", duration: "60 min",
+        tasks: [
+          { name: "Personal care", note: "" },
+          { name: "Breakfast", note: "" },
+          { name: "Light housework", note: "Hoover lounge and kitchen only." },
+          { name: "Medication prompt", note: "" }
+        ]}
+    ],
+    medications: [
+      { name: "Amlodipine 5mg", time: "8:00 AM", route: "Oral", prompt: true, administer: false },
+      { name: "Donepezil 5mg", time: "Bedtime", route: "Oral", prompt: false, administer: false },
+    ],
+    risks: ["Falls risk (low)","Dementia — may be confused about time/place","Wandering risk at dusk"],
+    riskLevels: ["low","amber","amber"],
+    keyNotes: "Prefers female carers for personal care. Enjoys talking about her garden — a good way to engage. Daughter Janet visits most Sundays. Always knock and wait — she may take time to come to the door.",
+    access: "Key safe code 4821 (left of front door). Friendly Labrador — do not leave gate open. Ring bell twice."
+  },
+  {
+    id: 2,
+    user: "Derek Simmons", age: 80,
+    address: "47 Heartsease Lane, Norwich NR7 9EF",
+    controcc: "NCC-2021-007142", funding: "Norfolk CC",
+    status: "Active", reviewStatus: "review",
+    planStart: "5 Jun 2021", nextReview: "5 Jul 2026",
+    commissioned: 10.5, conditions: "Parkinson's disease, falls risk",
+    carers: ["Leanne W.", "Tom H."], leadCarer: "Leanne W.",
+    visits: [
+      { label: "Morning Visit", days: "Daily", time: "8:30 AM", duration: "45 min",
+        tasks: [
+          { name: "Personal care", note: "Use non-slip bath mat at all times. Do not leave unattended in bathroom." },
+          { name: "Medication prompt", note: "Madopar 62.5mg — must be taken before food. Check compliance." },
+          { name: "Breakfast preparation", note: "" },
+        ]},
+      { label: "Evening Visit", days: "Mon / Wed / Fri", time: "5:00 PM", duration: "30 min",
+        tasks: [
+          { name: "Meal preparation", note: "Soft foods preferred. See meal plan on fridge." },
+          { name: "Medication prompt", note: "Madopar 125mg evening dose." },
+        ]}
+    ],
+    medications: [
+      { name: "Madopar 62.5mg", time: "8:30 AM (before food)", route: "Oral", prompt: true, administer: false },
+      { name: "Madopar 125mg", time: "5:00 PM", route: "Oral", prompt: true, administer: false },
+      { name: "Ropinirole 2mg", time: "With meals x3", route: "Oral", prompt: true, administer: false },
+    ],
+    risks: ["High falls risk — Parkinson's","Freezing episodes when walking","Soft diet required — choking risk"],
+    riskLevels: ["red","red","amber"],
+    keyNotes: "Always record any tremor changes, freezing episodes or falls in the visit log immediately. Contact office if any fall occurs. Son Gary is next of kin — contact for any concerns.",
+    access: "Front door unlocked during visit window (Gary has been advised). No pets."
+  },
+  {
+    id: 3,
+    user: "Irene Blackwell", age: 92,
+    address: "8 Windmill Road, Sprowston, Norwich NR7 8TX",
+    controcc: "NCC-2018-002390", funding: "Mixed",
+    status: "Active", reviewStatus: "ok",
+    planStart: "18 Mar 2018", nextReview: "18 Sep 2026",
+    commissioned: 21, conditions: "Dementia (moderate), diabetes, limited mobility",
+    carers: ["Sarah M.", "Claire B.", "Ben T.", "Amy R."], leadCarer: "Sarah M.",
+    visits: [
+      { label: "Morning Visit", days: "Daily", time: "7:30 AM", duration: "60 min",
+        tasks: [
+          { name: "Personal care", note: "Full wash and dress. Prefers familiar faces — introduce yourself calmly." },
+          { name: "Blood sugar check", note: "Record reading in log. Alert office if <4 or >15." },
+          { name: "Medication administration", note: "Metformin 500mg with breakfast — office-authorised to administer." },
+          { name: "Breakfast preparation", note: "Diabetic-friendly. No sugary cereals. Porridge preferred." }
+        ]},
+      { label: "Lunchtime Visit", days: "Daily", time: "12:30 PM", duration: "30 min",
+        tasks: [
+          { name: "Lunch preparation", note: "Low-GI foods. Refer to meal plan." },
+          { name: "Medication prompt", note: "" },
+          { name: "Welfare check", note: "" }
+        ]},
+      { label: "Evening Visit", days: "Daily", time: "6:00 PM", duration: "45 min",
+        tasks: [
+          { name: "Dinner preparation", note: "" },
+          { name: "Personal care", note: "Evening wash, change into nightwear." },
+          { name: "Medication administration", note: "Metformin 500mg with evening meal." },
+          { name: "Bedtime routine", note: "Ensure all doors locked. Leave nightlight on." }
+        ]}
+    ],
+    medications: [
+      { name: "Metformin 500mg", time: "Morning (with food)", route: "Oral", prompt: false, administer: true },
+      { name: "Metformin 500mg", time: "Evening (with food)", route: "Oral", prompt: false, administer: true },
+      { name: "Amlodipine 5mg", time: "Morning", route: "Oral", prompt: true, administer: false },
+    ],
+    risks: ["Moderate dementia — may not recognise carers","Diabetes — hypo/hyperglycaemia risk","Limited mobility — hoist required for transfers","Night wandering risk"],
+    riskLevels: ["amber","red","red","amber"],
+    keyNotes: "14h Norfolk CC commissioned + 7h private pay top-up (invoiced to family monthly). Consistency is essential — Irene responds best to familiar carers. Always introduce yourself by name and sit at her level. Nephew Robert visits fortnightly.",
+    access: "Key safe code 2390 (left of front door). Hard of hearing — knock loudly and announce yourself. Hoist in bedroom — check training record before first visit."
+  },
+  {
+    id: 4,
+    user: "Colin Farrow", age: 75,
+    address: "22 Plumstead Road, Norwich NR1 4JT",
+    controcc: "", funding: "Private Pay",
+    status: "Active", reviewStatus: "ok",
+    planStart: "2 Feb 2024", nextReview: "2 Aug 2026",
+    commissioned: 7, conditions: "Post-stroke rehabilitation, limited right-side mobility",
+    carers: ["Tom H."], leadCarer: "Tom H.",
+    visits: [
+      { label: "Morning Visit (MWF)", days: "Mon / Wed / Fri", time: "9:00 AM", duration: "60 min",
+        tasks: [
+          { name: "Personal care", note: "Assist right side only — encourage independence on left." },
+          { name: "Mobility exercises", note: "Refer to blue physio folder in kitchen. 10 min exercises." },
+          { name: "Breakfast assistance", note: "" }
+        ]},
+      { label: "Morning Visit (T/Th)", days: "Tue / Thu", time: "9:00 AM", duration: "45 min",
+        tasks: [
+          { name: "Personal care", note: "" },
+          { name: "Medication prompt", note: "Aspirin 75mg, Atorvastatin 20mg — prompt only." }
+        ]}
+    ],
+    medications: [
+      { name: "Aspirin 75mg", time: "Morning (with food)", route: "Oral", prompt: true, administer: false },
+      { name: "Atorvastatin 20mg", time: "Morning", route: "Oral", prompt: true, administer: false },
+      { name: "Ramipril 5mg", time: "Morning", route: "Oral", prompt: true, administer: false },
+    ],
+    risks: ["Limited right-side mobility — trip hazard","Post-stroke fatigue — do not overexert during exercises"],
+    riskLevels: ["amber","amber"],
+    keyNotes: "Private pay client — invoice to Patricia Farrow (wife, lives at address) on 1st of each month. Physio exercises are critical — ensure they are completed and logged. Colin is motivated and cooperative.",
+    access: "Ring doorbell. Wife Patricia usually home. No key safe currently."
+  },
+  {
+    id: 5,
+    user: "Gladys Norton", age: 85,
+    address: "3 Hawthorn Drive, Hellesdon, Norwich NR6 5PR",
+    controcc: "NCC-2026-014502", funding: "Norfolk CC",
+    status: "Draft", reviewStatus: "new",
+    planStart: "TBC", nextReview: "TBC",
+    commissioned: 10.5, conditions: "Hip replacement recovery, anxiety",
+    carers: [], leadCarer: null,
+    visits: [
+      { label: "Morning Visit", days: "Daily", time: "9:00 AM", duration: "45 min",
+        tasks: [
+          { name: "Personal care", note: "Post hip surgery — follow physio guidance. Do not rush." },
+          { name: "Medication prompt", note: "Paracetamol 1g if in pain — confirm with family before first visit." },
+          { name: "Breakfast preparation", note: "" }
+        ]},
+      { label: "Lunchtime Visit", days: "Mon / Wed / Fri", time: "1:00 PM", duration: "30 min",
+        tasks: [
+          { name: "Lunch preparation", note: "" },
+          { name: "Welfare check", note: "Check pain levels. Log any concerns." }
+        ]}
+    ],
+    medications: [
+      { name: "Paracetamol 1g (PRN)", time: "As required — max 4/day", route: "Oral", prompt: true, administer: false },
+      { name: "Enoxaparin (injection)", time: "Daily — GP to confirm if still required", route: "Injection", prompt: false, administer: false },
+    ],
+    risks: ["Post hip surgery — falls risk","Anxiety — may be distressed by new carers"],
+    riskLevels: ["red","amber"],
+    keyNotes: "New referral from Norfolk CC — plan not yet finalised. First visit target w/c 9 Jun. Key safe to be installed before first visit (daughter Sandra arranging). Introduce the same carer for first 3 visits to reduce anxiety.",
+    access: "TBC — key safe being arranged. Contact daughter Sandra on 07445 221100 before first visit."
+  }
+];
+
+function initials(name){ return name ? name.split(' ').map(w=>w[0]).join('') : '?'; }
+
+function fundingPill(f){
+  const map = {"Norfolk CC":"pill-cc","Private Pay":"pill-private","Mixed":"pill-mixed"};
+  return `<span class="pill ${map[f]||''}">${f}</span>`;
+}
+
+function renderCards(){
+  const container = document.getElementById('plansGrid');
+  container.innerHTML = plans.map(p => {
+    const headCls = p.reviewStatus === 'review' ? 'review' : p.reviewStatus === 'new' ? 'new' : '';
+    const statusLabel = p.reviewStatus === 'review' ? '⚠️ Review Due' : p.reviewStatus === 'new' ? '🆕 Draft' : '✓ Active';
+    const carerAvatars = p.carers.length
+      ? `<div style="display:flex;gap:-4px">${p.carers.slice(0,3).map((c,i)=>`<div style="width:24px;height:24px;border-radius:50%;background:${CARER_COLORS[c]||'#999'};border:2px solid #fff;margin-left:${i?-6:0}px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">${initials(c)}</div>`).join('')}</div>`
+      : `<span style="font-size:12px;color:var(--coral);font-weight:600">No carers assigned</span>`;
+
+    return `<div class="plan-card" onclick="openDrawer(${p.id})">
+      <div class="plan-card-head ${headCls}">
+        <div>
+          <div class="plan-name">${p.user}</div>
+          <div class="plan-meta">Age ${p.age} · ${p.conditions.split(',')[0]}</div>
+        </div>
+        <div class="plan-status-chip">${statusLabel}</div>
+      </div>
+      <div class="plan-body">
+        <div class="plan-row"><span class="lbl">Controcc Ref</span><span class="val" style="font-family:monospace;font-size:12px">${p.controcc || '—'}</span></div>
+        <div class="plan-row"><span class="lbl">Funding</span><span class="val">${fundingPill(p.funding)}</span></div>
+        <div class="plan-row"><span class="lbl">Commissioned</span><span class="val">${p.commissioned}h/wk · ${p.visits.length} visit${p.visits.length!==1?'s':''}/day</span></div>
+        <div class="plan-row"><span class="lbl">Next Review</span><span class="val" style="${p.reviewStatus==='review'?'color:var(--amber)':''}">${p.nextReview}</span></div>
+        <div class="plan-row"><span class="lbl">Assigned Carers</span><span class="val">${carerAvatars}</span></div>
+      </div>
+      <div class="plan-footer">
+        <button class="btn btn-outline" style="flex:1;font-size:12px" onclick="event.stopPropagation();openDrawer(${p.id})">View Plan</button>
+        <button class="btn btn-lime" style="font-size:12px" onclick="event.stopPropagation()">⬇ PDF</button>
+        <button class="btn btn-outline" style="font-size:12px" onclick="event.stopPropagation()">📨 Send</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openDrawer(id){
+  const p = plans.find(x=>x.id===id);
+  const d = document.getElementById('drawer');
+
+  const carerChips = p.carers.length
+    ? p.carers.map(c=>`<div class="carer-chip"><div class="carer-av-sm" style="background:${CARER_COLORS[c]||'#999'}">${initials(c)}</div>${c}${c===p.leadCarer?'<span class="lead-tag">Lead</span>':''}</div>`).join('')
+    : `<div style="color:var(--coral);font-size:13px;font-weight:600">⚠️ No carers assigned — assign before plan goes live.</div>`;
+
+  const medRows = p.medications.map(m=>`<tr>
+    <td><strong>${m.name}</strong></td>
+    <td>${m.time}</td>
+    <td>${m.route}</td>
+    <td style="text-align:center">${m.prompt?'<span style="color:var(--lime);font-weight:700">✓</span>':'—'}</td>
+    <td style="text-align:center">${m.administer?'<span style="color:var(--coral);font-weight:700">✓ Authorised</span>':'—'}</td>
+  </tr>`).join('');
+
+  const riskTags = p.risks.map((r,i)=>`<span class="risk-tag ${p.riskLevels[i]==='red'?'':p.riskLevels[i]==='low'?'low':'amber'}">${r}</span>`).join('');
+
+  d.innerHTML = `
+    <div class="drawer-head">
+      <div class="drawer-head-inner">
+        <div class="title">Care Plan — ${p.user}</div>
+        <div class="sub">Last updated: 1 Jun 2026 · ${p.status}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-lime" style="font-size:12px">⬇ PDF for Carers</button>
+        <button class="drawer-close" onclick="closeDrawer()">×</button>
+      </div>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-tabs">
+        <div class="drawer-tab active" onclick="showTab('overview',this)">Overview</div>
+        <div class="drawer-tab" onclick="showTab('visits',this)">Visit Schedule & Tasks</div>
+        <div class="drawer-tab" onclick="showTab('medication',this)">Medication</div>
+        <div class="drawer-tab" onclick="showTab('risks',this)">Risks & Notes</div>
+        <div class="drawer-tab" onclick="showTab('carers',this)">Carers</div>
+      </div>
+
+      <div class="drawer-section active" id="tab-overview">
+        <div class="info-grid">
+          <div class="info-card"><div class="k">Service User</div><div class="v">${p.user}, age ${p.age}</div></div>
+          <div class="info-card"><div class="k">Funding</div><div class="v">${fundingPill(p.funding)}</div></div>
+          <div class="info-card"><div class="k">Controcc Ref</div><div class="v" style="font-family:monospace;font-size:12px">${p.controcc||'N/A — Private'}</div></div>
+          <div class="info-card"><div class="k">Commissioned Hours</div><div class="v">${p.commissioned}h / week</div></div>
+          <div class="info-card"><div class="k">Plan Started</div><div class="v">${p.planStart}</div></div>
+          <div class="info-card"><div class="k">Next Review</div><div class="v" style="${p.reviewStatus==='review'?'color:var(--amber);':''}">${p.nextReview}</div></div>
+          <div class="info-card full"><div class="k">Address</div><div class="v">${p.address}</div></div>
+          <div class="info-card full"><div class="k">Access Instructions</div><div class="v">${p.access}</div></div>
+          <div class="info-card full"><div class="k">Conditions</div><div class="v">${p.conditions}</div></div>
+        </div>
+        <div class="section-title">Risk Summary</div>
+        <div style="margin-bottom:16px">${riskTags}</div>
+        <div class="section-title">Assigned Carers</div>
+        <div class="carer-strip">${carerChips}</div>
+      </div>
+
+      <div class="drawer-section" id="tab-visits">
+        <div class="visit-blocks">
+          ${p.visits.map(v=>`
+            <div class="visit-block">
+              <div class="visit-block-head">
+                <div><div class="vtitle">${v.label}</div><div class="vmeta">${v.days} · ${v.time} · ${v.duration}</div></div>
+                <span style="font-size:12px;color:var(--olive);font-weight:600">${v.tasks.length} tasks</span>
+              </div>
+              <div class="visit-block-body">
+                ${v.tasks.map(t=>`<div class="task-item">
+                  <div class="task-check">✓</div>
+                  <div class="task-detail">
+                    <div class="task-name">${t.name}</div>
+                    ${t.note?`<div class="task-note">${t.note}</div>`:''}
+                  </div>
+                </div>`).join('')}
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="drawer-section" id="tab-medication">
+        <div class="note-box">⚠️ Only administer medication where explicitly authorised below. For prompt-only medications, remind the service user and record compliance in the visit log. Never administer without authorisation.</div>
+        <table class="med-table">
+          <thead><tr><th>Medication</th><th>Time</th><th>Route</th><th style="text-align:center">Prompt Only</th><th style="text-align:center">Administer</th></tr></thead>
+          <tbody>${medRows}</tbody>
+        </table>
+      </div>
+
+      <div class="drawer-section" id="tab-risks">
+        <div class="section-title">Identified Risks</div>
+        <div style="margin-bottom:16px">${riskTags}</div>
+        <div class="section-title">Key Notes for Carers</div>
+        <div class="note-box">${p.keyNotes}</div>
+        <div class="section-title">Access Instructions</div>
+        <div style="background:var(--bg);border-radius:9px;padding:12px 14px;font-size:13px;margin-bottom:16px">${p.access}</div>
+      </div>
+
+      <div class="drawer-section" id="tab-carers">
+        <div class="section-title">Assigned Care Team</div>
+        <div class="carer-strip" style="flex-direction:column;gap:10px">${p.carers.length
+          ? p.carers.map(c=>`<div class="carer-chip" style="border-radius:10px;padding:10px 14px">
+              <div class="carer-av-sm" style="background:${CARER_COLORS[c]||'#999'};width:34px;height:34px;font-size:12px">${initials(c)}</div>
+              <div><div style="font-weight:700">${c}</div><div style="font-size:12px;color:var(--muted)">Care Worker${c===p.leadCarer?' · Lead Carer':''}</div></div>
+              ${c===p.leadCarer?'<span class="lead-tag" style="margin-left:auto">Lead</span>':''}
+            </div>`).join('')
+          : '<div style="color:var(--coral);font-weight:600;font-size:13px">No carers assigned yet.</div>'
+        }</div>
+        <div style="margin-top:16px;display:flex;gap:10px">
+          <button class="btn btn-primary" style="flex:1">+ Assign Carer</button>
+          <button class="btn btn-outline">📨 Send Plan to All Carers</button>
+        </div>
+      </div>
+    </div>`;
+
+  document.querySelectorAll('.drawer-section').forEach((s,i)=>s.classList.toggle('active',i===0));
+  document.querySelectorAll('.drawer-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  document.getElementById('overlay').classList.add('open');
+  d.classList.add('open');
+}
+
+function closeDrawer(){
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+function showTab(name, el){
+  document.querySelectorAll('.drawer-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.drawer-section').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+renderCards();
+</script>
+</body>
+</html>
