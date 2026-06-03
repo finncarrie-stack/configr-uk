@@ -4,8 +4,8 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: 'https://finncarrie-stack.github.io',
-  base: '/configr-uk',
+  // Hosted on Vercel — served from the domain root (no base path).
+  // `site` is set to the production domain once confirmed.
   vite: {
     plugins: [tailwindcss()]
   }
