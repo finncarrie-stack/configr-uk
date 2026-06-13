@@ -1,0 +1,312 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ruark Payroll — Direct Payment Clients</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:       #1a2e4a;
+    --navy-mid:   #243c5e;
+    --blue:       #2563eb;
+    --blue-light: #eff6ff;
+    --teal:       #0891b2;
+    --teal-light: #ecfeff;
+    --green:      #16a34a;
+    --green-light:#f0fdf4;
+    --amber:      #d97706;
+    --amber-light:#fffbeb;
+    --coral:      #dc2626;
+    --coral-light:#fef2f2;
+    --bg:         #f1f5f9;
+    --white:      #ffffff;
+    --border:     #e2e8f0;
+    --text:       #0f172a;
+    --muted:      #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+
+  .topbar { background: var(--navy); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; height: 58px; position: sticky; top: 0; z-index: 50; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo { width: 36px; height: 36px; background: rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .brand-name { color: #fff; font-size: 16px; font-weight: 700; }
+  .brand-name span { color: rgba(255,255,255,0.55); font-weight: 400; font-size: 13px; display: block; }
+  .topbar-nav { display: flex; gap: 2px; }
+  .nav-item { color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-block; }
+  .nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .nav-item.active { background: rgba(255,255,255,0.15); color: #fff; font-weight: 600; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .demo-pill { background: var(--teal); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+  .avatar { width: 30px; height: 30px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: #fff; }
+  .user-chip { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.8); font-size: 13px; }
+
+  .page { display: flex; height: calc(100vh - 58px); }
+
+  .sidebar { width: 220px; background: var(--white); border-right: 1px solid var(--border); padding: 16px 12px; flex-shrink: 0; overflow-y: auto; }
+  .sidebar-section { margin-bottom: 24px; }
+  .sidebar-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0 8px; margin-bottom: 6px; }
+  .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; }
+  .sidebar-item:hover { background: var(--bg); color: var(--text); }
+  .sidebar-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+  .sidebar-item .icon { font-size: 15px; width: 20px; text-align: center; }
+  .sidebar-badge { margin-left: auto; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; color: #fff; }
+
+  .main { flex: 1; overflow-y: auto; padding: 24px 28px 80px; }
+
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
+  .page-title { font-size: 22px; font-weight: 800; }
+  .page-sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 9px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-outline { background: #fff; color: var(--navy); border: 1.5px solid var(--border); }
+  .btn-outline:hover { border-color: var(--navy); }
+
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 24px; }
+  .stat { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .stat .n { font-size: 26px; font-weight: 800; line-height: 1; }
+  .stat .l { font-size: 11px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+
+  .month-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; }
+  .month-bar select { font-family: inherit; font-size: 14px; font-weight: 600; border: none; background: transparent; color: var(--text); cursor: pointer; }
+  .month-bar span { font-size: 13px; color: var(--muted); }
+
+  .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead { background: #f8fafc; }
+  th { padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1px solid var(--border); }
+  td { padding: 13px 16px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr.clickable { cursor: pointer; }
+  tr.clickable:hover td { background: #f8faff; }
+
+  .pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .pill-ok { background: var(--green-light); color: var(--green); border: 1px solid #bbf7d0; }
+  .pill-pending { background: var(--amber-light); color: var(--amber); border: 1px solid #fde68a; }
+  .pill-approved { background: var(--blue-light); color: var(--blue); border: 1px solid #bfdbfe; }
+  .pill-new { background: #f1f5f9; color: var(--muted); border: 1px solid var(--border); }
+  .pill-alert { background: var(--coral-light); color: var(--coral); border: 1px solid #fecaca; }
+
+  .balance-bar { display: flex; align-items: center; gap: 8px; }
+  .bar-track { background: #e2e8f0; border-radius: 4px; height: 7px; width: 90px; overflow: hidden; flex-shrink: 0; }
+  .bar-fill { height: 100%; border-radius: 4px; }
+  .bar-ok { background: var(--green); }
+  .bar-low { background: var(--amber); }
+  .bar-over { background: var(--coral); }
+
+  .overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.4); z-index: 100; display: none; }
+  .overlay.open { display: block; }
+  .drawer { position: fixed; top: 0; right: 0; height: 100%; width: 480px; max-width: 96vw; background: var(--white); z-index: 110; transform: translateX(100%); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; box-shadow: -6px 0 24px rgba(0,0,0,0.12); }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head { background: var(--navy); padding: 20px 24px; display: flex; align-items: flex-start; justify-content: space-between; position: sticky; top: 0; z-index: 2; }
+  .drawer-head-name { color: #fff; font-size: 17px; font-weight: 800; }
+  .drawer-head-sub { color: rgba(255,255,255,0.65); font-size: 12px; margin-top: 2px; }
+  .drawer-close { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; }
+  .drawer-body { padding: 20px 24px; }
+  .d-section { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 16px 0 8px; }
+  .d-section:first-child { margin-top: 0; }
+  .d-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .d-card { background: var(--bg); border-radius: 9px; padding: 10px 12px; }
+  .d-card.full { grid-column: 1/3; }
+  .d-card .k { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 3px; }
+  .d-card .v { font-size: 13px; font-weight: 700; }
+  .action-btns { display: flex; gap: 8px; margin-top: 16px; }
+  .action-btns .btn { flex: 1; justify-content: center; }
+  .btn-navy { background: var(--navy); color: #fff; }
+  .btn-teal { background: var(--teal); color: #fff; }
+
+  .configr-bar { background: var(--navy); color: rgba(255,255,255,0.6); text-align: center; font-size: 12px; padding: 12px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 20; }
+  .configr-bar strong { color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">💷</div>
+    <div class="brand-name">Ruark Payroll<span>Direct Payment Management</span></div>
+  </div>
+  <div class="topbar-nav">
+    <a class="nav-item active" href="/demos/ruark-payroll">Clients</a>
+    <a class="nav-item" href="/demos/ruark-payroll/care-plans">Care Plans</a>
+    <a class="nav-item" href="/demos/ruark-payroll/timesheets">Timesheets</a>
+    <a class="nav-item" href="#">Approval</a>
+    <a class="nav-item" href="#">Export</a>
+  </div>
+  <div class="topbar-right">
+    <div class="demo-pill">DEMO</div>
+    <div class="user-chip"><div class="avatar">SR</div>Sarah R.</div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Clients</div>
+      <a class="sidebar-item active" href="/demos/ruark-payroll"><span class="icon">👥</span>All Clients</a>
+      <a class="sidebar-item" href="/demos/ruark-payroll"><span class="icon">🆕</span>New This Month <span class="sidebar-badge" style="background:#64748b">2</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">This Month (June)</div>
+      <a class="sidebar-item" href="/demos/ruark-payroll/timesheets"><span class="icon">📋</span>Timesheets <span class="sidebar-badge" style="background:var(--amber)">4</span></a>
+      <a class="sidebar-item" href="#"><span class="icon">✅</span>Awaiting Approval <span class="sidebar-badge" style="background:var(--blue)">3</span></a>
+      <a class="sidebar-item" href="#"><span class="icon">📤</span>Ready to Export <span class="sidebar-badge" style="background:var(--green)">5</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Alerts</div>
+      <a class="sidebar-item" href="#"><span class="icon">⚠️</span>Over Budget <span class="sidebar-badge" style="background:var(--coral)">1</span></a>
+      <a class="sidebar-item" href="#"><span class="icon">📭</span>Missing Timesheets <span class="sidebar-badge" style="background:var(--amber)">2</span></a>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Direct Payment Clients</div>
+        <div class="page-sub">12 active clients · June 2026</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline">⬇ Export list</button>
+        <button class="btn btn-primary">+ Add client</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat"><div class="n" style="color:var(--navy)">12</div><div class="l">Active Clients</div></div>
+      <div class="stat"><div class="n" style="color:var(--amber)">4</div><div class="l">Timesheets In</div></div>
+      <div class="stat"><div class="n" style="color:var(--blue)">3</div><div class="l">Awaiting Approval</div></div>
+      <div class="stat"><div class="n" style="color:var(--green)">5</div><div class="l">Approved (Jun)</div></div>
+      <div class="stat"><div class="n" style="color:var(--coral)">1</div><div class="l">Over Budget</div></div>
+    </div>
+
+    <!-- Month selector -->
+    <div class="month-bar">
+      <span style="font-size:13px;font-weight:600;color:var(--text)">Viewing:</span>
+      <select>
+        <option>June 2026</option>
+        <option>May 2026</option>
+        <option>April 2026</option>
+      </select>
+      <span>· 12 clients · 9 timesheets outstanding</span>
+    </div>
+
+    <!-- Client table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>PA (Personal Assistant)</th>
+            <th>Local Authority</th>
+            <th>Monthly Budget</th>
+            <th>Balance Remaining</th>
+            <th>Timesheet</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="clientTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer"></div>
+
+<div class="configr-bar">Demo built by <strong>Configr</strong> — finn.carrie@configr.uk · configr.uk &nbsp;·&nbsp; No obligation — just something to look at.</div>
+
+<script>
+const clients = [
+  { id:'c01', name:'Margaret Holloway', pa:'Kevin Marsh', la:'Norfolk County Council', ref:'NCC-DP-2021-4821', budget:1240.00, spent:820.00, tsStatus:'Submitted', alert:false },
+  { id:'c02', name:'Derek Simmons',     pa:'Lena Parr',   la:'Norfolk County Council', ref:'NCC-DP-2019-3301', budget:980.00,  spent:980.00, tsStatus:'Approved', alert:false },
+  { id:'c03', name:'Irene Blackwell',   pa:'Tom Hughes',  la:'Norfolk County Council', ref:'NCC-DP-2018-2390', budget:1560.00, spent:1680.00, tsStatus:'Submitted', alert:true },
+  { id:'c04', name:'Colin Farrow',      pa:'Amy Reed',    la:'Suffolk County Council', ref:'SCC-DP-2020-0811', budget:760.00,  spent:420.00, tsStatus:'Not submitted', alert:false },
+  { id:'c05', name:'Gladys Norton',     pa:'Ben Carter',  la:'Norfolk County Council', ref:'NCC-DP-2026-1450', budget:840.00,  spent:840.00, tsStatus:'Approved', alert:false },
+  { id:'c06', name:'Arthur Banks',      pa:'Claire Dix',  la:'Norfolk County Council', ref:'NCC-DP-2022-5512', budget:1120.00, spent:640.00, tsStatus:'Not submitted', alert:false },
+  { id:'c07', name:'Rose Calloway',     pa:'Mark Evans',  la:'Suffolk County Council', ref:'SCC-DP-2023-0092', budget:680.00,  spent:680.00, tsStatus:'Approved', alert:false },
+  { id:'c08', name:'Frank Burrows',     pa:'Diane Webb',  la:'Norfolk County Council', ref:'NCC-DP-2020-4101', budget:900.00,  spent:580.00, tsStatus:'Submitted', alert:false },
+  { id:'c09', name:'Vera Hutchinson',   pa:'Paul Stone',  la:'Norfolk County Council', ref:'NCC-DP-2017-1183', budget:1400.00, spent:980.00, tsStatus:'Approved', alert:false },
+  { id:'c10', name:'Harold Danes',      pa:'Sue Finch',   la:'Suffolk County Council', ref:'SCC-DP-2024-0330', budget:560.00,  spent:0,      tsStatus:'Not submitted', alert:false },
+  { id:'c11', name:'Edith Cromwell',    pa:'Jon Park',    la:'Norfolk County Council', ref:'NCC-DP-2021-6630', budget:800.00,  spent:800.00, tsStatus:'Awaiting approval', alert:false },
+  { id:'c12', name:'Stanley Price',     pa:'Rachel Fox',  la:'Norfolk County Council', ref:'NCC-DP-2023-9981', budget:1050.00, spent:620.00, tsStatus:'Awaiting approval', alert:false },
+];
+
+const tsStatusPill = {
+  'Submitted':         'pill-pending',
+  'Approved':          'pill-ok',
+  'Not submitted':     'pill-new',
+  'Awaiting approval': 'pill-approved',
+};
+
+function renderTable(){
+  document.getElementById('clientTable').innerHTML = clients.map(c => {
+    const remaining = c.budget - c.spent;
+    const pct = Math.min(100, Math.round((c.spent / c.budget) * 100));
+    const barClass = c.alert ? 'bar-over' : pct >= 95 ? 'bar-low' : 'bar-ok';
+    const remainColor = c.alert ? 'color:var(--coral);font-weight:700' : pct >= 95 ? 'color:var(--amber);font-weight:700' : '';
+    return `<tr class="clickable" onclick="openDrawer('${c.id}')">
+      <td>
+        <div style="font-weight:700">${c.name}</div>
+        <div style="font-size:11px;color:var(--muted);font-family:monospace">${c.ref}</div>
+      </td>
+      <td>${c.pa}</td>
+      <td style="font-size:12px;color:var(--muted)">${c.la}</td>
+      <td style="font-weight:700">£${c.budget.toFixed(2)}</td>
+      <td>
+        <div class="balance-bar">
+          <div class="bar-track"><div class="bar-fill ${barClass}" style="width:${pct}%"></div></div>
+          <span style="font-size:12px;${remainColor}">${c.alert?'⚠ ':''}£${Math.abs(remaining).toFixed(2)}${c.alert?' over':' left'}</span>
+        </div>
+      </td>
+      <td><span class="pill ${tsStatusPill[c.tsStatus]||'pill-new'}">${c.tsStatus}</span></td>
+      <td><button class="btn btn-outline" style="font-size:11px;padding:5px 10px" onclick="event.stopPropagation();openDrawer('${c.id}')">View</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function openDrawer(id){
+  const c = clients.find(x=>x.id===id);
+  const remaining = c.budget - c.spent;
+  const pct = Math.min(100, Math.round((c.spent / c.budget) * 100));
+  document.getElementById('drawer').innerHTML = `
+    <div class="drawer-head">
+      <div>
+        <div class="drawer-head-name">${c.name}</div>
+        <div class="drawer-head-sub">${c.ref} · ${c.la}</div>
+      </div>
+      <button class="drawer-close" onclick="closeDrawer()">×</button>
+    </div>
+    <div class="drawer-body">
+      <div class="d-section">Client Details</div>
+      <div class="d-grid">
+        <div class="d-card"><div class="k">Personal Assistant</div><div class="v">${c.pa}</div></div>
+        <div class="d-card"><div class="k">Local Authority</div><div class="v" style="font-size:12px">${c.la}</div></div>
+        <div class="d-card"><div class="k">Monthly Budget</div><div class="v" style="color:var(--navy)">£${c.budget.toFixed(2)}</div></div>
+        <div class="d-card"><div class="k">Spent This Month</div><div class="v" style="color:${c.alert?'var(--coral)':'var(--text)'}">£${c.spent.toFixed(2)}</div></div>
+        <div class="d-card"><div class="k">Balance Remaining</div><div class="v" style="color:${c.alert?'var(--coral)':pct>=95?'var(--amber)':'var(--green)'}">${c.alert?'⚠ OVER BUDGET':('£'+Math.abs(remaining).toFixed(2)+' remaining')}</div></div>
+        <div class="d-card"><div class="k">Timesheet Status</div><div class="v"><span class="pill ${tsStatusPill[c.tsStatus]||'pill-new'}">${c.tsStatus}</span></div></div>
+      </div>
+      <div class="action-btns">
+        <button class="btn btn-navy" onclick="window.location.href='/demos/ruark-payroll/care-plans?client=${c.id}'">📋 View Care Plan</button>
+        <button class="btn btn-teal" onclick="window.location.href='/demos/ruark-payroll/timesheets?client=${c.id}'">📄 View Timesheet</button>
+      </div>
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+
+function closeDrawer(){
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+renderTable();
+</script>
+</body>
+</html>

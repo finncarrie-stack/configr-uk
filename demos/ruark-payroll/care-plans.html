@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ruark Payroll — Care Plans</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:#1a2e4a; --navy-mid:#243c5e; --blue:#2563eb; --blue-light:#eff6ff;
+    --teal:#0891b2; --teal-light:#ecfeff; --green:#16a34a; --green-light:#f0fdf4;
+    --amber:#d97706; --amber-light:#fffbeb; --coral:#dc2626; --coral-light:#fef2f2;
+    --bg:#f1f5f9; --white:#ffffff; --border:#e2e8f0; --text:#0f172a; --muted:#64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+  .topbar { background: var(--navy); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; height: 58px; position: sticky; top: 0; z-index: 50; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo { width: 36px; height: 36px; background: rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .brand-name { color: #fff; font-size: 16px; font-weight: 700; }
+  .brand-name span { color: rgba(255,255,255,0.55); font-weight: 400; font-size: 13px; display: block; }
+  .topbar-nav { display: flex; gap: 2px; }
+  .nav-item { color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-block; }
+  .nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .nav-item.active { background: rgba(255,255,255,0.15); color: #fff; font-weight: 600; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .demo-pill { background: var(--teal); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+  .avatar { width: 30px; height: 30px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: #fff; }
+  .user-chip { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.8); font-size: 13px; }
+  .page { display: flex; height: calc(100vh - 58px); }
+  .sidebar { width: 220px; background: var(--white); border-right: 1px solid var(--border); padding: 16px 12px; flex-shrink: 0; overflow-y: auto; }
+  .sidebar-section { margin-bottom: 24px; }
+  .sidebar-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0 8px; margin-bottom: 6px; }
+  .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; }
+  .sidebar-item:hover { background: var(--bg); color: var(--text); }
+  .sidebar-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+  .sidebar-item .icon { font-size: 15px; width: 20px; text-align: center; }
+  .sidebar-badge { margin-left: auto; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; color: #fff; }
+  .main { flex: 1; overflow-y: auto; padding: 24px 28px 80px; }
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
+  .page-title { font-size: 22px; font-weight: 800; }
+  .page-sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 9px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-outline { background: #fff; color: var(--navy); border: 1.5px solid var(--border); }
+  .btn-outline:hover { border-color: var(--navy); }
+  .btn-navy { background: var(--navy); color: #fff; }
+  .btn-teal { background: var(--teal); color: #fff; }
+
+  /* Client selector */
+  .client-strip { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .client-chip { padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--muted); transition: all 0.15s; }
+  .client-chip.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .client-chip:hover:not(.active) { border-color: var(--navy); color: var(--navy); }
+
+  /* Care plan card */
+  .plan-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 20px; }
+  .plan-head { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); padding: 20px 24px; color: #fff; display: flex; align-items: flex-start; justify-content: space-between; }
+  .plan-head-name { font-size: 20px; font-weight: 800; }
+  .plan-head-meta { font-size: 13px; opacity: 0.7; margin-top: 3px; }
+  .plan-status-pill { background: rgba(255,255,255,0.15); color: #fff; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.25); }
+  .plan-body { padding: 24px; }
+  .plan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+  .plan-stat { background: var(--bg); border-radius: 10px; padding: 14px 16px; }
+  .plan-stat .k { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 5px; }
+  .plan-stat .v { font-size: 22px; font-weight: 800; line-height: 1; }
+  .plan-stat .sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  /* Schedule table */
+  .section-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--text); }
+  .schedule-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px; }
+  .schedule-table th { background: #f8fafc; padding: 9px 14px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .schedule-table td { padding: 11px 14px; border-bottom: 1px solid #f1f5f9; }
+  .schedule-table tr:last-child td { border-bottom: none; }
+
+  /* History */
+  .history-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--bg); border-radius: 8px; margin-bottom: 6px; font-size: 13px; }
+  .history-row .month { font-weight: 700; min-width: 100px; }
+  .history-row .amount { font-weight: 700; color: var(--navy); min-width: 80px; }
+  .history-row .status { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 12px; }
+  .status-paid { background: var(--green-light); color: var(--green); }
+  .status-processing { background: var(--blue-light); color: var(--blue); }
+
+  .pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .pill-ok { background: var(--green-light); color: var(--green); border: 1px solid #bbf7d0; }
+  .pill-amber { background: var(--amber-light); color: var(--amber); border: 1px solid #fde68a; }
+
+  .upload-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 24px; text-align: center; color: var(--muted); font-size: 13px; cursor: pointer; transition: all 0.15s; }
+  .upload-zone:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+
+  .configr-bar { background: var(--navy); color: rgba(255,255,255,0.6); text-align: center; font-size: 12px; padding: 12px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 20; }
+  .configr-bar strong { color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">💷</div>
+    <div class="brand-name">Ruark Payroll<span>Direct Payment Management</span></div>
+  </div>
+  <div class="topbar-nav">
+    <a class="nav-item" href="clients.html">Clients</a>
+    <a class="nav-item active" href="care-plans.html">Care Plans</a>
+    <a class="nav-item" href="timesheets.html">Timesheets</a>
+    <a class="nav-item" href="approval.html">Approval</a>
+    <a class="nav-item" href="export.html">Export</a>
+  </div>
+  <div class="topbar-right">
+    <div class="demo-pill">DEMO</div>
+    <div class="user-chip"><div class="avatar">SR</div>Sarah R.</div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Clients</div>
+      <a class="sidebar-item" href="clients.html"><span class="icon">👥</span>All Clients</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">This Month (June)</div>
+      <a class="sidebar-item" href="timesheets.html"><span class="icon">📋</span>Timesheets <span class="sidebar-badge" style="background:var(--amber)">4</span></a>
+      <a class="sidebar-item" href="approval.html"><span class="icon">✅</span>Awaiting Approval <span class="sidebar-badge" style="background:var(--blue)">3</span></a>
+      <a class="sidebar-item" href="export.html"><span class="icon">📤</span>Ready to Export <span class="sidebar-badge" style="background:var(--green)">5</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Care Plans</div>
+      <a class="sidebar-item active"><span class="icon">📋</span>View / Edit</a>
+      <a class="sidebar-item"><span class="icon">⬆</span>Upload New Plan</a>
+      <a class="sidebar-item"><span class="icon">🔄</span>Due for Review <span class="sidebar-badge" style="background:var(--amber)">3</span></a>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Care Plans</div>
+        <div class="page-sub">Commissioned hours, rates, and monthly funding per client</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline">⬆ Upload Care Plan</button>
+      </div>
+    </div>
+
+    <!-- Client selector -->
+    <div class="client-strip" id="clientStrip"></div>
+
+    <!-- Plan detail -->
+    <div id="planDetail"></div>
+  </div>
+</div>
+
+<div class="configr-bar">Demo built by <strong>Configr</strong> — finn.carrie@configr.uk · configr.uk &nbsp;·&nbsp; No obligation — just something to look at.</div>
+
+<script>
+const clients = [
+  {
+    id:'c01', name:'Margaret Holloway', pa:'Kevin Marsh', la:'Norfolk County Council', ref:'NCC-DP-2021-4821',
+    budget:1240.00, hourlyRate:15.50, hoursPerWeek:20.0, startDate:'01 Apr 2026', reviewDate:'01 Oct 2026',
+    tasks: ['Personal care (morning)', 'Meal preparation', 'Medication prompts', 'Companionship / social activities'],
+    history: [
+      { month:'May 2026', hours:80.0, amount:1240.00, status:'Paid' },
+      { month:'Apr 2026', hours:80.0, amount:1240.00, status:'Paid' },
+      { month:'Mar 2026', hours:78.5, amount:1216.75, status:'Paid' },
+    ]
+  },
+  {
+    id:'c02', name:'Derek Simmons', pa:'Lena Parr', la:'Norfolk County Council', ref:'NCC-DP-2019-3301',
+    budget:980.00, hourlyRate:14.00, hoursPerWeek:17.5, startDate:'15 Jan 2024', reviewDate:'15 Jul 2026',
+    tasks: ['Personal care', 'Physiotherapy exercises', 'Transport to appointments', 'Shopping'],
+    history: [
+      { month:'May 2026', hours:70.0, amount:980.00, status:'Paid' },
+      { month:'Apr 2026', hours:70.0, amount:980.00, status:'Paid' },
+      { month:'Mar 2026', hours:70.0, amount:980.00, status:'Paid' },
+    ]
+  },
+  {
+    id:'c03', name:'Irene Blackwell', pa:'Tom Hughes', la:'Norfolk County Council', ref:'NCC-DP-2018-2390',
+    budget:1560.00, hourlyRate:15.00, hoursPerWeek:26.0, startDate:'03 Mar 2022', reviewDate:'03 Sep 2026',
+    tasks: ['Personal care (morning + evening)', 'Dementia support', 'Medication administration', 'Meal prep × 3/day', 'Night check (2×/week)'],
+    history: [
+      { month:'May 2026', hours:104.0, amount:1560.00, status:'Paid' },
+      { month:'Apr 2026', hours:104.0, amount:1560.00, status:'Paid' },
+      { month:'Mar 2026', hours:102.0, amount:1530.00, status:'Paid' },
+    ]
+  },
+  {
+    id:'c04', name:'Colin Farrow', pa:'Amy Reed', la:'Suffolk County Council', ref:'SCC-DP-2020-0811',
+    budget:760.00, hourlyRate:14.50, hoursPerWeek:13.0, startDate:'20 Jun 2023', reviewDate:'20 Jun 2026',
+    tasks: ['Personal care (mornings)', 'Meal preparation', 'Light domestic tasks'],
+    history: [
+      { month:'May 2026', hours:52.0, amount:754.00, status:'Paid' },
+      { month:'Apr 2026', hours:52.0, amount:754.00, status:'Paid' },
+      { month:'Mar 2026', hours:50.5, amount:732.25, status:'Paid' },
+    ]
+  },
+];
+
+let activeId = 'c01';
+
+function renderStrip(){
+  document.getElementById('clientStrip').innerHTML = clients.map(c =>
+    `<div class="client-chip ${c.id===activeId?'active':''}" onclick="selectClient('${c.id}')">${c.name}</div>`
+  ).join('');
+}
+
+function selectClient(id){
+  activeId = id;
+  renderStrip();
+  renderPlan();
+}
+
+function renderPlan(){
+  const c = clients.find(x=>x.id===activeId);
+  const monthlyHours = Math.round(c.hoursPerWeek * 4.33 * 10) / 10;
+  const reviewClass = c.reviewDate.includes('Jun 2026') || c.reviewDate.includes('Jul 2026') ? 'pill-amber' : 'pill-ok';
+
+  const historyHtml = c.history.map(h => `
+    <div class="history-row">
+      <div class="month">${h.month}</div>
+      <div>${h.hours}h worked</div>
+      <div class="amount">£${h.amount.toFixed(2)}</div>
+      <span class="status ${h.status==='Paid'?'status-paid':'status-processing'}">${h.status}</span>
+    </div>`).join('');
+
+  document.getElementById('planDetail').innerHTML = `
+    <div class="plan-card">
+      <div class="plan-head">
+        <div>
+          <div class="plan-head-name">${c.name}</div>
+          <div class="plan-head-meta">${c.ref} · PA: ${c.pa} · ${c.la}</div>
+        </div>
+        <div class="plan-status-pill">✓ Active Plan</div>
+      </div>
+      <div class="plan-body">
+        <div class="plan-grid">
+          <div class="plan-stat"><div class="k">Weekly Hours</div><div class="v" style="color:var(--navy)">${c.hoursPerWeek}h</div><div class="sub">Commissioned</div></div>
+          <div class="plan-stat"><div class="k">Monthly Hours</div><div class="v" style="color:var(--navy)">${monthlyHours}h</div><div class="sub">Approx (×4.33 wks)</div></div>
+          <div class="plan-stat"><div class="k">Hourly Rate</div><div class="v" style="color:var(--teal)">£${c.hourlyRate.toFixed(2)}</div><div class="sub">PA wage rate</div></div>
+          <div class="plan-stat"><div class="k">Monthly Budget</div><div class="v" style="color:var(--green)">£${c.budget.toFixed(2)}</div><div class="sub">Max payable</div></div>
+        </div>
+
+        <div class="section-title">Plan Details</div>
+        <table class="schedule-table">
+          <thead><tr><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--muted)">Plan start date</td><td style="font-weight:600">${c.startDate}</td></tr>
+            <tr><td style="color:var(--muted)">Next review date</td><td><span class="pill ${reviewClass}">${c.reviewDate}</span></td></tr>
+            <tr><td style="color:var(--muted)">Funding source</td><td style="font-weight:600">${c.la} — Direct Payment</td></tr>
+            <tr><td style="color:var(--muted)">PA name</td><td style="font-weight:600">${c.pa}</td></tr>
+            <tr><td style="color:var(--muted)">Hourly rate</td><td style="font-weight:600">£${c.hourlyRate.toFixed(2)}/hr</td></tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">Care Tasks</div>
+        <table class="schedule-table" style="margin-bottom:24px">
+          <thead><tr><th>Task</th><th>Frequency</th></tr></thead>
+          <tbody>
+            ${c.tasks.map((t,i) => `<tr><td style="font-weight:500">${t}</td><td style="color:var(--muted)">As per care plan</td></tr>`).join('')}
+          </tbody>
+        </table>
+
+        <div class="section-title">Payment History</div>
+        ${historyHtml}
+
+        <div style="margin-top:20px;display:flex;gap:10px">
+          <button class="btn btn-navy" onclick="window.location.href='timesheets.html'">📄 View Current Timesheet</button>
+          <button class="btn btn-outline">⬆ Upload New Care Plan</button>
+          <button class="btn btn-outline">⬇ Download PDF</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+renderStrip();
+renderPlan();
+</script>
+</body>
+</html>

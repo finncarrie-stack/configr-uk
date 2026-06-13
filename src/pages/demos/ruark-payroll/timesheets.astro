@@ -1,0 +1,291 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ruark Payroll — Timesheets</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:#1a2e4a;--navy-mid:#243c5e;--blue:#2563eb;--blue-light:#eff6ff;
+    --teal:#0891b2;--teal-light:#ecfeff;--green:#16a34a;--green-light:#f0fdf4;
+    --amber:#d97706;--amber-light:#fffbeb;--coral:#dc2626;--coral-light:#fef2f2;
+    --bg:#f1f5f9;--white:#ffffff;--border:#e2e8f0;--text:#0f172a;--muted:#64748b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh;}
+  .topbar{background:var(--navy);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:50;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand-logo{width:36px;height:36px;background:rgba(255,255,255,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+  .brand-name{color:#fff;font-size:16px;font-weight:700;}
+  .brand-name span{color:rgba(255,255,255,0.55);font-weight:400;font-size:13px;display:block;}
+  .topbar-nav{display:flex;gap:2px;}
+  .nav-item{color:rgba(255,255,255,0.6);font-size:13px;font-weight:500;padding:8px 14px;border-radius:8px;cursor:pointer;transition:all 0.15s;text-decoration:none;display:inline-block;}
+  .nav-item:hover{background:rgba(255,255,255,0.1);color:#fff;}
+  .nav-item.active{background:rgba(255,255,255,0.15);color:#fff;font-weight:600;}
+  .topbar-right{display:flex;align-items:center;gap:10px;}
+  .demo-pill{background:var(--teal);color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;}
+  .avatar{width:30px;height:30px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;}
+  .user-chip{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.8);font-size:13px;}
+  .page{display:flex;height:calc(100vh - 58px);}
+  .sidebar{width:220px;background:var(--white);border-right:1px solid var(--border);padding:16px 12px;flex-shrink:0;}
+  .sidebar-section{margin-bottom:24px;}
+  .sidebar-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);padding:0 8px;margin-bottom:6px;}
+  .sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.15s;text-decoration:none;}
+  .sidebar-item:hover{background:var(--bg);color:var(--text);}
+  .sidebar-item.active{background:var(--blue-light);color:var(--blue);font-weight:600;}
+  .sidebar-item .icon{font-size:15px;width:20px;text-align:center;}
+  .sidebar-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;color:#fff;}
+  .main{flex:1;overflow-y:auto;padding:24px 28px 80px;}
+  .page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;}
+  .page-title{font-size:22px;font-weight:800;}
+  .page-sub{font-size:13px;color:var(--muted);margin-top:3px;}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all 0.15s;font-family:inherit;}
+  .btn-primary{background:var(--blue);color:#fff;}
+  .btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--border);}
+  .btn-outline:hover{border-color:var(--navy);}
+  .btn-green{background:var(--green);color:#fff;}
+  .btn-amber{background:var(--amber);color:#fff;}
+
+  .alert-banner{border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;display:flex;align-items:center;gap:10px;}
+  .alert-banner.coral{background:var(--coral-light);border:1px solid #fecaca;color:var(--coral);}
+  .alert-banner.amber{background:var(--amber-light);border:1px solid #fde68a;color:var(--amber);}
+
+  .table-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead{background:#f8fafc;}
+  th{padding:10px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);border-bottom:1px solid var(--border);}
+  td{padding:13px 16px;border-bottom:1px solid #f1f5f9;vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  tr.clickable{cursor:pointer;}
+  tr.clickable:hover td{background:#f8faff;}
+  tr.flagged td{background:#fffbeb;}
+  tr.alert td{background:#fff5f5;}
+
+  .pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;}
+  .pill-ok{background:var(--green-light);color:var(--green);border:1px solid #bbf7d0;}
+  .pill-pending{background:var(--amber-light);color:var(--amber);border:1px solid #fde68a;}
+  .pill-approved{background:var(--blue-light);color:var(--blue);border:1px solid #bfdbfe;}
+  .pill-new{background:#f1f5f9;color:var(--muted);border:1px solid var(--border);}
+  .pill-over{background:var(--coral-light);color:var(--coral);border:1px solid #fecaca;}
+
+  .bar-wrap{display:flex;align-items:center;gap:8px;}
+  .bar-track{background:#e2e8f0;border-radius:4px;height:7px;width:80px;overflow:hidden;flex-shrink:0;}
+  .bar-fill{height:100%;border-radius:4px;}
+  .bar-ok{background:var(--green);}
+  .bar-over{background:var(--coral);}
+  .bar-warn{background:var(--amber);}
+
+  /* Timesheet detail panel */
+  .ts-panel{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px;}
+  .ts-head{background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:18px 24px;color:#fff;display:flex;align-items:center;justify-content:space-between;}
+  .ts-head-name{font-size:17px;font-weight:800;}
+  .ts-head-meta{font-size:12px;opacity:0.7;margin-top:2px;}
+  .ts-body{padding:20px 24px;}
+  .ts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+  .ts-stat{background:var(--bg);border-radius:9px;padding:12px 14px;}
+  .ts-stat .k{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:4px;}
+  .ts-stat .v{font-size:20px;font-weight:800;line-height:1;}
+  .week-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  .week-table th{background:#f8fafc;padding:9px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+  .week-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;}
+  .week-table tr:last-child td{border-bottom:none;}
+
+  .overlay{position:fixed;inset:0;background:rgba(15,23,42,0.4);z-index:100;display:none;}
+  .overlay.open{display:block;}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:520px;max-width:96vw;background:var(--white);z-index:110;transform:translateX(100%);transition:transform 0.25s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;box-shadow:-6px 0 24px rgba(0,0,0,0.12);}
+  .drawer.open{transform:translateX(0);}
+  .drawer-head{background:var(--navy);padding:20px 24px;display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;z-index:2;}
+  .drawer-head-name{color:#fff;font-size:17px;font-weight:800;}
+  .drawer-head-sub{color:rgba(255,255,255,0.65);font-size:12px;margin-top:2px;}
+  .drawer-close{background:rgba(255,255,255,0.15);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:18px;}
+  .drawer-body{padding:20px 24px;}
+  .d-section{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin:16px 0 8px;}
+  .d-section:first-child{margin-top:0;}
+  .d-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+  .d-card{background:var(--bg);border-radius:9px;padding:10px 12px;}
+  .d-card.full{grid-column:1/3;}
+  .d-card .k{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:3px;}
+  .d-card .v{font-size:13px;font-weight:700;}
+
+  .configr-bar{background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:12px;padding:12px;position:fixed;bottom:0;left:0;right:0;z-index:20;}
+  .configr-bar strong{color:#fff;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">💷</div>
+    <div class="brand-name">Ruark Payroll<span>Direct Payment Management</span></div>
+  </div>
+  <div class="topbar-nav">
+    <a class="nav-item" href="/demos/ruark-payroll">Clients</a>
+    <a class="nav-item" href="/demos/ruark-payroll/care-plans">Care Plans</a>
+    <a class="nav-item active" href="/demos/ruark-payroll/timesheets">Timesheets</a>
+    <a class="nav-item" href="#">Approval</a>
+    <a class="nav-item" href="#">Export</a>
+  </div>
+  <div class="topbar-right">
+    <div class="demo-pill">DEMO</div>
+    <div class="user-chip"><div class="avatar">SR</div>Sarah R.</div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">June 2026</div>
+      <a class="sidebar-item active" href="/demos/ruark-payroll/timesheets"><span class="icon">📋</span>All Timesheets</a>
+      <a class="sidebar-item" href="/demos/ruark-payroll/timesheets"><span class="icon">📭</span>Not Submitted <span class="sidebar-badge" style="background:var(--muted)">3</span></a>
+      <a class="sidebar-item" href="/demos/ruark-payroll/timesheets"><span class="icon">📥</span>Submitted <span class="sidebar-badge" style="background:var(--amber)">4</span></a>
+      <a class="sidebar-item" href="#"><span class="icon">✅</span>Awaiting Approval <span class="sidebar-badge" style="background:var(--blue)">3</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Alerts</div>
+      <a class="sidebar-item" href="#"><span class="icon">⚠️</span>Over Budget <span class="sidebar-badge" style="background:var(--coral)">1</span></a>
+      <a class="sidebar-item" href="#"><span class="icon">🔔</span>Chased (no reply) <span class="sidebar-badge" style="background:var(--muted)">2</span></a>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Timesheets — June 2026</div>
+        <div class="page-sub">12 clients · 4 submitted · 3 awaiting approval · 3 not yet submitted</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline">📧 Chase missing</button>
+      </div>
+    </div>
+
+    <div class="alert-banner coral">⚠️ <strong>Irene Blackwell</strong> — timesheet exceeds monthly budget by £120.00. Review before approving.</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>PA</th>
+            <th>Hours Claimed</th>
+            <th>Amount</th>
+            <th>vs Budget</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tsTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer"></div>
+
+<div class="configr-bar">Demo built by <strong>Configr</strong> — finn.carrie@configr.uk · configr.uk &nbsp;·&nbsp; No obligation — just something to look at.</div>
+
+<script>
+const timesheets = [
+  { id:'t01', client:'Irene Blackwell',   pa:'Tom Hughes',  ref:'NCC-DP-2018-2390', budget:1560.00, claimed:112.0, rate:15.00, status:'Submitted',         over:true  },
+  { id:'t02', client:'Margaret Holloway', pa:'Kevin Marsh', ref:'NCC-DP-2021-4821', budget:1240.00, claimed:80.0,  rate:15.50, status:'Submitted',         over:false },
+  { id:'t03', client:'Frank Burrows',     pa:'Diane Webb',  ref:'NCC-DP-2020-4101', budget:900.00,  claimed:40.0,  rate:14.50, status:'Submitted',         over:false },
+  { id:'t04', client:'Stanley Price',     pa:'Rachel Fox',  ref:'NCC-DP-2023-9981', budget:1050.00, claimed:44.0,  rate:14.00, status:'Submitted',         over:false },
+  { id:'t05', client:'Edith Cromwell',    pa:'Jon Park',    ref:'NCC-DP-2021-6630', budget:800.00,  claimed:56.0,  rate:14.25, status:'Awaiting approval', over:false },
+  { id:'t06', client:'Vera Hutchinson',   pa:'Paul Stone',  ref:'NCC-DP-2017-1183', budget:1400.00, claimed:70.0,  rate:14.00, status:'Awaiting approval', over:false },
+  { id:'t07', client:'Rose Calloway',     pa:'Mark Evans',  ref:'SCC-DP-2023-0092', budget:680.00,  claimed:48.0,  rate:14.25, status:'Awaiting approval', over:false },
+  { id:'t08', client:'Derek Simmons',     pa:'Lena Parr',   ref:'NCC-DP-2019-3301', budget:980.00,  claimed:70.0,  rate:14.00, status:'Approved',         over:false },
+  { id:'t09', client:'Gladys Norton',     pa:'Ben Carter',  ref:'NCC-DP-2026-1450', budget:840.00,  claimed:60.0,  rate:14.00, status:'Approved',         over:false },
+  { id:'t10', client:'Colin Farrow',      pa:'Amy Reed',    ref:'SCC-DP-2020-0811', budget:760.00,  claimed:0,     rate:14.50, status:'Not submitted',    over:false },
+  { id:'t11', client:'Arthur Banks',      pa:'Claire Dix',  ref:'NCC-DP-2022-5512', budget:1120.00, claimed:0,     rate:15.00, status:'Not submitted',    over:false },
+  { id:'t12', client:'Harold Danes',      pa:'Sue Finch',   ref:'SCC-DP-2024-0330', budget:560.00,  claimed:0,     rate:14.00, status:'Not submitted',    over:false },
+];
+
+const pillMap = {
+  'Submitted':         'pill-pending',
+  'Approved':          'pill-ok',
+  'Not submitted':     'pill-new',
+  'Awaiting approval': 'pill-approved',
+};
+
+function renderTable(){
+  document.getElementById('tsTable').innerHTML = timesheets.map(t => {
+    const amount = t.claimed * t.rate;
+    const diff = amount - t.budget;
+    const pct = t.budget > 0 ? Math.min(110, Math.round((amount / t.budget) * 100)) : 0;
+    const barClass = t.over ? 'bar-over' : pct >= 90 ? 'bar-warn' : 'bar-ok';
+    const diffStr = t.claimed === 0 ? '—' : (t.over ? `<span style="color:var(--coral);font-weight:700">⚠ +£${diff.toFixed(2)}</span>` : `<span style="color:var(--green);font-weight:600">£${(t.budget-amount).toFixed(2)} under</span>`);
+    return `<tr class="clickable ${t.over?'alert':''}" onclick="openDrawer('${t.id}')">
+      <td><div style="font-weight:700">${t.client}</div><div style="font-size:11px;color:var(--muted);font-family:monospace">${t.ref}</div></td>
+      <td style="color:var(--muted)">${t.pa}</td>
+      <td style="font-weight:700">${t.claimed > 0 ? t.claimed+'h' : '—'}</td>
+      <td style="font-weight:700">${t.claimed > 0 ? '£'+amount.toFixed(2) : '—'}</td>
+      <td>
+        ${t.claimed > 0 ? `<div style="display:flex;align-items:center;gap:8px">
+          <div class="bar-track"><div class="bar-fill ${barClass}" style="width:${Math.min(100,pct)}%"></div></div>
+          ${diffStr}
+        </div>` : '<span style="color:var(--muted);font-size:12px">Awaiting submission</span>'}
+      </td>
+      <td><span class="pill ${pillMap[t.status]||'pill-new'}">${t.status}</span></td>
+      <td><button class="btn btn-outline" style="font-size:11px;padding:5px 10px" onclick="event.stopPropagation();openDrawer('${t.id}')">View</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function openDrawer(id){
+  const t = timesheets.find(x=>x.id===id);
+  const amount = t.claimed * t.rate;
+  const weeks = t.claimed > 0 ? [
+    { w:'Week 1', days:'Mon–Fri', hours: +(t.claimed/4).toFixed(1) },
+    { w:'Week 2', days:'Mon–Fri', hours: +(t.claimed/4).toFixed(1) },
+    { w:'Week 3', days:'Mon–Fri', hours: +(t.claimed/4).toFixed(1) },
+    { w:'Week 4', days:'Mon–Fri', hours: +(t.claimed/4).toFixed(1) },
+  ] : [];
+
+  const weekRows = weeks.map(w=>`<tr>
+    <td style="font-weight:600">${w.w}</td>
+    <td>${w.days}</td>
+    <td style="font-weight:700">${w.hours}h</td>
+    <td style="color:var(--muted)">£${(w.hours*t.rate).toFixed(2)}</td>
+  </tr>`).join('');
+
+  const actionBtns = t.status === 'Submitted' || t.status === 'Awaiting approval'
+    ? `<button class="btn btn-green" style="flex:1" onclick="window.location.href='/demos/ruark-payroll'">✓ Go to Approval</button>`
+    : t.status === 'Not submitted'
+    ? `<button class="btn btn-amber" style="flex:1">📧 Chase ${t.pa}</button>`
+    : `<button class="btn btn-outline" style="flex:1">✓ Approved</button>`;
+
+  document.getElementById('drawer').innerHTML = `
+    <div class="drawer-head">
+      <div><div class="drawer-head-name">${t.client}</div><div class="drawer-head-sub">${t.ref} · PA: ${t.pa}</div></div>
+      <button class="drawer-close" onclick="closeDrawer()">×</button>
+    </div>
+    <div class="drawer-body">
+      ${t.over ? '<div style="background:var(--coral-light);border:1px solid #fecaca;border-radius:9px;padding:12px 14px;font-size:13px;color:var(--coral);font-weight:600;margin-bottom:14px">⚠ Over budget — timesheet exceeds monthly allocation. Review before approving.</div>' : ''}
+      <div class="d-section">Timesheet Summary</div>
+      <div class="d-grid">
+        <div class="d-card"><div class="k">Hours Claimed</div><div class="v">${t.claimed > 0 ? t.claimed+'h' : 'Not submitted'}</div></div>
+        <div class="d-card"><div class="k">Amount</div><div class="v" style="color:${t.over?'var(--coral)':'var(--navy)'}">${t.claimed > 0 ? '£'+amount.toFixed(2) : '—'}</div></div>
+        <div class="d-card"><div class="k">Monthly Budget</div><div class="v">£${t.budget.toFixed(2)}</div></div>
+        <div class="d-card"><div class="k">Status</div><div class="v"><span class="pill ${pillMap[t.status]||'pill-new'}">${t.status}</span></div></div>
+        <div class="d-card"><div class="k">Hourly Rate</div><div class="v">£${t.rate.toFixed(2)}/hr</div></div>
+        <div class="d-card"><div class="k">Variance</div><div class="v" style="color:${t.over?'var(--coral)':'var(--green)'}">${t.claimed>0?(t.over?'⚠ +£'+(amount-t.budget).toFixed(2)+' over':'£'+(t.budget-amount).toFixed(2)+' under'):'—'}</div></div>
+      </div>
+      ${weeks.length ? `
+      <div class="d-section">Weekly Breakdown</div>
+      <table class="week-table">
+        <thead><tr><th>Week</th><th>Days</th><th>Hours</th><th>Amount</th></tr></thead>
+        <tbody>${weekRows}</tbody>
+      </table>` : '<div style="color:var(--muted);font-size:13px;padding:8px 0">No timesheet submitted yet.</div>'}
+      <div style="display:flex;gap:8px;margin-top:16px">${actionBtns}<button class="btn btn-outline" onclick="closeDrawer()">Close</button></div>
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+function closeDrawer(){ document.getElementById('overlay').classList.remove('open'); document.getElementById('drawer').classList.remove('open'); }
+renderTable();
+</script>
+</body>
+</html>

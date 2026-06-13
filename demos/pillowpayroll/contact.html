@@ -1,0 +1,657 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get in touch — PillowPayroll</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:      #2C4A7C;
+      --navy-dark: #1C3260;
+      --sky:       #6DB5C8;
+      --mist:      #E8F4F8;
+      --linen:     #F7F8FA;
+      --ink:       #1C2433;
+      --ink-mid:   #4A5568;
+      --ink-light: #718096;
+      --border:    #E2E8F0;
+      --white:     #FFFFFF;
+      --radius:    10px;
+      --danger:    #E53E3E;
+      --success:   #276749;
+      --success-bg:#EBF8EF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--linen);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── NAV ── */
+    nav {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 26px;
+      background: var(--navy);
+      border-radius: 7px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-icon::after {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1.5px solid var(--sky);
+      border-radius: 4px;
+    }
+
+    .logo-icon span {
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-text {
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .logo-text em { font-style: normal; color: var(--navy); }
+
+    .nav-back {
+      font-size: 14px;
+      color: var(--ink-mid);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s;
+    }
+
+    .nav-back:hover { color: var(--ink); }
+
+    /* ── PAGE LAYOUT ── */
+    .page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 64px 32px 96px;
+      display: grid;
+      grid-template-columns: 1fr 480px;
+      gap: 64px;
+      align-items: start;
+    }
+
+    /* ── LEFT SIDE ── */
+    .page-info { padding-top: 8px; }
+
+    .page-tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--navy);
+      background: var(--mist);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+      letter-spacing: 0.04em;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 16px;
+    }
+
+    .page-sub {
+      font-size: 16px;
+      color: var(--ink-mid);
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+
+    .trust-items {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .trust-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--mist);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .trust-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--navy);
+    }
+
+    .trust-text strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .trust-text span {
+      font-size: 13px;
+      color: var(--ink-light);
+    }
+
+    /* ── FORM CARD ── */
+    .form-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 36px;
+    }
+
+    /* Enquiry type toggle */
+    .type-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .type-btn {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--linen);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink-mid);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .type-btn:hover {
+      border-color: var(--navy);
+      color: var(--navy);
+    }
+
+    .type-btn.active {
+      border-color: var(--navy);
+      background: var(--mist);
+      color: var(--navy);
+    }
+
+    .type-btn .type-icon { font-size: 16px; display: block; margin-bottom: 4px; }
+
+    /* Form fields */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group.full { grid-column: 1 / -1; }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    label .req { color: var(--navy); }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--ink);
+      background: var(--white);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+      appearance: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(44, 74, 124, 0.1);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--ink-light);
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23718096' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.6;
+    }
+
+    /* Volume field — shown only for quote enquiries */
+    .volume-group { display: none; }
+    .volume-group.visible { display: block; }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--navy);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .submit-btn:hover { background: var(--navy-dark); }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-note {
+      font-size: 12px;
+      color: var(--ink-light);
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    /* ── SUCCESS STATE ── */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .success-state.visible { display: block; }
+
+    .success-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--success-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .success-icon svg {
+      width: 28px;
+      height: 28px;
+      stroke: var(--success);
+    }
+
+    .success-state h2 {
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
+    .success-state p {
+      font-size: 15px;
+      color: var(--ink-mid);
+      margin-bottom: 28px;
+      line-height: 1.65;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink-mid);
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .btn-back:hover {
+      background: var(--linen);
+      color: var(--ink);
+    }
+
+    /* Hidden field */
+    .hidden { display: none; }
+
+    @media (max-width: 768px) {
+      .page { grid-template-columns: 1fr; gap: 40px; padding: 40px 20px 64px; }
+      .form-row { grid-template-columns: 1fr; }
+      h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon"><span>P</span></div>
+      <span class="logo-text">Pillow<em>Payroll</em></span>
+    </a>
+    <a href="index.html" class="nav-back">
+      ← Back to site
+    </a>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- LEFT INFO -->
+  <div class="page-info">
+    <span class="page-tag" id="page-tag">BOOK A DEMO</span>
+    <h1 id="page-title">Let's show you how PillowPayroll works.</h1>
+    <p class="page-sub" id="page-sub">Fill in the form and a member of our team will be in touch within one business day to arrange a time that suits you.</p>
+
+    <div class="trust-items">
+      <div class="trust-item">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </div>
+        <div class="trust-text">
+          <strong>Free, no-obligation call</strong>
+          <span>30 minutes with a payroll specialist — no pressure, just answers.</span>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="trust-text">
+          <strong>UK-based team</strong>
+          <span>You'll speak to someone who understands PAYE, RTI and UK payroll compliance.</span>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <div class="trust-text">
+          <strong>We respond within one business day</strong>
+          <span>Usually much sooner. We'll confirm a time that works for you.</span>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <div class="trust-text">
+          <strong>Trusted by 500+ organisations</strong>
+          <span>Schools, care providers, SMBs and more — all running payroll on PillowPayroll.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM CARD -->
+  <div class="form-card">
+
+    <!-- Success state -->
+    <div class="success-state" id="success-state">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6L9 17l-5-5"/>
+        </svg>
+      </div>
+      <h2>We've got your enquiry!</h2>
+      <p>Thanks for getting in touch. A member of our team will be in touch within one business day.</p>
+      <button class="btn-back" onclick="window.location.href='pillowpayroll-landing.html'">← Back to PillowPayroll</button>
+    </div>
+
+    <!-- Form -->
+    <form id="enquiry-form"
+          action="https://formspree.io/f/xnjrreew"
+          method="POST">
+
+      <!-- Formspree config: redirect to success page, set email subject -->
+      <input type="hidden" name="_next" id="next-url" value="" />
+      <input type="hidden" name="_subject" id="email-subject" value="New demo enquiry — PillowPayroll" />
+
+      <!-- Hidden field: enquiry type (updated by JS) -->
+      <input type="hidden" name="enquiry_type" id="enquiry-type-field" value="Book a Demo" />
+
+      <!-- Enquiry type toggle -->
+      <div class="type-toggle">
+        <div class="type-btn active" id="btn-demo" onclick="setType('demo')">
+          <span class="type-icon">📅</span>
+          Book a demo
+        </div>
+        <div class="type-btn" id="btn-quote" onclick="setType('quote')">
+          <span class="type-icon">💬</span>
+          Get a quote
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="first_name">First name <span class="req">*</span></label>
+          <input type="text" id="first_name" name="first_name" placeholder="Sarah" required />
+        </div>
+        <div class="form-group">
+          <label for="last_name">Last name <span class="req">*</span></label>
+          <input type="text" id="last_name" name="last_name" placeholder="Bennett" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Work email <span class="req">*</span></label>
+        <input type="email" id="email" name="email" placeholder="sarah@organisation.co.uk" required />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="phone">Phone number</label>
+          <input type="tel" id="phone" name="phone" placeholder="07700 900000" />
+        </div>
+        <div class="form-group">
+          <label for="organisation">Organisation name <span class="req">*</span></label>
+          <input type="text" id="organisation" name="organisation" placeholder="Northwave Care Ltd" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="sector">Sector <span class="req">*</span></label>
+        <select id="sector" name="sector" required>
+          <option value="" disabled selected>Select your sector</option>
+          <option value="Education / School Trust">Education / School Trust</option>
+          <option value="Healthcare / Care Provider">Healthcare / Care Provider</option>
+          <option value="Hospitality / Retail">Hospitality / Retail</option>
+          <option value="Construction / Trades">Construction / Trades</option>
+          <option value="Professional Services">Professional Services</option>
+          <option value="Charity / Non-profit">Charity / Non-profit</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="employee_count">Approximate number of employees <span class="req">*</span></label>
+        <select id="employee_count" name="employee_count" required>
+          <option value="" disabled selected>Select a range</option>
+          <option value="1–20">1–20</option>
+          <option value="21–50">21–50</option>
+          <option value="51–200">51–200</option>
+          <option value="201–500">201–500</option>
+          <option value="501–1,000">501–1,000</option>
+          <option value="1,001–5,000">1,001–5,000</option>
+          <option value="5,000+">5,000+</option>
+        </select>
+      </div>
+
+      <!-- Volume field — only shown for quote enquiries -->
+      <div class="form-group volume-group" id="volume-group">
+        <label for="monthly_payslips">Estimated monthly payslip volume</label>
+        <input type="number" id="monthly_payslips" name="monthly_payslips" placeholder="e.g. 6500" min="1" />
+      </div>
+
+      <div class="form-group">
+        <label for="service">Which service are you interested in?</label>
+        <select id="service" name="service">
+          <option value="Not sure yet">Not sure yet — happy to discuss</option>
+          <option value="Payroll Preparation">Payroll Preparation (we send payslips, you pay staff)</option>
+          <option value="Fully Managed Payroll">Fully Managed Payroll (we handle everything, inc. BACS)</option>
+          <option value="Both / unsure">Both options — please advise</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Anything else we should know?</label>
+        <textarea id="message" name="message" placeholder="e.g. we run weekly payroll, have 3 sites, or are currently switching from another provider…"></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submit-btn">
+        <span id="submit-label">Send enquiry</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <p class="form-note">We'll never share your details. By submitting you agree to our <a href="#" style="color:var(--navy);">Privacy Policy</a>.</p>
+    </form>
+  </div>
+
+</div>
+
+<script>
+  function setType(type) {
+    const isDemo = type === 'demo';
+
+    document.getElementById('btn-demo').classList.toggle('active', isDemo);
+    document.getElementById('btn-quote').classList.toggle('active', !isDemo);
+    document.getElementById('enquiry-type-field').value = isDemo ? 'Book a Demo' : 'Get a Quote';
+    document.getElementById('email-subject').value = isDemo
+      ? 'New demo enquiry — PillowPayroll'
+      : 'New quote request — PillowPayroll';
+    document.getElementById('volume-group').classList.toggle('visible', !isDemo);
+
+    if (isDemo) {
+      document.getElementById('page-tag').textContent = 'BOOK A DEMO';
+      document.getElementById('page-title').textContent = 'Let\'s show you how PillowPayroll works.';
+      document.getElementById('page-sub').textContent = 'Fill in the form and a member of our team will be in touch within one business day to arrange a time that suits you.';
+      document.getElementById('submit-label').textContent = 'Book my demo';
+    } else {
+      document.getElementById('page-tag').textContent = 'GET A QUOTE';
+      document.getElementById('page-title').textContent = 'Get a tailored quote for your organisation.';
+      document.getElementById('page-sub').textContent = 'Tell us about your payroll volume and we\'ll come back with a detailed quote — including optimised rates if you process 5,000+ payslips a month.';
+      document.getElementById('submit-label').textContent = 'Request my quote';
+    }
+  }
+
+  // Pre-select based on URL param
+  const params = new URLSearchParams(window.location.search);
+  setType(params.get('type') === 'quote' ? 'quote' : 'demo');
+  document.getElementById('next-url').value = window.location.origin + 'success.html';
+</script>
+
+  <!-- CONFIGR DEMO BANNER -->
+  <style>.demo-banner-bar{background:linear-gradient(135deg,#1565C0,#0D47A1);position:fixed;bottom:0;left:0;right:0;z-index:9999;padding:10px 24px;display:flex;align-items:center;justify-content:center;gap:16px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;}</style>
+  <div class="demo-banner-bar">
+    <span style="font-size:13px;font-weight:600;color:white;">Demo built by <strong>Configr</strong> — free preview of what your website could look like</span>
+    <a href="/contact" style="font-size:12px;font-weight:700;color:#1B2B4B;background:white;padding:6px 14px;border-radius:8px;text-decoration:none;">Get this website →</a>
+  </div>
+  <div style="height:52px;"></div>
+</body>
+</html>

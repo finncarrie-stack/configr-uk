@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Home Team — Service Users</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --olive:     #4a5e25;
+    --olive-mid: #5c7530;
+    --lime:      #8ab540;
+    --lime-light:#f0f7e0;
+    --coral:     #d4614a;
+    --coral-light:#fdf0ee;
+    --bg:        #f4f7f0;
+    --white:     #ffffff;
+    --border:    #dde8cf;
+    --text:      #1e2d10;
+    --muted:     #6b7c4a;
+    --amber:     #d4900a;
+    --amber-light:#fef8e8;
+    --blue:      #2563eb;
+    --blue-light:#eff6ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+
+  /* Top bar */
+  .topbar {
+    background: var(--olive);
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .brand-name { color: #fff; font-size: 16px; font-weight: 700; }
+  .brand-name span { color: rgba(255,255,255,0.6); font-weight: 400; font-size: 13px; display: block; }
+  .topbar-nav { display: flex; gap: 2px; }
+  .nav-item {
+    color: rgba(255,255,255,0.65);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .nav-item.active { background: rgba(255,255,255,0.18); color: #fff; font-weight: 600; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .demo-pill { background: var(--coral); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+  .user-chip { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.8); font-size: 13px; }
+  .avatar { width: 30px; height: 30px; background: var(--lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: #fff; }
+
+  /* Page */
+  .page { display: flex; height: calc(100vh - 58px); }
+
+  /* Sidebar */
+  .sidebar {
+    width: 220px;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    padding: 16px 12px;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+  .sidebar-section { margin-bottom: 24px; }
+  .sidebar-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0 8px; margin-bottom: 6px; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sidebar-item:hover { background: var(--bg); color: var(--text); }
+  .sidebar-item.active { background: var(--lime-light); color: var(--olive); font-weight: 600; }
+  .sidebar-item .icon { font-size: 15px; width: 20px; text-align: center; }
+  .sidebar-badge { margin-left: auto; background: var(--coral); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+  .sidebar-badge.green { background: var(--lime); }
+  .sidebar-badge.amber { background: var(--amber); }
+
+  /* Main content */
+  .main { flex: 1; overflow-y: auto; padding: 24px 28px; }
+
+  /* Page header */
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .page-title { font-size: 22px; font-weight: 800; color: var(--text); }
+  .page-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 16px; border-radius: 9px;
+    font-size: 13px; font-weight: 600;
+    border: none; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-primary { background: var(--coral); color: #fff; }
+  .btn-primary:hover { background: #c0553f; }
+  .btn-outline { background: #fff; color: var(--olive); border: 1.5px solid var(--border); }
+  .btn-outline:hover { border-color: var(--olive); }
+
+  /* Stats row */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+  .stat {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+  }
+  .stat .n { font-size: 26px; font-weight: 800; line-height: 1; }
+  .stat .l { font-size: 11px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .stat.coral .n { color: var(--coral); }
+  .stat.lime .n { color: var(--lime); }
+  .stat.amber .n { color: var(--amber); }
+  .stat.olive .n { color: var(--olive); }
+
+  /* Filters */
+  .filters { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+  .filter-input {
+    font-family: inherit; font-size: 13px;
+    padding: 8px 12px; border: 1.5px solid var(--border);
+    border-radius: 9px; background: var(--white); color: var(--text);
+    min-width: 220px;
+  }
+  .filter-input:focus { outline: none; border-color: var(--olive); }
+  .filter-select {
+    font-family: inherit; font-size: 13px;
+    padding: 8px 12px; border: 1.5px solid var(--border);
+    border-radius: 9px; background: var(--white); color: var(--text);
+  }
+  .filter-select:focus { outline: none; border-color: var(--olive); }
+
+  /* Table */
+  .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead { background: #f8faf4; }
+  th { padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1px solid var(--border); }
+  td { padding: 12px 16px; border-bottom: 1px solid #f0f4ea; color: var(--text); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr.clickable { cursor: pointer; transition: background 0.1s; }
+  tr.clickable:hover td { background: #f8fdf0; }
+
+  /* Pill */
+  .pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .pill-active { background: #e8f5d8; color: #3a6e10; border: 1px solid #c0e090; }
+  .pill-suspended { background: var(--amber-light); color: #8a5a00; border: 1px solid #f0d080; }
+  .pill-new { background: var(--blue-light); color: #1a4db8; border: 1px solid #bfdbfe; }
+  .pill-cc { background: var(--lime-light); color: var(--olive); border: 1px solid #c8e090; }
+  .pill-private { background: #f3f0ff; color: #5b21b6; border: 1px solid #ddd6fe; }
+  .pill-mixed { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+
+  /* Hours bar */
+  .hours-bar { display: flex; align-items: center; gap: 8px; }
+  .bar-track { background: #eef2e8; border-radius: 4px; height: 6px; width: 80px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; background: var(--lime); }
+  .bar-fill.over { background: var(--coral); }
+  .bar-fill.low { background: var(--amber); }
+
+  /* Avatar stack */
+  .carer-stack { display: flex; }
+  .carer-av { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; margin-left: -6px; }
+  .carer-av:first-child { margin-left: 0; }
+
+  /* Alert row */
+  .alert-row { background: #fffbf0; border: 1px solid #f0d878; border-radius: 10px; padding: 10px 16px; margin-bottom: 16px; font-size: 13px; color: #7a5500; display: flex; align-items: center; gap: 8px; }
+
+  /* Drawer */
+  .overlay { position: fixed; inset: 0; background: rgba(30,45,16,0.4); z-index: 100; display: none; }
+  .overlay.open { display: block; }
+  .drawer {
+    position: fixed; top: 0; right: 0; height: 100%; width: 520px; max-width: 95vw;
+    background: var(--white); z-index: 110;
+    transform: translateX(100%); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+    overflow-y: auto; box-shadow: -6px 0 24px rgba(0,0,0,0.12);
+    display: flex; flex-direction: column;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head {
+    background: var(--olive); padding: 20px 24px;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    position: sticky; top: 0; z-index: 2;
+  }
+  .drawer-head-name { color: #fff; font-size: 20px; font-weight: 800; }
+  .drawer-head-sub { color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 2px; }
+  .drawer-close { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; flex-shrink: 0; }
+  .drawer-body { padding: 22px 24px; flex: 1; }
+  .drawer-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 20px; }
+  .drawer-tab { padding: 10px 16px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
+  .drawer-tab.active { color: var(--olive); border-bottom-color: var(--olive); }
+  .drawer-section { display: none; }
+  .drawer-section.active { display: block; }
+
+  /* Info grid */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .info-card { background: var(--bg); border-radius: 10px; padding: 12px 14px; }
+  .info-card .k { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 4px; }
+  .info-card .v { font-size: 14px; font-weight: 600; color: var(--text); word-break: break-word; }
+  .info-card.full { grid-column: 1 / 3; }
+
+  /* Care plan */
+  .section-title { font-size: 13px; font-weight: 700; color: var(--olive); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+  .visit-schedule { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .visit-row {
+    background: var(--lime-light); border: 1px solid #c8e090; border-radius: 8px;
+    padding: 10px 14px; display: flex; align-items: center; gap: 12px;
+  }
+  .visit-day { font-weight: 700; font-size: 13px; color: var(--olive); width: 90px; flex-shrink: 0; }
+  .visit-time { font-size: 13px; color: var(--text); flex: 1; }
+  .visit-duration { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+
+  /* Tasks */
+  .task-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+  .task-item { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text); }
+  .task-check { width: 18px; height: 18px; border-radius: 4px; background: var(--lime-light); border: 1.5px solid var(--lime); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--olive); flex-shrink: 0; }
+
+  /* Carer cards */
+  .carer-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .carer-card {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; display: flex; align-items: center; gap: 12px;
+  }
+  .carer-avatar-lg { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0; }
+  .carer-info .name { font-weight: 700; font-size: 14px; }
+  .carer-info .role { font-size: 12px; color: var(--muted); }
+  .carer-lead { margin-left: auto; background: var(--lime-light); color: var(--olive); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+
+  /* Alerts section */
+  .alert-card { border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; font-size: 13px; display: flex; gap: 10px; }
+  .alert-card.red { background: #fdf2f0; border: 1px solid #f5c0b8; color: #8a2010; }
+  .alert-card.amber { background: var(--amber-light); border: 1px solid #f0d080; color: #7a5500; }
+  .alert-card.green { background: var(--lime-light); border: 1px solid #c0e090; color: #3a6010; }
+
+  /* Configr footer */
+  .configr-bar {
+    background: var(--olive); color: rgba(255,255,255,0.7);
+    text-align: center; font-size: 12px; padding: 12px;
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+  }
+  .configr-bar strong { color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">☕</div>
+    <div class="brand-name">The Home Team<span>Care Management · Norwich</span></div>
+  </div>
+  <div class="topbar-nav">
+    <a class="nav-item active" href="service-users.html">Service Users</a>
+    <a class="nav-item" href="care-plans.html">Care Plans</a>
+    <a class="nav-item" href="visit-log.html">Visit Logs</a>
+    <a class="nav-item" href="controcc-export.html">Controcc Export</a>
+  </div>
+  <div class="topbar-right">
+    <div class="demo-pill">DEMO</div>
+    <div class="user-chip"><div class="avatar">PS</div>Peter Shaw</div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Service Users</div>
+      <div class="sidebar-item active"><span class="icon">👥</span>All Users <span class="sidebar-badge green">24</span></div>
+      <div class="sidebar-item"><span class="icon">🆕</span>New Referrals <span class="sidebar-badge">2</span></div>
+      <div class="sidebar-item"><span class="icon">⚠️</span>Alerts <span class="sidebar-badge amber">3</span></div>
+      <div class="sidebar-item"><span class="icon">⏸️</span>Suspended</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Funding</div>
+      <div class="sidebar-item"><span class="icon">🏛️</span>Norfolk CC</div>
+      <div class="sidebar-item"><span class="icon">💳</span>Private Pay</div>
+      <div class="sidebar-item"><span class="icon">🔀</span>Mixed</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Quick Links</div>
+      <div class="sidebar-item"><span class="icon">📋</span>Care Plans</div>
+      <div class="sidebar-item"><span class="icon">📤</span>Controcc Export</div>
+      <div class="sidebar-item"><span class="icon">📊</span>Hours Report</div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main" style="padding-bottom: 60px;">
+
+    <div class="page-header">
+      <div>
+        <div class="page-title">Service Users</div>
+        <div class="page-sub">24 active · 2 new referrals · June 2026</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline">⬇ Export</button>
+        <button class="btn btn-primary">+ Add Service User</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat olive"><div class="n">24</div><div class="l">Active Users</div></div>
+      <div class="stat lime"><div class="n">187.5h</div><div class="l">Hours This Week</div></div>
+      <div class="stat amber"><div class="n">3</div><div class="l">Alerts</div></div>
+      <div class="stat coral"><div class="n">2</div><div class="l">New Referrals</div></div>
+    </div>
+
+    <div class="alert-row">⚠️ <strong>3 service users</strong> have delivered hours below their commissioned package this week — review before month-end Controcc submission.</div>
+
+    <div class="filters">
+      <input class="filter-input" placeholder="🔍  Search name, address, Controcc ref…" oninput="filterTable(this.value)">
+      <select class="filter-select" onchange="filterStatus(this.value)">
+        <option value="">All statuses</option>
+        <option>Active</option>
+        <option>Suspended</option>
+        <option>New Referral</option>
+      </select>
+      <select class="filter-select">
+        <option value="">All funding types</option>
+        <option>Norfolk CC</option>
+        <option>Private Pay</option>
+        <option>Mixed</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table id="suTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Controcc Ref</th>
+            <th>Address</th>
+            <th>Funding</th>
+            <th>Hours/wk</th>
+            <th>Carers</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="suBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- Overlay + Drawer -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div>
+      <div class="drawer-head-name" id="dName"></div>
+      <div class="drawer-head-sub" id="dSub"></div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()">×</button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-tabs">
+      <div class="drawer-tab active" onclick="showTab('profile',this)">Profile</div>
+      <div class="drawer-tab" onclick="showTab('careplan',this)">Care Plan</div>
+      <div class="drawer-tab" onclick="showTab('carers',this)">Carers</div>
+      <div class="drawer-tab" onclick="showTab('alerts',this)">Alerts</div>
+    </div>
+    <div class="drawer-section active" id="tab-profile"></div>
+    <div class="drawer-section" id="tab-careplan"></div>
+    <div class="drawer-section" id="tab-carers"></div>
+    <div class="drawer-section" id="tab-alerts"></div>
+  </div>
+</div>
+
+<div class="configr-bar">Demo built by <strong>Configr</strong> — finn.carrie@configr.uk · configr.uk &nbsp;·&nbsp; This is what The Home Team's management system could look like. No obligation.</div>
+
+<script>
+const COLORS = ['#4a5e25','#8ab540','#d4614a','#2563eb','#7c3aed','#0891b2','#db2777'];
+
+const users = [
+  {
+    id: 1, name: "Margaret Holloway", dob: "14 Mar 1938", age: 88,
+    address: "12 Laburnum Close, Thorpe St Andrew, Norwich NR7 0QT",
+    nhs: "485 261 3947", controcc: "NCC-2019-004821",
+    funding: "Norfolk CC", status: "Active",
+    commissioned: 14, delivered: 13.5,
+    carers: ["Sarah M.","Ben T.","Leanne W."],
+    keyContacts: "Daughter: Janet Holloway 07712 334455",
+    access: "Key safe code 4821. Dog (friendly Labrador). Ring bell twice.",
+    conditions: "Mild dementia, limited mobility",
+    careplan: {
+      start: "12 Jan 2023", review: "12 Jul 2026",
+      visits: [
+        { days: "Mon–Fri", time: "8:00 AM", duration: "45 min", tasks: ["Personal care","Medication prompt","Breakfast preparation"] },
+        { days: "Mon–Fri", time: "1:00 PM", duration: "30 min", tasks: ["Lunch preparation","Welfare check"] },
+        { days: "Sat–Sun", time: "9:00 AM", duration: "60 min", tasks: ["Personal care","Breakfast","Light housework"] },
+      ],
+      notes: "Prefers female carers for personal care. Enjoys talking about her garden."
+    },
+    alerts: [
+      { type: "amber", msg: "Delivered hours 0.5h below commissioned this week — review by 30 Jun." },
+      { type: "green", msg: "Care plan reviewed 12 Jan 2026. Next review due 12 Jul 2026." }
+    ]
+  },
+  {
+    id: 2, name: "Derek Simmons", dob: "3 Aug 1945", age: 80,
+    address: "47 Heartsease Lane, Norwich NR7 9EF",
+    nhs: "512 874 0031", controcc: "NCC-2021-007142",
+    funding: "Norfolk CC", status: "Active",
+    commissioned: 10.5, delivered: 10.5,
+    carers: ["Leanne W.","Tom H."],
+    keyContacts: "Son: Gary Simmons 07890 112233",
+    access: "Front door unlocked during visit window. No pets.",
+    conditions: "Parkinson's disease, falls risk",
+    careplan: {
+      start: "5 Jun 2021", review: "5 Sep 2026",
+      visits: [
+        { days: "Daily", time: "8:30 AM", duration: "45 min", tasks: ["Personal care","Medication prompt","Breakfast"] },
+        { days: "Mon/Wed/Fri", time: "5:00 PM", duration: "30 min", tasks: ["Meal preparation","Medication prompt"] },
+      ],
+      notes: "Falls risk — use non-slip mat in bathroom. Record any tremors in visit notes."
+    },
+    alerts: [
+      { type: "green", msg: "All hours delivered this week. No issues." },
+      { type: "amber", msg: "Falls risk assessment due for review — last completed Mar 2026." }
+    ]
+  },
+  {
+    id: 3, name: "Irene Blackwell", dob: "29 Nov 1933", age: 92,
+    address: "8 Windmill Road, Sprowston, Norwich NR7 8TX",
+    nhs: "399 045 2218", controcc: "NCC-2018-002390",
+    funding: "Mixed", status: "Active",
+    commissioned: 21, delivered: 19,
+    carers: ["Sarah M.","Claire B.","Ben T.","Amy R."],
+    keyContacts: "Nephew: Robert Hall 07554 889900",
+    access: "Key safe code 2390 (left of front door). Hard of hearing — knock loudly.",
+    conditions: "Dementia (moderate), diabetes, limited mobility",
+    careplan: {
+      start: "18 Mar 2018", review: "18 Sep 2026",
+      visits: [
+        { days: "Daily", time: "7:30 AM", duration: "60 min", tasks: ["Personal care","Medication administration","Breakfast","Blood sugar check"] },
+        { days: "Daily", time: "12:30 PM", duration: "30 min", tasks: ["Lunch preparation","Medication prompt","Welfare check"] },
+        { days: "Daily", time: "6:00 PM", duration: "45 min", tasks: ["Dinner preparation","Personal care","Medication","Bedtime routine"] },
+      ],
+      notes: "14h Norfolk CC commissioned + 7h private top-up. Responds well to familiar carers — consistency is key."
+    },
+    alerts: [
+      { type: "red", msg: "2 hours below commissioned this week. 3 missed PM visits — carer absence not covered. ACTION REQUIRED." },
+      { type: "amber", msg: "Diabetes review due with GP — last visit Apr 2026." },
+      { type: "green", msg: "Family informed of rota changes 28 May." }
+    ]
+  },
+  {
+    id: 4, name: "Colin Farrow", dob: "18 Apr 1951", age: 75,
+    address: "22 Plumstead Road, Norwich NR1 4JT",
+    nhs: "601 337 8854", controcc: "NCC-2024-012887",
+    funding: "Private Pay", status: "Active",
+    commissioned: 7, delivered: 7,
+    carers: ["Tom H."],
+    keyContacts: "Wife: Patricia Farrow 07321 667788 (lives at same address)",
+    access: "Ring doorbell. Wife usually home. No key safe.",
+    conditions: "Post-stroke rehabilitation, limited right-side mobility",
+    careplan: {
+      start: "2 Feb 2024", review: "2 Aug 2026",
+      visits: [
+        { days: "Mon/Wed/Fri", time: "9:00 AM", duration: "60 min", tasks: ["Personal care","Mobility exercises","Breakfast assistance"] },
+        { days: "Tue/Thu", time: "9:00 AM", duration: "45 min", tasks: ["Personal care","Medication prompt"] },
+      ],
+      notes: "Private pay client — invoice monthly to Patricia Farrow. Physio exercises printed and in blue folder in kitchen."
+    },
+    alerts: [
+      { type: "green", msg: "All hours delivered. Invoice sent 1 Jun — payment pending." }
+    ]
+  },
+  {
+    id: 5, name: "Gladys Norton", dob: "7 Sep 1940", age: 85,
+    address: "3 Hawthorn Drive, Hellesdon, Norwich NR6 5PR",
+    nhs: "447 928 0065", controcc: "NCC-2022-009341",
+    funding: "Norfolk CC", status: "New Referral",
+    commissioned: 10.5, delivered: 0,
+    carers: [],
+    keyContacts: "Daughter: Sandra Cope 07445 221100",
+    access: "TBC — daughter to arrange key safe before first visit.",
+    conditions: "Hip replacement recovery, anxiety",
+    careplan: {
+      start: "TBC — awaiting confirmation", review: "—",
+      visits: [
+        { days: "Daily", time: "9:00 AM", duration: "45 min", tasks: ["Personal care","Medication prompt","Breakfast"] },
+        { days: "Mon/Wed/Fri", time: "1:00 PM", duration: "30 min", tasks: ["Lunch preparation","Welfare check"] },
+      ],
+      notes: "New referral from Norfolk CC 28 May 2026. Awaiting carer assignment. First visit target: w/c 9 Jun."
+    },
+    alerts: [
+      { type: "amber", msg: "No carers assigned yet. First visit target w/c 9 Jun — assign carer urgently." },
+      { type: "amber", msg: "Key safe not yet installed — confirm with Sandra Cope before first visit." }
+    ]
+  },
+];
+
+const carerColors = {"Sarah M.": COLORS[0], "Ben T.": COLORS[1], "Leanne W.": COLORS[2], "Tom H.": COLORS[3], "Claire B.": COLORS[4], "Amy R.": COLORS[5]};
+
+function initials(name){ return name.split(' ').map(w=>w[0]).join(''); }
+
+function hoursBar(delivered, commissioned){
+  const pct = Math.min(100, Math.round((delivered/commissioned)*100));
+  const cls = pct >= 95 ? '' : pct >= 80 ? 'low' : 'over';
+  return `<div class="hours-bar">
+    <div class="bar-track"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div>
+    <span style="font-size:12px;font-weight:600;color:${pct<80?'var(--coral)':pct<95?'var(--amber)':'var(--olive)'}">${delivered}/${commissioned}h</span>
+  </div>`;
+}
+
+function carerStack(carers){
+  if(!carers.length) return '<span style="font-size:12px;color:var(--coral);font-weight:600">Unassigned</span>';
+  return `<div class="carer-stack">${carers.slice(0,3).map((c,i)=>`<div class="carer-av" style="background:${carerColors[c]||COLORS[i]};z-index:${3-i}" title="${c}">${initials(c)}</div>`).join('')}${carers.length>3?`<div class="carer-av" style="background:#999">+${carers.length-3}</div>`:''}</div>`;
+}
+
+function statusPill(s){
+  const map = {"Active":"pill-active","Suspended":"pill-suspended","New Referral":"pill-new"};
+  return `<span class="pill ${map[s]||''}">${s}</span>`;
+}
+
+function fundingPill(f){
+  const map = {"Norfolk CC":"pill-cc","Private Pay":"pill-private","Mixed":"pill-mixed"};
+  return `<span class="pill ${map[f]||''}">${f}</span>`;
+}
+
+function renderTable(list){
+  document.getElementById('suBody').innerHTML = list.map(u=>`
+    <tr class="clickable" onclick="openDrawer(${u.id})">
+      <td><strong>${u.name}</strong><div style="font-size:11px;color:var(--muted);margin-top:2px">DOB: ${u.dob}</div></td>
+      <td style="font-family:monospace;font-size:12px">${u.controcc}</td>
+      <td style="font-size:12px;color:var(--muted);max-width:180px">${u.address}</td>
+      <td>${fundingPill(u.funding)}</td>
+      <td>${hoursBar(u.delivered, u.commissioned)}</td>
+      <td>${carerStack(u.carers)}</td>
+      <td>${statusPill(u.status)}</td>
+    </tr>`).join('');
+}
+
+function filterTable(q){
+  const lq = q.toLowerCase();
+  renderTable(users.filter(u=> `${u.name} ${u.address} ${u.controcc}`.toLowerCase().includes(lq)));
+}
+function filterStatus(s){
+  renderTable(s ? users.filter(u=>u.status===s) : users);
+}
+
+function openDrawer(id){
+  const u = users.find(x=>x.id===id);
+  document.getElementById('dName').textContent = u.name;
+  document.getElementById('dSub').textContent = `${u.address} · ${u.controcc}`;
+
+  // Profile tab
+  document.getElementById('tab-profile').innerHTML = `
+    <div class="info-grid">
+      <div class="info-card"><div class="k">Date of Birth</div><div class="v">${u.dob} (age ${u.age})</div></div>
+      <div class="info-card"><div class="k">NHS Number</div><div class="v" style="font-family:monospace">${u.nhs}</div></div>
+      <div class="info-card"><div class="k">Controcc Reference</div><div class="v" style="font-family:monospace">${u.controcc}</div></div>
+      <div class="info-card"><div class="k">Funding Type</div><div class="v">${fundingPill(u.funding)}</div></div>
+      <div class="info-card full"><div class="k">Address</div><div class="v">${u.address}</div></div>
+      <div class="info-card full"><div class="k">Key Contact</div><div class="v">${u.keyContacts}</div></div>
+      <div class="info-card full"><div class="k">Access Notes</div><div class="v">${u.access}</div></div>
+      <div class="info-card full"><div class="k">Conditions / Background</div><div class="v">${u.conditions}</div></div>
+    </div>
+    <div class="section-title">Hours This Month</div>
+    <div style="background:var(--bg);border-radius:10px;padding:14px 16px;margin-bottom:20px;">
+      ${hoursBar(u.delivered, u.commissioned)}
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Commissioned: <strong>${u.commissioned}h/wk</strong> · Delivered: <strong>${u.delivered}h/wk</strong></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" style="flex:1">View Visit Log</button>
+      <button class="btn btn-outline" style="flex:1">Edit Profile</button>
+    </div>`;
+
+  // Care plan tab
+  const cp = u.careplan;
+  document.getElementById('tab-careplan').innerHTML = `
+    <div class="info-grid" style="margin-bottom:16px">
+      <div class="info-card"><div class="k">Plan Start</div><div class="v">${cp.start}</div></div>
+      <div class="info-card"><div class="k">Next Review</div><div class="v">${cp.review}</div></div>
+    </div>
+    <div class="section-title">Visit Schedule</div>
+    <div class="visit-schedule">
+      ${cp.visits.map(v=>`
+        <div class="visit-row">
+          <div class="visit-day">${v.days}</div>
+          <div class="visit-time">${v.time}</div>
+          <div class="visit-duration">${v.duration}</div>
+        </div>
+        <div class="task-list" style="padding:4px 0 8px 14px">
+          ${v.tasks.map(t=>`<div class="task-item"><div class="task-check">✓</div>${t}</div>`).join('')}
+        </div>`).join('')}
+    </div>
+    <div class="section-title">Care Plan Notes</div>
+    <div style="background:var(--bg);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--text);margin-bottom:16px">${cp.notes}</div>
+    <button class="btn btn-outline" style="width:100%">⬇ Download Care Plan PDF</button>`;
+
+  // Carers tab
+  document.getElementById('tab-carers').innerHTML = u.carers.length ? `
+    <div class="carer-cards">
+      ${u.carers.map((c,i)=>`
+        <div class="carer-card">
+          <div class="carer-avatar-lg" style="background:${carerColors[c]||COLORS[i]}">${initials(c)}</div>
+          <div class="carer-info"><div class="name">${c}</div><div class="role">Care Worker</div></div>
+          ${i===0?'<div class="carer-lead">Lead Carer</div>':''}
+        </div>`).join('')}
+    </div>
+    <button class="btn btn-outline" style="width:100%">+ Assign Carer</button>` :
+    `<div style="text-align:center;padding:32px 0;color:var(--muted)">
+      <div style="font-size:32px;margin-bottom:12px">👤</div>
+      <div style="font-weight:700;margin-bottom:6px">No carers assigned</div>
+      <div style="font-size:13px;margin-bottom:16px">This service user needs carers assigned before visits can begin.</div>
+      <button class="btn btn-primary">+ Assign Carer</button>
+    </div>`;
+
+  // Alerts tab
+  document.getElementById('tab-alerts').innerHTML = `
+    ${u.alerts.map(a=>`<div class="alert-card ${a.type}"><div>${a.type==='red'?'🔴':a.type==='amber'?'⚠️':'✅'}</div><div>${a.msg}</div></div>`).join('')}`;
+
+  // Reset tabs
+  document.querySelectorAll('.drawer-tab').forEach((t,i)=>{ t.classList.toggle('active', i===0); });
+  document.querySelectorAll('.drawer-section').forEach((s,i)=>{ s.classList.toggle('active', i===0); });
+
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+
+function closeDrawer(){
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+function showTab(name, el){
+  document.querySelectorAll('.drawer-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.drawer-section').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+renderTable(users);
+</script>
+</body>
+</html>

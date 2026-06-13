@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>The Home Team — Visit Logger</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --olive:      #4a5e25;
+    --olive-mid:  #5c7530;
+    --lime:       #8ab540;
+    --lime-light: #f0f7e0;
+    --coral:      #d4614a;
+    --coral-light:#fdf0ee;
+    --bg:         #f4f7f0;
+    --white:      #ffffff;
+    --border:     #dde8cf;
+    --text:       #1e2d10;
+    --muted:      #6b7c4a;
+    --amber:      #d4900a;
+    --amber-light:#fef8e8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+
+  /* ---- DESKTOP NAV (admin view) ---- */
+  .topbar { background: var(--olive); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; height: 58px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo { width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .brand-name { color: #fff; font-size: 16px; font-weight: 700; }
+  .brand-name span { color: rgba(255,255,255,0.6); font-weight: 400; font-size: 13px; display: block; }
+  .topbar-nav { display: flex; gap: 2px; }
+  .nav-item { color: rgba(255,255,255,0.65); font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-block; }
+  .nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .nav-item.active { background: rgba(255,255,255,0.18); color: #fff; font-weight: 600; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .demo-pill { background: var(--coral); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+  .avatar { width: 30px; height: 30px; background: var(--lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: #fff; }
+  .user-chip { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.8); font-size: 13px; }
+
+  /* ---- SPLIT LAYOUT ---- */
+  .split { display: flex; height: calc(100vh - 58px); gap: 0; }
+
+  /* ---- ADMIN PANEL (left) ---- */
+  .admin-panel { flex: 1; overflow-y: auto; padding: 24px 28px 80px; background: var(--bg); border-right: 1px solid var(--border); }
+  .panel-title { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+  .panel-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+  .log-filters { display: flex; gap: 10px; margin-bottom: 16px; }
+  .filter-select { font-family: inherit; font-size: 13px; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 9px; background: var(--white); color: var(--text); }
+
+  .log-table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead { background: #f8faf4; }
+  th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1px solid var(--border); }
+  td { padding: 11px 14px; border-bottom: 1px solid #f0f4ea; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+
+  .pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .pill-complete { background: #e8f5d8; color: #3a6e10; border: 1px solid #c0e090; }
+  .pill-active { background: var(--amber-light); color: #8a5a00; border: 1px solid #f0d080; }
+  .pill-late { background: var(--coral-light); color: #8a2010; border: 1px solid #f0b8a8; }
+  .pill-upcoming { background: #eff6ff; color: #1a4db8; border: 1px solid #bfdbfe; }
+
+  .gps-chip { font-size: 11px; color: var(--olive); background: var(--lime-light); border: 1px solid #c0e090; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+  .stat { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; }
+  .stat .n { font-size: 22px; font-weight: 800; }
+  .stat .l { font-size: 11px; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+
+  /* ---- PHONE MOCKUP (right) ---- */
+  .phone-wrap {
+    width: 420px; flex-shrink: 0;
+    background: #e8ede0;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .phone {
+    width: 340px;
+    background: #1a1a1a;
+    border-radius: 44px;
+    padding: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 0 0 2px #333;
+    position: relative;
+  }
+  .phone-notch {
+    width: 100px; height: 28px;
+    background: #1a1a1a;
+    border-radius: 0 0 18px 18px;
+    margin: 0 auto 0;
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px;
+  }
+  .phone-notch .camera { width: 10px; height: 10px; border-radius: 50%; background: #2a2a2a; border: 1px solid #444; }
+  .phone-screen {
+    background: var(--bg);
+    border-radius: 36px;
+    overflow: hidden;
+    min-height: 620px;
+    position: relative;
+  }
+  .phone-status {
+    background: var(--olive);
+    padding: 8px 20px 6px;
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: rgba(255,255,255,0.9); font-weight: 600;
+  }
+  .phone-header {
+    background: var(--olive);
+    padding: 10px 18px 14px;
+  }
+  .phone-header .greeting { color: rgba(255,255,255,0.75); font-size: 12px; }
+  .phone-header .name { color: #fff; font-size: 17px; font-weight: 800; }
+  .phone-header .date { color: rgba(255,255,255,0.65); font-size: 11px; margin-top: 2px; }
+
+  /* Phone screens */
+  .pscreen { display: none; padding: 0; }
+  .pscreen.active { display: block; }
+
+  /* Today's visits list */
+  .visits-list { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .visit-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .visit-card:active { transform: scale(0.98); }
+  .visit-card.done { opacity: 0.6; }
+  .visit-card.active-visit { border-color: var(--lime); background: var(--lime-light); }
+  .vc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .vc-name { font-weight: 700; font-size: 14px; }
+  .vc-time { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .vc-addr { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .vc-bottom { display: flex; justify-content: space-between; align-items: center; }
+  .vc-tasks { font-size: 11px; color: var(--muted); }
+  .vc-btn {
+    background: var(--olive); color: #fff;
+    border: none; padding: 6px 14px; border-radius: 20px;
+    font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .vc-btn.lime { background: var(--lime); }
+  .vc-btn.coral { background: var(--coral); }
+  .vc-btn.muted { background: #ccc; color: #666; }
+
+  /* Active visit screen */
+  .active-screen { padding: 0; }
+  .active-head {
+    background: var(--lime);
+    padding: 14px 18px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .active-head .label { color: #fff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+  .active-head .timer { color: #fff; font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .active-body { padding: 14px; }
+  .active-user { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+  .active-addr { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+  .gps-confirm { background: var(--lime-light); border: 1.5px solid var(--lime); border-radius: 10px; padding: 10px 12px; font-size: 12px; color: var(--olive); font-weight: 600; margin-bottom: 14px; display: flex; gap: 8px; align-items: center; }
+  .task-list-phone { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .task-phone {
+    background: var(--white); border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .task-phone.done { background: var(--lime-light); border-color: var(--lime); }
+  .task-cb {
+    width: 22px; height: 22px; border-radius: 6px;
+    border: 2px solid var(--border); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: var(--olive);
+    transition: all 0.15s;
+  }
+  .task-phone.done .task-cb { background: var(--lime); border-color: var(--lime); color: #fff; }
+  .task-text { font-size: 13px; font-weight: 600; }
+  .task-phone.done .task-text { text-decoration: line-through; color: var(--muted); }
+
+  .notes-area {
+    width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; font-family: inherit; font-size: 13px;
+    color: var(--text); background: var(--white); resize: none; margin-bottom: 14px;
+  }
+  .notes-area:focus { outline: none; border-color: var(--olive); }
+
+  .checkout-btn {
+    width: 100%; background: var(--coral); color: #fff;
+    border: none; padding: 14px; border-radius: 14px;
+    font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .checkout-btn:disabled { background: #ccc; color: #888; cursor: not-allowed; }
+
+  /* Complete screen */
+  .complete-screen { padding: 24px 18px; text-align: center; }
+  .complete-icon { font-size: 56px; margin-bottom: 14px; }
+  .complete-title { font-size: 20px; font-weight: 800; color: var(--olive); margin-bottom: 6px; }
+  .complete-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+  .complete-summary { background: var(--lime-light); border: 1.5px solid var(--lime); border-radius: 12px; padding: 14px; text-align: left; margin-bottom: 20px; }
+  .summary-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; border-bottom: 1px solid #d8f0b8; }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row .lbl { color: var(--muted); }
+  .summary-row .val { font-weight: 700; }
+  .back-btn { width: 100%; background: var(--olive); color: #fff; border: none; padding: 14px; border-radius: 14px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+
+  .phone-footer { background: var(--white); border-top: 1px solid var(--border); padding: 10px; display: flex; justify-content: space-around; }
+  .phone-footer-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; color: var(--muted); font-weight: 600; cursor: pointer; padding: 4px 10px; border-radius: 8px; }
+  .phone-footer-btn.active { color: var(--olive); }
+  .phone-footer-btn .icon { font-size: 20px; }
+
+  .configr-bar { background: var(--olive); color: rgba(255,255,255,0.7); text-align: center; font-size: 12px; padding: 12px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 20; }
+  .configr-bar strong { color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">☕</div>
+    <div class="brand-name">The Home Team<span>Care Management · Norwich</span></div>
+  </div>
+  <div class="topbar-nav">
+    <a class="nav-item" href="service-users.html">Service Users</a>
+    <a class="nav-item" href="care-plans.html">Care Plans</a>
+    <a class="nav-item active" href="visit-log.html">Visit Logs</a>
+    <a class="nav-item" href="controcc-export.html">Controcc Export</a>
+  </div>
+  <div class="topbar-right">
+    <div class="demo-pill">DEMO</div>
+    <div class="user-chip"><div class="avatar">PS</div>Peter Shaw</div>
+  </div>
+</div>
+
+<div class="split">
+
+  <!-- ADMIN PANEL -->
+  <div class="admin-panel">
+    <div class="panel-title">Visit Logs — Today</div>
+    <div class="panel-sub">Tuesday 2 June 2026 · 8 visits scheduled · GPS-verified timestamps</div>
+
+    <div class="stats-row">
+      <div class="stat"><div class="n" style="color:var(--lime)">3</div><div class="l">Completed</div></div>
+      <div class="stat"><div class="n" style="color:var(--amber)">1</div><div class="l">In Progress</div></div>
+      <div class="stat"><div class="n" style="color:var(--olive)">4</div><div class="l">Upcoming</div></div>
+      <div class="stat"><div class="n" style="color:var(--coral)">0</div><div class="l">Missed</div></div>
+    </div>
+
+    <div class="log-filters">
+      <select class="filter-select"><option>All carers</option><option>Sarah M.</option><option>Ben T.</option><option>Leanne W.</option><option>Tom H.</option></select>
+      <select class="filter-select"><option>All statuses</option><option>Complete</option><option>In Progress</option><option>Upcoming</option><option>Missed</option></select>
+    </div>
+
+    <div class="log-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Service User</th>
+            <th>Carer</th>
+            <th>Scheduled</th>
+            <th>Check In</th>
+            <th>Check Out</th>
+            <th>Duration</th>
+            <th>GPS</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Margaret Holloway</strong><div style="font-size:11px;color:var(--muted)">Morning Visit</div></td>
+            <td>Sarah M.</td>
+            <td>08:00</td>
+            <td>08:03</td>
+            <td>08:49</td>
+            <td><strong>46 min</strong></td>
+            <td><span class="gps-chip">📍 Verified</span></td>
+            <td><span class="pill pill-complete">✓ Complete</span></td>
+          </tr>
+          <tr>
+            <td><strong>Derek Simmons</strong><div style="font-size:11px;color:var(--muted)">Morning Visit</div></td>
+            <td>Leanne W.</td>
+            <td>08:30</td>
+            <td>08:31</td>
+            <td>09:17</td>
+            <td><strong>46 min</strong></td>
+            <td><span class="gps-chip">📍 Verified</span></td>
+            <td><span class="pill pill-complete">✓ Complete</span></td>
+          </tr>
+          <tr>
+            <td><strong>Irene Blackwell</strong><div style="font-size:11px;color:var(--muted)">Morning Visit</div></td>
+            <td>Claire B.</td>
+            <td>07:30</td>
+            <td>07:32</td>
+            <td>08:34</td>
+            <td><strong>62 min</strong></td>
+            <td><span class="gps-chip">📍 Verified</span></td>
+            <td><span class="pill pill-complete">✓ Complete</span></td>
+          </tr>
+          <tr style="background:#fffbf0">
+            <td><strong>Colin Farrow</strong><div style="font-size:11px;color:var(--muted)">Morning Visit (MWF)</div></td>
+            <td>Tom H.</td>
+            <td>09:00</td>
+            <td>09:04</td>
+            <td style="color:var(--amber);font-weight:600">In progress…</td>
+            <td style="color:var(--amber);font-weight:700">38 min ▶</td>
+            <td><span class="gps-chip">📍 Verified</span></td>
+            <td><span class="pill pill-active">▶ Active</span></td>
+          </tr>
+          <tr style="opacity:0.6">
+            <td><strong>Margaret Holloway</strong><div style="font-size:11px;color:var(--muted)">Lunchtime Visit</div></td>
+            <td>Ben T.</td>
+            <td>13:00</td>
+            <td>—</td><td>—</td><td>—</td>
+            <td>—</td>
+            <td><span class="pill pill-upcoming">Upcoming</span></td>
+          </tr>
+          <tr style="opacity:0.6">
+            <td><strong>Irene Blackwell</strong><div style="font-size:11px;color:var(--muted)">Lunchtime Visit</div></td>
+            <td>Amy R.</td>
+            <td>12:30</td>
+            <td>—</td><td>—</td><td>—</td>
+            <td>—</td>
+            <td><span class="pill pill-upcoming">Upcoming</span></td>
+          </tr>
+          <tr style="opacity:0.6">
+            <td><strong>Derek Simmons</strong><div style="font-size:11px;color:var(--muted)">Evening Visit</div></td>
+            <td>Leanne W.</td>
+            <td>17:00</td>
+            <td>—</td><td>—</td><td>—</td>
+            <td>—</td>
+            <td><span class="pill pill-upcoming">Upcoming</span></td>
+          </tr>
+          <tr style="opacity:0.6">
+            <td><strong>Irene Blackwell</strong><div style="font-size:11px;color:var(--muted)">Evening Visit</div></td>
+            <td>Sarah M.</td>
+            <td>18:00</td>
+            <td>—</td><td>—</td><td>—</td>
+            <td>—</td>
+            <td><span class="pill pill-upcoming">Upcoming</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:14px;background:var(--lime-light);border:1px solid #c0e090;border-radius:10px;padding:12px 16px;font-size:13px;color:var(--olive)">
+      📍 <strong>Every check-in and check-out is GPS-verified and timestamped.</strong> If Norfolk CC disputes any hours, you have an irrefutable record for every visit. No more spreadsheet arguments.
+    </div>
+  </div>
+
+  <!-- PHONE MOCKUP -->
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="phone-notch"><div class="camera"></div></div>
+      <div class="phone-screen">
+
+        <!-- STATUS BAR -->
+        <div class="phone-status">
+          <span id="phoneTime">09:42</span>
+          <span>📶 ● ●</span>
+        </div>
+        <div class="phone-header">
+          <div class="greeting">Good morning,</div>
+          <div class="name">Sarah M. 👋</div>
+          <div class="date">Tuesday 2 June · 3 visits today</div>
+        </div>
+
+        <!-- SCREEN: Today's visits -->
+        <div class="pscreen active" id="screen-home">
+          <div class="visits-list">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);padding:0 2px 4px">Today's Visits</div>
+
+            <div class="visit-card done">
+              <div class="vc-top">
+                <div class="vc-name">Margaret Holloway</div>
+                <span class="pill pill-complete" style="font-size:10px">✓ Done</span>
+              </div>
+              <div class="vc-addr">12 Laburnum Close, Thorpe St Andrew</div>
+              <div class="vc-bottom">
+                <div class="vc-tasks">08:03 – 08:49 · 46 min · 📍 GPS verified</div>
+              </div>
+            </div>
+
+            <div class="visit-card active-visit" onclick="goScreen('screen-active')">
+              <div class="vc-top">
+                <div class="vc-name">Colin Farrow</div>
+                <span class="pill pill-active" style="font-size:10px">▶ Active</span>
+              </div>
+              <div class="vc-addr">22 Plumstead Road, Norwich</div>
+              <div class="vc-bottom">
+                <div class="vc-tasks">Checked in 09:04 · 4 tasks · tap to continue</div>
+                <button class="vc-btn lime" onclick="goScreen('screen-active');event.stopPropagation()">Continue →</button>
+              </div>
+            </div>
+
+            <div class="visit-card" onclick="goScreen('screen-checkin')">
+              <div class="vc-top">
+                <div class="vc-name">Irene Blackwell</div>
+                <span style="font-size:11px;font-weight:600;color:var(--muted)">13:00 – 13:30</span>
+              </div>
+              <div class="vc-addr">8 Windmill Road, Sprowston</div>
+              <div class="vc-bottom">
+                <div class="vc-tasks">3 tasks · Not started</div>
+                <button class="vc-btn muted">Not yet</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN: Check-in -->
+        <div class="pscreen" id="screen-checkin">
+          <div class="active-body" style="padding-top:16px">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:10px">Next Visit</div>
+            <div class="active-user">Irene Blackwell</div>
+            <div class="active-addr">8 Windmill Road, Sprowston, Norwich NR7 8TX</div>
+
+            <div style="background:var(--amber-light);border:1.5px solid #f0d080;border-radius:10px;padding:10px 12px;font-size:12px;color:#7a5500;margin-bottom:14px">
+              🔑 Key safe code: <strong>2390</strong> (left of front door). Knock loudly — hard of hearing.
+            </div>
+
+            <div style="background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:12px;margin-bottom:14px">
+              <div style="font-weight:700;margin-bottom:4px">Lunchtime Visit · 30 min</div>
+              <div style="color:var(--muted)">Lunch prep · Medication prompt · Welfare check</div>
+            </div>
+
+            <div style="background:#f0f4ea;border-radius:10px;padding:10px 12px;font-size:12px;color:var(--muted);margin-bottom:14px;display:flex;gap:8px;align-items:center">
+              📍 Getting your location…
+            </div>
+
+            <button class="checkout-btn" style="background:var(--lime)" onclick="goScreen('screen-active-irene')">
+              ✓ Check In Now
+            </button>
+            <button style="width:100%;background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;padding:12px;font-family:inherit" onclick="goScreen('screen-home')">← Back</button>
+          </div>
+        </div>
+
+        <!-- SCREEN: Active visit (Colin) -->
+        <div class="pscreen" id="screen-active">
+          <div class="active-head">
+            <div><div class="label">Visit In Progress</div><div style="color:#fff;font-size:13px;margin-top:2px">Colin Farrow</div></div>
+            <div class="timer" id="visitTimer">00:38:14</div>
+          </div>
+          <div class="active-body">
+            <div class="active-user">Colin Farrow</div>
+            <div class="active-addr">22 Plumstead Road, Norwich · Checked in 09:04</div>
+            <div class="gps-confirm">📍 GPS verified — 22 Plumstead Road, Norwich NR1 4JT</div>
+
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:8px">Tasks</div>
+            <div class="task-list-phone">
+              <div class="task-phone done" onclick="toggleTask(this)">
+                <div class="task-cb">✓</div>
+                <div class="task-text">Personal care</div>
+              </div>
+              <div class="task-phone done" onclick="toggleTask(this)">
+                <div class="task-cb">✓</div>
+                <div class="task-text">Mobility exercises</div>
+              </div>
+              <div class="task-phone" onclick="toggleTask(this)">
+                <div class="task-cb"></div>
+                <div class="task-text">Breakfast assistance</div>
+              </div>
+              <div class="task-phone" onclick="toggleTask(this)">
+                <div class="task-cb"></div>
+                <div class="task-text">Medication prompt</div>
+              </div>
+            </div>
+
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:6px">Visit Notes</div>
+            <textarea class="notes-area" rows="3" placeholder="Any observations, concerns or updates…">Colin in good spirits. Mobility improving since last week. Completed all physio exercises without assistance.</textarea>
+
+            <button class="checkout-btn" onclick="goScreen('screen-complete')">
+              ✓ Check Out & Submit
+            </button>
+          </div>
+        </div>
+
+        <!-- SCREEN: Active visit (Irene) -->
+        <div class="pscreen" id="screen-active-irene">
+          <div class="active-head">
+            <div><div class="label">Visit In Progress</div><div style="color:#fff;font-size:13px;margin-top:2px">Irene Blackwell</div></div>
+            <div class="timer">00:00:00</div>
+          </div>
+          <div class="active-body">
+            <div class="active-user">Irene Blackwell</div>
+            <div class="active-addr">8 Windmill Road, Sprowston · Checked in just now</div>
+            <div class="gps-confirm">📍 GPS verified — 8 Windmill Road, Norwich NR7 8TX</div>
+
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:8px">Tasks</div>
+            <div class="task-list-phone">
+              <div class="task-phone" onclick="toggleTask(this)">
+                <div class="task-cb"></div>
+                <div class="task-text">Lunch preparation</div>
+              </div>
+              <div class="task-phone" onclick="toggleTask(this)">
+                <div class="task-cb"></div>
+                <div class="task-text">Medication prompt</div>
+              </div>
+              <div class="task-phone" onclick="toggleTask(this)">
+                <div class="task-cb"></div>
+                <div class="task-text">Welfare check</div>
+              </div>
+            </div>
+
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:6px">Visit Notes</div>
+            <textarea class="notes-area" rows="3" placeholder="Any observations, concerns or updates…"></textarea>
+
+            <button class="checkout-btn" onclick="goScreen('screen-complete-irene')">
+              ✓ Check Out & Submit
+            </button>
+          </div>
+        </div>
+
+        <!-- SCREEN: Complete (Colin) -->
+        <div class="pscreen" id="screen-complete">
+          <div class="complete-screen">
+            <div class="complete-icon">✅</div>
+            <div class="complete-title">Visit Complete</div>
+            <div class="complete-sub">Your visit has been submitted and GPS-verified. The office can see this instantly.</div>
+            <div class="complete-summary">
+              <div class="summary-row"><span class="lbl">Service user</span><span class="val">Colin Farrow</span></div>
+              <div class="summary-row"><span class="lbl">Check in</span><span class="val">09:04 AM</span></div>
+              <div class="summary-row"><span class="lbl">Check out</span><span class="val">09:51 AM</span></div>
+              <div class="summary-row"><span class="lbl">Duration</span><span class="val">47 minutes</span></div>
+              <div class="summary-row"><span class="lbl">Tasks completed</span><span class="val">4 / 4</span></div>
+              <div class="summary-row"><span class="lbl">GPS</span><span class="val">📍 Verified</span></div>
+            </div>
+            <button class="back-btn" onclick="goScreen('screen-home')">← Back to My Visits</button>
+          </div>
+        </div>
+
+        <!-- SCREEN: Complete (Irene) -->
+        <div class="pscreen" id="screen-complete-irene">
+          <div class="complete-screen">
+            <div class="complete-icon">✅</div>
+            <div class="complete-title">Visit Complete</div>
+            <div class="complete-sub">Submitted and GPS-verified. The office can see this instantly.</div>
+            <div class="complete-summary">
+              <div class="summary-row"><span class="lbl">Service user</span><span class="val">Irene Blackwell</span></div>
+              <div class="summary-row"><span class="lbl">Check in</span><span class="val">12:58 PM</span></div>
+              <div class="summary-row"><span class="lbl">Check out</span><span class="val">01:29 PM</span></div>
+              <div class="summary-row"><span class="lbl">Duration</span><span class="val">31 minutes</span></div>
+              <div class="summary-row"><span class="lbl">Tasks completed</span><span class="val">3 / 3</span></div>
+              <div class="summary-row"><span class="lbl">GPS</span><span class="val">📍 Verified</span></div>
+            </div>
+            <button class="back-btn" onclick="goScreen('screen-home')">← Back to My Visits</button>
+          </div>
+        </div>
+
+        <!-- PHONE FOOTER -->
+        <div class="phone-footer">
+          <div class="phone-footer-btn active"><div class="icon">📅</div>Today</div>
+          <div class="phone-footer-btn"><div class="icon">📋</div>My Plans</div>
+          <div class="phone-footer-btn"><div class="icon">📊</div>My Hours</div>
+          <div class="phone-footer-btn"><div class="icon">👤</div>Profile</div>
+        </div>
+
+      </div><!-- /phone-screen -->
+    </div><!-- /phone -->
+  </div><!-- /phone-wrap -->
+
+</div><!-- /split -->
+
+<div class="configr-bar">Demo built by <strong>Configr</strong> — finn.carrie@configr.uk · configr.uk &nbsp;·&nbsp; No obligation — just something to look at.</div>
+
+<script>
+function goScreen(id){
+  document.querySelectorAll('.pscreen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function toggleTask(el){
+  el.classList.toggle('done');
+  const cb = el.querySelector('.task-cb');
+  cb.textContent = el.classList.contains('done') ? '✓' : '';
+  checkAllTasks();
+}
+
+function checkAllTasks(){
+  const activeScreen = document.querySelector('.pscreen.active');
+  if(!activeScreen) return;
+  const tasks = activeScreen.querySelectorAll('.task-phone');
+  const done = activeScreen.querySelectorAll('.task-phone.done');
+  const btn = activeScreen.querySelector('.checkout-btn');
+  if(btn) btn.disabled = false;
+}
+
+// Live clock
+function updateClock(){
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const el = document.getElementById('phoneTime');
+  if(el) el.textContent = `${h}:${m}`;
+}
+setInterval(updateClock, 10000);
+updateClock();
+
+// Running timer on active visit
+let visitSeconds = 38*60 + 14;
+setInterval(()=>{
+  visitSeconds++;
+  const h = Math.floor(visitSeconds/3600);
+  const m = Math.floor((visitSeconds%3600)/60);
+  const s = visitSeconds%60;
+  const el = document.getElementById('visitTimer');
+  if(el) el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}, 1000);
+</script>
+</body>
+</html>

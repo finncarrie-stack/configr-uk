@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>The Murderers — Order to Table</title>
+<style>
+  :root {
+    --green: #4d7855;
+    --green-dark: #1e3422;
+    --green-deep: #162a1a;
+    --green-mid: #2a4a30;
+    --green-light: #5d9068;
+    --cream: #f0ece5;
+    --cream-dark: #e0d8c8;
+    --text-dark: #1e2d1e;
+    --text-light: #f0ece8;
+    --muted: #7a9a7e;
+    --red: #c0392b;
+    --amber: #c8922a;
+    --border: #3a5a3e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--cream);
+    color: var(--text-dark);
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Header */
+  .header {
+    background: var(--green);
+    padding: 16px 18px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .pub-name {
+    font-family: Georgia, serif;
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+  }
+  .table-badge {
+    background: var(--cream);
+    color: var(--green-dark);
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .header-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  /* Cart bar */
+  .cart-bar {
+    background: var(--green-dark);
+    padding: 0 18px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  .cart-bar.visible { display: flex; }
+  .cart-bar-left { display: flex; align-items: center; gap: 10px; padding: 12px 0; }
+  .cart-count {
+    background: var(--amber);
+    color: white;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cart-text { color: white; font-size: 13px; font-weight: 600; }
+  .cart-total { color: var(--cream); font-size: 14px; font-weight: bold; }
+
+  /* Category tabs */
+  .cat-tabs {
+    background: white;
+    border-bottom: 2px solid var(--cream-dark);
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 6px;
+    position: sticky;
+    top: 72px;
+    z-index: 90;
+  }
+  .cat-tabs::-webkit-scrollbar { display: none; }
+  .cat-tab {
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  .cat-tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+  /* Menu */
+  .menu-content { padding: 16px 16px 140px; }
+  .section-header {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    color: var(--green-dark);
+    font-weight: bold;
+    margin: 20px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--green);
+  }
+  .section-header:first-child { margin-top: 0; }
+
+  /* Menu item */
+  .menu-item {
+    background: white;
+    border-radius: 10px;
+    padding: 14px 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    border: 1px solid var(--cream-dark);
+  }
+  .item-info { flex: 1; }
+  .item-name { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 3px; }
+  .item-desc { font-size: 12px; color: #666; line-height: 1.4; margin-bottom: 6px; }
+  .item-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+  .tag-v { background: #e8f5e0; color: #2d7a1e; }
+  .tag-gf { background: #fff3e0; color: #e07000; }
+  .tag-popular { background: #fde8e8; color: #c0392b; }
+  .item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+  .item-price { font-size: 15px; font-weight: 800; color: var(--green-dark); }
+
+  /* Add button */
+  .add-btn {
+    width: 32px; height: 32px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+  .add-btn:hover { background: var(--green-light); }
+
+  /* Qty control */
+  .qty-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .qty-btn {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--green);
+    background: white;
+    color: var(--green);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .qty-num { font-size: 15px; font-weight: bold; min-width: 16px; text-align: center; }
+
+  /* Cart overlay */
+  .cart-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    justify-content: flex-end;
+    flex-direction: column;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .cart-overlay.open { display: flex; }
+  .cart-sheet {
+    background: white;
+    border-radius: 20px 20px 0 0;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 20px 18px 32px;
+  }
+  .cart-handle {
+    width: 40px; height: 4px;
+    background: var(--cream-dark);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+  .cart-title {
+    font-family: Georgia, serif;
+    font-size: 20px;
+    color: var(--green-dark);
+    margin-bottom: 16px;
+    font-weight: bold;
+  }
+  .cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+  .cart-item-name { font-size: 14px; font-weight: 600; }
+  .cart-item-sub { font-size: 12px; color: #888; }
+  .cart-item-price { font-size: 14px; font-weight: bold; color: var(--green-dark); }
+  .cart-remove { color: var(--red); font-size: 18px; cursor: pointer; padding: 0 4px; }
+  .cart-section-divider { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); padding: 12px 0 6px; font-weight: 700; }
+  .cart-subtotal {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    padding: 8px 0;
+    color: #555;
+  }
+  .cart-grand-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--green-dark);
+    padding: 12px 0 4px;
+    border-top: 2px solid var(--green);
+    margin-top: 8px;
+  }
+  .notes-input {
+    width: 100%;
+    border: 1px solid var(--cream-dark);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--text-dark);
+    margin: 12px 0;
+    font-family: inherit;
+    resize: none;
+  }
+  .notes-input:focus { outline: none; border-color: var(--green); }
+  .place-order-btn {
+    width: 100%;
+    background: var(--green);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.15s;
+  }
+  .place-order-btn:hover { background: var(--green-light); }
+  .close-cart-btn {
+    background: none;
+    border: none;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    width: 100%;
+    padding: 12px 0 4px;
+  }
+
+  /* Confirmation screen */
+  .confirm-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--green-dark);
+    z-index: 300;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .confirm-screen.open { display: flex; }
+  .confirm-icon { font-size: 64px; margin-bottom: 20px; }
+  .confirm-title { font-family: Georgia, serif; font-size: 28px; color: white; margin-bottom: 10px; }
+  .confirm-sub { font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 32px; }
+  .confirm-ref {
+    background: var(--green);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 32px;
+  }
+  .confirm-back {
+    color: var(--cream);
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  /* Special offer banner */
+  .promo-banner {
+    background: var(--green);
+    color: white;
+    padding: 10px 16px;
+    font-size: 13px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .promo-banner span { color: var(--cream); }
+
+  /* Allergen note */
+  .allergen-note {
+    background: white;
+    border: 1px solid var(--cream-dark);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 16px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-top">
+    <div class="pub-name">The Murderers</div>
+    <div class="table-badge">🍺 Table 7</div>
+  </div>
+  <div class="header-sub">& The Gardeners Arms · Timberhill, Norwich</div>
+</div>
+
+<!-- Cart bar -->
+<div class="cart-bar" id="cartBar" onclick="openCart()">
+  <div class="cart-bar-left">
+    <div class="cart-count" id="cartCount">0</div>
+    <div class="cart-text">View Order</div>
+  </div>
+  <div class="cart-total" id="cartTotal">£0.00</div>
+</div>
+
+<!-- Promo banner -->
+<div class="promo-banner">🏆 <span>Great British Pub Awards 2024 Winner</span> — Best Pub to Watch Sport</div>
+
+<!-- Category tabs -->
+<div class="cat-tabs">
+  <div class="cat-tab active" onclick="scrollTo('food')">🍳 Brunch</div>
+  <div class="cat-tab" onclick="scrollTo('mains')">🍽 Mains</div>
+  <div class="cat-tab" onclick="scrollTo('sides')">🥗 Sides</div>
+  <div class="cat-tab" onclick="scrollTo('ales')">🍺 Ales</div>
+  <div class="cat-tab" onclick="scrollTo('drinks')">🥤 Drinks</div>
+</div>
+
+<!-- Menu -->
+<div class="menu-content">
+
+  <div class="allergen-note">⚠️ Please speak to staff about allergens before ordering. Full allergen info available on request.</div>
+
+  <!-- Brunch -->
+  <div class="section-header" id="food">Brunch & Light Bites</div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Full English Breakfast</div>
+      <div class="item-desc">Back bacon, two eggs your way, sausage, black pudding, beans, grilled tomato, toast</div>
+      <div class="item-tags"><span class="tag tag-popular">⭐ Popular</span></div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£10.50</div>
+      <div id="ctrl-1"></div>
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Veggie Breakfast</div>
+      <div class="item-desc">Two eggs your way, halloumi, mushrooms, avocado, grilled tomato, toast</div>
+      <div class="item-tags"><span class="tag tag-v">V</span></div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£9.50</div>
+      <div id="ctrl-2"></div>
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Smashed Avo on Toast</div>
+      <div class="item-desc">Sourdough toast, smashed avocado, chilli flakes, poached egg, lemon</div>
+      <div class="item-tags"><span class="tag tag-v">V</span></div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£8.00</div>
+      <div id="ctrl-3"></div>
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Bacon or Sausage Bap</div>
+      <div class="item-desc">Thick-cut back bacon or pork sausage in a soft white bap, brown or ketchup sauce</div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£5.50</div>
+      <div id="ctrl-4"></div>
+    </div>
+  </div>
+
+  <!-- Mains -->
+  <div class="section-header" id="mains">Mains</div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">The Murderers Burger</div>
+      <div class="item-desc">6oz beef patty, cheddar, smoked bacon, lettuce, tomato, gherkin, house sauce, brioche bun, skin-on fries</div>
+      <div class="item-tags"><span class="tag tag-popular">⭐ Popular</span></div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£13.50</div>
+      <div id="ctrl-5"></div>
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Fish & Chips</div>
+      <div class="item-desc">Beer-battered cod, proper chips, mushy peas, tartare sauce, wedge of lemon</div>
+      <div class="item-tags"><span class="tag tag-popular">⭐ Popular</span></div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£14.50</div>
+      <div id="ctrl-6"></div>
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Norfolk Ploughman's</div>
+      <div class="item-desc">Montgomery cheddar, Norfolk ham, pickled onions, chutney, crusty bread, salad</div>
+      <div class="item-tags"><span class="tag tag-gf">GF option</span></div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£11.50</div>
+      <div id="ctrl-7"></div>
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Mushroom & Brie Wellington</div>
+      <div class="item-desc">Puff pastry, wild mushroom & brie filling, red wine jus, seasonal veg, new potatoes</div>
+      <div class="item-tags"><span class="tag tag-v">V</span></div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£12.50</div>
+      <div id="ctrl-8"></div>
+    </div>
+  </div>
+
+  <!-- Sides -->
+  <div class="section-header" id="sides">Sides</div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Skin-on Fries</div>
+      <div class="item-desc">Seasoned with sea salt and rosemary</div>
+      <div class="item-tags"><span class="tag tag-v">V</span><span class="tag tag-gf">GF</span></div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£3.50</div>
+      <div id="ctrl-9"></div>
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Onion Rings</div>
+      <div class="item-desc">Beer-battered, with chipotle dip</div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£4.00</div>
+      <div id="ctrl-10"></div>
+    </div>
+  </div>
+
+  <!-- Ales -->
+  <div class="section-header" id="ales">Traditional Ales — 10 on the bar</div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Woodforde's Wherry</div>
+      <div class="item-desc">Norfolk's finest. Amber bitter, hoppy, refreshing. 3.8% ABV · Pint</div>
+      <div class="item-tags"><span class="tag tag-popular">⭐ Popular</span></div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£4.80</div>
+      <div id="ctrl-11"></div>
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">London Pride</div>
+      <div class="item-desc">Fuller's classic. Malty, balanced, smooth. 4.1% ABV · Pint</div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£4.90</div>
+      <div id="ctrl-12"></div>
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Doom Bar</div>
+      <div class="item-desc">Sharp's Brewery. Amber ale, caramel notes, light bitterness. 4.0% ABV · Pint</div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£4.90</div>
+      <div id="ctrl-13"></div>
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Guest Ale (ask staff)</div>
+      <div class="item-desc">Rotating local guest ale — ask your server what's on today. · Pint</div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£4.80</div>
+      <div id="ctrl-14"></div>
+    </div>
+  </div>
+
+  <!-- Drinks -->
+  <div class="section-header" id="drinks">Draught, Bottles & Soft Drinks</div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Guinness</div>
+      <div class="item-desc">The classic. Smooth, creamy stout. 4.2% ABV · Pint</div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£5.20</div>
+      <div id="ctrl-15"></div>
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Peroni Nastro Azzurro</div>
+      <div class="item-desc">Crisp Italian lager. 5.1% ABV · Pint</div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£5.50</div>
+      <div id="ctrl-16"></div>
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-info">
+      <div class="item-name">Soft Drinks</div>
+      <div class="item-desc">Coke, Diet Coke, Lemonade, Orange Juice, Sparkling Water · Pint glass</div>
+      <div class="item-tags"><span class="tag tag-v">V</span><span class="tag tag-gf">GF</span></div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">£2.80</div>
+      <div id="ctrl-17"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Cart Overlay -->
+<div class="cart-overlay" id="cartOverlay">
+  <div class="cart-sheet">
+    <div class="cart-handle"></div>
+    <div class="cart-title">Your Order — Table 7</div>
+    <div id="cartItems"></div>
+    <div class="cart-section-divider">Any notes for the kitchen?</div>
+    <textarea class="notes-input" rows="2" placeholder="e.g. No onions, well done steak, allergy info..."></textarea>
+    <div class="cart-grand-total">
+      <span>Total</span>
+      <span id="cartGrandTotal">£0.00</span>
+    </div>
+    <button class="place-order-btn" onclick="placeOrder()">Place Order 🍺</button>
+    <button class="close-cart-btn" onclick="closeCart()">Continue browsing</button>
+  </div>
+</div>
+
+<!-- Confirmation screen -->
+<div class="confirm-screen" id="confirmScreen">
+  <div class="confirm-icon">🍻</div>
+  <div class="confirm-title">Order Placed!</div>
+  <div class="confirm-sub">Your order is on its way to the bar and kitchen. No need to queue — we'll bring everything to Table 7.</div>
+  <div class="confirm-ref">REF: MRD-<span id="confirmRef"></span></div>
+  <div class="confirm-sub" style="font-size:13px;margin-bottom:16px">Cheers! Typical wait: 10–15 mins for food, drinks shortly.</div>
+  <div class="confirm-back" onclick="resetOrder()">Order something else?</div>
+</div>
+
+<script>
+const items = {
+  1: { name: 'Full English Breakfast', price: 10.50 },
+  2: { name: 'Veggie Breakfast', price: 9.50 },
+  3: { name: 'Smashed Avo on Toast', price: 8.00 },
+  4: { name: 'Bacon or Sausage Bap', price: 5.50 },
+  5: { name: 'The Murderers Burger', price: 13.50 },
+  6: { name: 'Fish & Chips', price: 14.50 },
+  7: { name: "Norfolk Ploughman's", price: 11.50 },
+  8: { name: 'Mushroom & Brie Wellington', price: 12.50 },
+  9: { name: 'Skin-on Fries', price: 3.50 },
+  10: { name: 'Onion Rings', price: 4.00 },
+  11: { name: "Woodforde's Wherry", price: 4.80 },
+  12: { name: 'London Pride', price: 4.90 },
+  13: { name: 'Doom Bar', price: 4.90 },
+  14: { name: 'Guest Ale', price: 4.80 },
+  15: { name: 'Guinness', price: 5.20 },
+  16: { name: 'Peroni Nastro Azzurro', price: 5.50 },
+  17: { name: 'Soft Drinks', price: 2.80 }
+};
+
+let cart = {};
+
+function renderCtrl(id) {
+  const el = document.getElementById('ctrl-' + id);
+  const qty = cart[id] || 0;
+  if (qty === 0) {
+    el.innerHTML = `<button class="add-btn" onclick="add(${id})">+</button>`;
+  } else {
+    el.innerHTML = `<div class="qty-ctrl">
+      <button class="qty-btn" onclick="remove(${id})">−</button>
+      <span class="qty-num">${qty}</span>
+      <button class="qty-btn" onclick="add(${id})">+</button>
+    </div>`;
+  }
+}
+
+function add(id) {
+  cart[id] = (cart[id] || 0) + 1;
+  renderCtrl(id);
+  updateCartBar();
+}
+
+function remove(id) {
+  if (cart[id] > 0) cart[id]--;
+  if (cart[id] === 0) delete cart[id];
+  renderCtrl(id);
+  updateCartBar();
+}
+
+function updateCartBar() {
+  const count = Object.values(cart).reduce((a, b) => a + b, 0);
+  const total = Object.entries(cart).reduce((sum, [id, qty]) => sum + items[id].price * qty, 0);
+  document.getElementById('cartCount').textContent = count;
+  document.getElementById('cartTotal').textContent = '£' + total.toFixed(2);
+  const bar = document.getElementById('cartBar');
+  if (count > 0) bar.classList.add('visible');
+  else bar.classList.remove('visible');
+}
+
+function openCart() {
+  const container = document.getElementById('cartItems');
+  const total = Object.entries(cart).reduce((sum, [id, qty]) => sum + items[id].price * qty, 0);
+  let html = '';
+  for (const [id, qty] of Object.entries(cart)) {
+    const item = items[id];
+    html += `<div class="cart-item">
+      <div>
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-sub">x${qty} · £${(item.price * qty).toFixed(2)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="cart-item-price">£${(item.price * qty).toFixed(2)}</div>
+        <span class="cart-remove" onclick="removeFromCart(${id})">×</span>
+      </div>
+    </div>`;
+  }
+  container.innerHTML = html;
+  document.getElementById('cartGrandTotal').textContent = '£' + total.toFixed(2);
+  document.getElementById('cartOverlay').classList.add('open');
+}
+
+function removeFromCart(id) {
+  delete cart[id];
+  renderCtrl(id);
+  updateCartBar();
+  if (Object.keys(cart).length === 0) closeCart();
+  else openCart();
+}
+
+function closeCart() {
+  document.getElementById('cartOverlay').classList.remove('open');
+}
+
+function placeOrder() {
+  const ref = Math.floor(1000 + Math.random() * 9000);
+  document.getElementById('confirmRef').textContent = ref;
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('confirmScreen').classList.add('open');
+}
+
+function resetOrder() {
+  cart = {};
+  Object.keys(items).forEach(id => renderCtrl(id));
+  updateCartBar();
+  document.getElementById('confirmScreen').classList.remove('open');
+}
+
+function scrollTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// Init all controls
+Object.keys(items).forEach(id => renderCtrl(parseInt(id)));
+</script>
+</body>
+</html>
